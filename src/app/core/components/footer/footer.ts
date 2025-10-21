@@ -8,4 +8,13 @@ import { Component } from '@angular/core';
 })
 export class Footer {
   currentYear = new Date().getFullYear();
+  brands: string[] = [
+    'Adidas',
+    'American Apparel',
+    'Apron',
+    'ATC',
+    'Athletic',
+    'Baseball',
+    'Beanies',
+  ];
 }

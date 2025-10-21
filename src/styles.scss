@@ -3,3 +3,9 @@ body {
   margin: 0px;
   padding: 0px;
 }
+:root {
+  --app-primary: #ff6f00; /* original orange */
+  --app-dark: #121212;
+  --app-light: #ffffff;
+  --app-secondary: #00bcd4; /* new teal/cyan color for bucket icon */
+}

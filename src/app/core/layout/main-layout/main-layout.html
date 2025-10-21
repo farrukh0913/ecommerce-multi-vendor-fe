@@ -1,9 +1,10 @@
 <div class="main-app-conatiner">
-  <app-header class="header"></app-header>
-  <div class="page-content">
+  <app-header class="header" [hideTopBar]="hideTopBar"></app-header>
+  <div class="page-content" (scroll)="onScroll($event)">
     <main class="content">
       <router-outlet></router-outlet>
     </main>
+
     <app-footer></app-footer>
   </div>
 </div>

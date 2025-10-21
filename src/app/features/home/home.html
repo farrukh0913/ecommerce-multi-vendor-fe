@@ -1,0 +1,40 @@
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="hero-content">
+    <h1>Discover Your Style</h1>
+    <p>Shop the latest trends and exclusive collections</p>
+
+    <!-- Hero Benefits / Features -->
+    <div class="hero-benefits">
+      <div class="benefit-box">
+        <div class="text">
+          <h4>FREE SHIPPING</h4>
+          <p>On orders over $300</p>
+        </div>
+      </div>
+      <div class="benefit-box">
+        <div class="text">
+          <h4>MONEY BACK</h4>
+          <p>100% guarantee</p>
+        </div>
+      </div>
+      <div class="benefit-box">
+        <div class="text">
+          <h4>ONLINE SUPPORT</h4>
+          <p>hello@myimprint.ca</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="hero-image"> -->
+    <!-- <img src="assets/images/hero-banner.png" alt="Hero Banner" /> -->
+  <!-- </div> -->
+</div>
+
+<h2 class="section-title">Featured Products</h2>
+<section class="products">
+  <div *ngFor="let i of [].constructor(30); let idx = index" class="product-loop">
+    <app-product-card></app-product-card>
+  </div>
+</section>

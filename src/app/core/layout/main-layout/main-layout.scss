@@ -5,11 +5,46 @@
 
   .header {
     flex-shrink: 0;
-    height: 80px;
   }
 
   .page-content {
     flex: 1 1 auto;
     overflow: auto;
+  }
+}
+.content {
+  padding: 2rem;
+  background: #f9f9f9;
+
+  .hero {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .products {
+    margin-bottom: 3rem;
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1rem;
+
+      .product-card {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        .product-image {
+          font-size: 2rem;
+          margin-bottom: 0.5rem;
+        }
+      }
+    }
+  }
+
+  .info {
+    line-height: 1.6;
   }
 }
