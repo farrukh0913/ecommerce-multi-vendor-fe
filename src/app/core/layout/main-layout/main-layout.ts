@@ -9,19 +9,23 @@ import { Component } from '@angular/core';
 export class MainLayout {
   scrollTop = 0;
   lastScrollTop = 0;
+  private delta = 5;
   hideTopBar = false;
 
   onScroll(event: any) {
-    console.log('event: ', event);
-    this.scrollTop = event.target.scrollTop;
+     this.scrollTop = event.target.scrollTop;
+
+    if (Math.abs(this.scrollTop - this.lastScrollTop) <= this.delta) {
+      return;
+    }
 
     if (this.scrollTop > this.lastScrollTop && this.scrollTop > 50) {
       this.hideTopBar = true;
-    } else {
+    } else if (this.scrollTop + event.target.clientHeight < event.target.scrollHeight) {
       this.hideTopBar = false;
     }
-    // this.hideTopBar = false
 
     this.lastScrollTop = this.scrollTop <= 0 ? 0 : this.scrollTop;
   }
+
 }

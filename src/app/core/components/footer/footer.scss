@@ -29,13 +29,15 @@
   .footer-item {
     display: flex;
     align-items: flex-start;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 1rem;
     margin-bottom: 1rem;
+    padding-left: 10px;
     color: var(--app-light);
 
     i {
       font-size: 1.2rem;
-      color: #60a5fa;
+      color: #fff;
       margin-top: 2px;
     }
 
@@ -62,7 +64,7 @@
       transition: color 0.2s;
 
       &:hover {
-        color: #ffffff;
+        color: var(--app-primary);
         opacity: 1;
       }
     }
@@ -92,7 +94,7 @@
   }
 
   .footer-image {
-    padding-left: 10px;
+    margin-left: 10px;
     width: 100%;
     max-width: 220px;
     border-radius: 8px;

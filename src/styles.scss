@@ -1,5 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap');
+
+$app-font: 'Roboto Condensed', sans-serif;
 /* You can add global styles to this file, and also import other style files */
 body {
+    font-family: $app-font;
   margin: 0px;
   padding: 0px;
 }
