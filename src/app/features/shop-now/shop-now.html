@@ -1,0 +1,24 @@
+<h2 class="page-title">Shop</h2>
+
+<section class="shop-container">
+  <div class="categories-grid">
+    @for (category of categories; track $index) {
+    <div class="category-card" (click)="goToCategory(category.name)">
+      <div class="image-holder">
+        <img [src]="category.image" [alt]="category.name" class="main-img" />
+        <div class="overlay">
+          <button class="view-btn">View Products</button>
+        </div>
+      </div>
+
+      <div class="category-info">
+        <h3 class="category-title">{{ category.name }}</h3>
+        <p class="product-count">
+          {{ category.products }}
+          {{ category.products === 1 ? 'Product' : 'Products' }}
+        </p>
+      </div>
+    </div>
+    }
+  </div>
+</section>

@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
 export class MainLayout {
   scrollTop = 0;
   lastScrollTop = 0;
-  private delta = 5;
+  private delta = 20;
   hideTopBar = false;
 
   onScroll(event: any) {

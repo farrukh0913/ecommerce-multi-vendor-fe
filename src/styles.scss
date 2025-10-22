@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap');
 
-$app-font: 'Roboto Condensed', sans-serif;
+// $app-font: 'Roboto Condensed', sans-serif;
 /* You can add global styles to this file, and also import other style files */
 body {
-    font-family: $app-font;
+  // font-family: $app-font;
   margin: 0px;
   padding: 0px;
 }
@@ -11,5 +11,9 @@ body {
   --app-primary: #ff6f00; /* original orange */
   --app-dark: #121212;
   --app-light: #ffffff;
-  --app-secondary: #00bcd4; /* new teal/cyan color for bucket icon */
+}
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--app-primary);
 }

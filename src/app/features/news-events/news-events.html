@@ -1,0 +1,19 @@
+<h2 class="page-title">News and Events</h2>
+<section class="news-events-section">
+  <div class="container">
+    <div class="events-grid">
+      @for (item of newsEvents; track $index) {
+      <article class="event-card">
+        <div class="event-image" [style.backgroundImage]="'url(' + item.image + ')'"></div>
+        <div class="event-content">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+          <div class="event-meta">
+            <span class="date">{{ item.date }}</span>
+          </div>
+        </div>
+      </article>
+      }
+    </div>
+  </div>
+</section>

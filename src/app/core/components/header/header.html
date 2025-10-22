@@ -1,21 +1,24 @@
 <div class="header-wrapper" [class.hide-top-bar]="hideTopBar">
   <!-- Top Bar -->
-
   <div class="top-bar">
     <div class="container">
       <div class="left">
         <span class="offer">Free Shipping on Orders Over $300</span>
       </div>
       <div class="right">
-        <a routerLink="/news">News & Events</a>
-        <a routerLink="/faq">FAQ</a>
-        <a routerLink="/contact">Contact Us</a>
+        @for (link of topBarLinks; track $index) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          >{{ link.label }}</a
+        >
+        }
       </div>
     </div>
   </div>
 
-  <!-- Main Header-->
-
+  <!-- Main Header -->
   <header class="app-header">
     <div class="container">
       <div class="logo">
@@ -24,9 +27,15 @@
       </div>
 
       <nav class="nav" [class.open]="menuOpen">
-        <a routerLink="/" routerLinkActive="active" (click)="closeMenu()">Home</a>
-        <a routerLink="/shop" routerLinkActive="active" (click)="closeMenu()">Design Tool</a>
-        <a routerLink="/deals" routerLinkActive="active" (click)="closeMenu()">Shop Now</a>
+        @for (link of mainNavLinks; track $index) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMenu()"
+          >{{ link.label }}</a
+        >
+        }
       </nav>
 
       <div class="search-bar">
@@ -75,7 +84,7 @@
       </div>
     </div>
     @if (menuOpen) {
-    <div class="backdrop" *ngIf="menuOpen" (click)="closeMenu()"></div>
+    <div class="backdrop" (click)="closeMenu()"></div>
     }
   </header>
 </div>

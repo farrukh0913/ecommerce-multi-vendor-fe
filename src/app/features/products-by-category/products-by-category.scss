@@ -1,0 +1,80 @@
+:host ::ng-deep {
+  .products.list {
+    grid-template-columns: unset;
+    .product-loop {
+      width: 100%;
+      app-product-card {
+        width: 100%;
+        .product-box {
+          width: unset !important;
+          max-width: 100% !important;
+        }
+      }
+    }
+  }
+}
+.page-title {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+}
+.toggle-btn {
+  background: var(--app-light);
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  color: var(--app-dark);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background: #f7f7f7;
+    transform: translateY(-2px);
+  }
+
+  &.active {
+    background: var(--app-primary);
+    color: var(--app-light);
+    border-color: var(--app-primary);
+  }
+}
+.view-toggle-container {
+  padding-bottom: 20px;
+  .view-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: end;
+  }
+}
+@media (max-width: 700px) {
+  :host ::ng-deep {
+    .products {
+      .product-loop {
+        width: 100%;
+
+        app-product-card {
+          width: 100%;
+
+          .product-box {
+            width: unset !important;
+            max-width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+}

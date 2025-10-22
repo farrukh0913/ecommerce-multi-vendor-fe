@@ -172,3 +172,26 @@
     }
   }
 }
+
+.product-box.list {
+  flex-direction: row;
+  align-items: unset;
+  .image-holder {
+    flex: 0 0 25%;
+  }
+  .product-details {
+    padding-top: 1.5rem;
+    gap: 1rem;
+    .product-title {
+      white-space: normal;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .product-box.list {
+    .image-holder {
+      flex: 0 0 50%;
+    }
+  }
+}

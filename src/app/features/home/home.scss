@@ -97,18 +97,11 @@
     }
   }
 }
-
-.section-title {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--app-dark);
-}
-
 .products {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+  justify-items: center;
 }
 @media (max-width: 700px) {
   :host ::ng-deep {

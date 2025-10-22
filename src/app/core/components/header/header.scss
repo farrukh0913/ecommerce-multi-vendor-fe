@@ -67,28 +67,12 @@
       opacity: 0.85;
       text-decoration: none;
       transition: opacity 0.2s ease, color 0.3s ease;
+      text-decoration: underline;
 
-      &:hover {
+      &:hover,
+      &.active {
         opacity: 1;
         color: #ffffff;
-      }
-    }
-
-    .socials {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-left: 0.8rem;
-
-      .icon {
-        color: var(--app-light);
-        font-size: 0.9rem;
-        transition: transform 0.2s ease, color 0.2s ease;
-
-        &:hover {
-          transform: scale(1.2);
-          color: var(--app-primary);
-        }
       }
     }
   }
@@ -234,6 +218,8 @@
       a {
         font-size: 1.1rem;
         padding: 0.8rem 0;
+        width: fit-content;
+        padding-bottom: 2px;
       }
 
       &.open {

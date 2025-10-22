@@ -8,13 +8,28 @@ import { Component, Input } from '@angular/core';
 })
 export class Header {
   @Input() hideTopBar = false;
-
   menuOpen = false;
+  topBarLinks = [
+    { label: 'News & Events', path: '/news-events' },
+    { label: 'FAQ', path: '/faq' },
+    { label: 'Contact Us', path: '/contact-us' },
+  ];
+  mainNavLinks = [
+    { label: 'Home', path: '/' },
+    { label: 'Design Tool', path: '/shop' },
+    { label: 'Shop Now', path: '/shop-now' },
+  ];
 
+  /**
+   * toggle side menu
+   */
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
 
+  /**
+   * close side menu
+   */
   closeMenu() {
     this.menuOpen = false;
   }

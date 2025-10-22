@@ -1,4 +1,4 @@
-<div class="product-box">
+<div class="product-box" [ngClass]="viewMode" (click)="goToDetail(232323)">
   <div class="image-holder">
     <img
       class="main-img"
@@ -17,7 +17,7 @@
     <div class="bucket-icon">
       <i class="fa fa-shopping-basket"></i>
     </div>
-    <div class="quick-view">
+    <div class="quick-view" (click)="quickView()">
       <span>Quick View</span>
     </div>
   </div>

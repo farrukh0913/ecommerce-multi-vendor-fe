@@ -1,0 +1,61 @@
+<div class="product-modal-content">
+  <div class="product-images">
+    <div class="main-image-wrapper">
+      <img [src]="selectedImage" alt="Product" class="main-image" />
+    </div>
+
+    <div class="thumbnail-list">
+      @for (img of productImages; track $index) {
+      <img
+        [src]="img"
+        alt="Thumbnail"
+        [class.active]="img === selectedImage"
+        (click)="onSelectImage(img)"
+      />
+      }
+    </div>
+  </div>
+
+  <div class="product-info">
+    <div>
+      <h2 class="product-title">CORE 365 – Men’s Origin Performance Piqué Polo – 88181</h2>
+      <p class="price">$22.99</p>
+    </div>
+    <p class="category"><strong>Category:</strong> Athlete</p>
+
+    <div class="selectors">
+      <div class="dropdown">
+        <label for="color">Color</label>
+        <select id="color">
+          <option selected disabled>Select Color</option>
+          <option>Black</option>
+          <option>White</option>
+          <option>Navy Blue</option>
+          <option>Red</option>
+        </select>
+      </div>
+
+      <div class="dropdown">
+        <label for="size">Size</label>
+        <select id="size">
+          <option selected disabled>Select Size</option>
+          <option>Small</option>
+          <option>Medium</option>
+          <option>Large</option>
+          <option>XL</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="design-now">Design Now</button>
+
+    <div class="actions">
+      <div class="quantity-counter">
+        <button class="counter-btn">−</button>
+        <span class="quantity">1</span>
+        <button class="counter-btn">+</button>
+      </div>
+      <button class="add-to-cart"><i class="fa fa-shopping-basket"></i> Add to Cart</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<app-product-detail></app-product-detail>
+
+<div class="description-section">
+  <div class="tab-bar">
+    <div
+      class="tab"
+      [class.active]="activeTab === 'description'"
+      (click)="setActiveTab('description')"
+    >
+      Description
+    </div>
+
+    <div
+      class="tab"
+      [class.active]="activeTab === 'additionalInfo'"
+      (click)="setActiveTab('additionalInfo')"
+    >
+      Additional Information
+    </div>
+  </div>
+
+  @if (activeTab === 'description') {
+  <div class="tab-content">
+    <ul>
+      @for (desc of productFeatures; track $index) {
+      <li>{{ desc }}</li>
+      }
+    </ul>
+  </div>
+  } @if (activeTab === 'additionalInfo') {
+  <div class="tab-content">
+    <table class="info-table">
+      <tbody>
+        @for (item of additionalInfo; track $index) {
+        <tr>
+          <th>{{ item.label }}</th>
+          <td>{{ item.value }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>
+
+<div class="related-section">
+  <h3>RELATED PRODUCTS</h3>
+  <div class="related-products">
+    @for (item of [].constructor(4); track $index) {
+    <app-product-card (quickViewClicked)="showDetailModal = true"></app-product-card>
+    }
+  </div>
+</div>
+
+@if (showDetailModal) {
+<app-base-modal [show]="showDetailModal" title="Product View" (close)="showDetailModal = false">
+  <app-product-detail></app-product-detail>
+</app-base-modal>
+}

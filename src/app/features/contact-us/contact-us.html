@@ -1,0 +1,12 @@
+<h2 class="page-title">Contacts Us</h2>
+<section class="contacts">
+  <div class="contacts-row">
+    @for(contact of contacts; track $index) {
+    <div class="contact-item">
+      <i class="{{ contact.icon }}"></i>
+      <h3>{{ contact.title }}</h3>
+      <p>{{ contact.value }}</p>
+    </div>
+    }
+  </div>
+</section>

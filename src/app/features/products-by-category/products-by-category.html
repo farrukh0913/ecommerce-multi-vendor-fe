@@ -1,0 +1,27 @@
+<h2 class="page-title">{{ productCategory }}</h2>
+
+<div class="view-toggle-container">
+  <div class="view-buttons">
+    <button class="toggle-btn" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+      <i class="fa fa-th-large"></i> Grid
+    </button>
+    <button class="toggle-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
+      <i class="fa fa-bars"></i> List
+    </button>
+  </div>
+</div>
+
+<section class="products" [ngClass]="viewMode">
+  <div *ngFor="let i of [].constructor(12); let idx = index" class="product-loop">
+    <app-product-card
+      [viewMode]="viewMode"
+      (quickViewClicked)="showDetailModal = true"
+    ></app-product-card>
+  </div>
+</section>
+
+@if (showDetailModal) {
+<app-base-modal [show]="showDetailModal" title="Product View" (close)="showDetailModal = false">
+  <app-product-detail></app-product-detail>
+</app-base-modal>
+}

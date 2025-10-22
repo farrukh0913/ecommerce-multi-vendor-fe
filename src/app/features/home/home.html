@@ -28,13 +28,21 @@
   </div>
 
   <!-- <div class="hero-image"> -->
-    <!-- <img src="assets/images/hero-banner.png" alt="Hero Banner" /> -->
+  <!-- <img src="assets/images/hero-banner.png" alt="Hero Banner" /> -->
   <!-- </div> -->
 </div>
 
-<h2 class="section-title">Featured Products</h2>
+<h2 class="page-title">Featured Products</h2>
 <section class="products">
-  <div *ngFor="let i of [].constructor(30); let idx = index" class="product-loop">
-    <app-product-card></app-product-card>
+  @for (item of [].constructor(30); track $index) {
+  <div class="product-loop">
+    <app-product-card (quickViewClicked)="showDetailModal = true"></app-product-card>
   </div>
+  }
 </section>
+
+@if (showDetailModal) {
+<app-base-modal [show]="showDetailModal" title="Product View" (close)="showDetailModal = false">
+  <app-product-detail></app-product-detail>
+</app-base-modal>
+}

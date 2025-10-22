@@ -1,0 +1,19 @@
+<h2 class="page-title">Frequently Asked Questions</h2>
+
+<section class="faq-section">
+  <div class="container">
+    <div class="faq-grid">
+      @for (faq of faqs; track $index) {
+      <article class="faq-card">
+        <div class="faq-header" (click)="toggleFAQ($index)">
+          <h3 class="faq-question">{{ faq.question }}</h3>
+          <span class="faq-icon">{{ faq.open ? '−' : '+' }}</span>
+        </div>
+        <div class="faq-answer" [class.open]="faq.open">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </article>
+      }
+    </div>
+  </div>
+</section>
