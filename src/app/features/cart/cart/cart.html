@@ -1,17 +1,19 @@
-<div class="checkout-steps">
+<div class="main-container">
   <div class="stepper">
-    <div class="step completed">
-      <div class="step-label">Shoping Cart</div>
+    @for (step of steps; track $index) {
+    <div class="step" [ngClass]="getStepClass(step.index)" (click)="goToStep(step.index)">
+      <div class="step-label">{{ step.label }}</div>
     </div>
-    <div class="step active">
-      <div class="step-label">Checkout</div>
-    </div>
-    <div class="step">
-      <div class="step-label">Order Complete</div>
-    </div>
+    }
   </div>
 
   <div class="content">
+    @if (currentStep === 1) {
     <app-shopping-cart></app-shopping-cart>
+    }@else if(currentStep === 2){
+    <app-checkout></app-checkout>
+    }@else{
+    <app-order-complete></app-order-complete>
+    }
   </div>
 </div>

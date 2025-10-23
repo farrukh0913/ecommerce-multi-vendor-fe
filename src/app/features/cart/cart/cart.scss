@@ -1,6 +1,8 @@
-.checkout-steps {
+.main-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  width: 100%;
   align-items: center;
 
   .stepper {
@@ -10,6 +12,7 @@
     gap: 1rem;
     margin-bottom: 2rem;
     position: relative;
+    flex-wrap: wrap;
 
     .step {
       position: relative;
@@ -21,7 +24,6 @@
       color: #999;
       transition: all 0.3s ease;
 
-      // Add arrow between steps
       &::after {
         content: '›';
         font-size: 1.5rem;
@@ -29,13 +31,10 @@
         margin: 0 1.5rem;
       }
 
-      // Remove arrow after last
       &:last-child::after {
         content: '';
         margin: 0;
       }
-
-      /* -------- STATES -------- */
 
       &.completed {
         color: #000;
@@ -58,10 +57,63 @@
   }
 
   .content {
-    width: 90%;
+    min-width: 90%;
     background: #fff;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* ------------ MOBILE VIEW ------------ */
+@media (max-width: 768px) {
+  .main-container {
+    .stepper {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0 1rem;
+
+      .step {
+        font-size: 1.2rem;
+        position: relative;
+        padding-left: 1.5rem;
+
+        /* vertical connector line */
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0.5rem;
+          top: 0.5rem;
+          width: 2px;
+          height: 100%;
+          background: #e0e0e0;
+        }
+
+        &:last-child::before {
+          height: 0;
+        }
+
+        /* remove horizontal arrow */
+        &::after {
+          content: '';
+        }
+
+        &.active {
+          color: var(--app-primary);
+        }
+
+        &.completed {
+          color: #000;
+        }
+      }
+    }
+
+    .content {
+      padding: 1rem !important;
+      min-width: unset !important;
+      width: 95%;
+    }
   }
 }

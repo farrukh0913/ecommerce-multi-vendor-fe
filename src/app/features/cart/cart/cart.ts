@@ -1,12 +1,37 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
 @Component({
-    selector:'app-cart',
-    standalone:false,
-    templateUrl:'./cart.html',
-    styleUrls:['./cart.scss']
+  selector: 'app-cart',
+  standalone: false,
+  templateUrl: './cart.html',
+  styleUrls: ['./cart.scss'],
 })
+export class Cart {
+  currentStep: number = 1;
+  steps = [
+    { label: 'Shopping Cart', index: 1 },
+    { label: 'Checkout', index: 2 },
+    { label: 'Order Complete', index: 3 },
+  ];
 
-export class Cart{
+  /**
+   * go to shopping step
+   * @param step
+   */
+  goToStep(step: number) {
+    if (step >= 1 && step <= this.steps.length) {
+      this.currentStep = step;
+    }
+  }
 
+  /**
+   * get current tab class
+   * @param stepIndex
+   * @returns
+   */
+  getStepClass(stepIndex: number): string {
+    if (stepIndex < this.currentStep) return 'completed';
+    if (stepIndex === this.currentStep) return 'active';
+    return '';
+  }
 }

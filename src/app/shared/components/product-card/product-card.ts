@@ -15,7 +15,8 @@ export class ProductCard {
   /**
    * quick view clicked
    */
-  quickView() {
+  quickView(event: MouseEvent) {
+    event.stopPropagation();
     this.quickViewClicked.emit();
   }
 

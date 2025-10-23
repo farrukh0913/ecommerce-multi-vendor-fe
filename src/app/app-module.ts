@@ -18,6 +18,10 @@ import { ProductsByCategory } from './features/products-by-category/products-by-
 import { ProductInfo } from './features/product-info/product-info';
 import { ShoppingCart } from './features/cart/shopping-cart/shopping-cart';
 import { Cart } from './features/cart/cart/cart';
+import { Checkout } from './features/cart/checkout/checkout';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { OrderComplete } from './features/cart/order-complete/order-complete';
 
 @NgModule({
   declarations: [
@@ -36,9 +40,11 @@ import { Cart } from './features/cart/cart/cart';
     ProductsByCategory,
     ProductInfo,
     Cart,
-    ShoppingCart
+    ShoppingCart,
+    Checkout,
+    OrderComplete,
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [provideBrowserGlobalErrorListeners()],
   bootstrap: [App],
 })
