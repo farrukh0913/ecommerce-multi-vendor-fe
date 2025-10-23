@@ -16,6 +16,8 @@ import { BaseModal } from './shared/components/base-modal/base-modal';
 import { ProductDetail } from './shared/components/product-detail/product-detail';
 import { ProductsByCategory } from './features/products-by-category/products-by-category';
 import { ProductInfo } from './features/product-info/product-info';
+import { ShoppingCart } from './features/cart/shopping-cart/shopping-cart';
+import { Cart } from './features/cart/cart/cart';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { ProductInfo } from './features/product-info/product-info';
     BaseModal,
     ProductDetail,
     ProductsByCategory,
-    ProductInfo
+    ProductInfo,
+    Cart,
+    ShoppingCart
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideBrowserGlobalErrorListeners()],

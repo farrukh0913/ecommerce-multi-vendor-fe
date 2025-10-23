@@ -7,6 +7,7 @@ import { ContactUs } from './features/contact-us/contact-us';
 import { ShopNow } from './features/shop-now/shop-now';
 import { ProductsByCategory } from './features/products-by-category/products-by-category';
 import { ProductInfo } from './features/product-info/product-info';
+import { Cart } from './features/cart/cart/cart';
 const routes: Routes = [
   { path: '', component: Home },
   { path: 'shop-now', component: ShopNow },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'news-events', component: NewsEvents },
   { path: 'faq', component: Faq },
   { path: 'contact-us', component: ContactUs },
+  { path: 'cart', component: Cart },
   { path: '**', redirectTo: '' },
 ];
 @NgModule({

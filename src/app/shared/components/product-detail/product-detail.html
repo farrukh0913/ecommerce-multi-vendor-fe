@@ -51,9 +51,9 @@
 
     <div class="actions">
       <div class="quantity-counter">
-        <button class="counter-btn">−</button>
-        <span class="quantity">1</span>
-        <button class="counter-btn">+</button>
+        <button class="counter-btn" (click)="onDecrement()">−</button>
+        <span class="quantity">{{count}}</span>
+        <button class="counter-btn" (click)="onIncrement()">+</button>
       </div>
       <button class="add-to-cart"><i class="fa fa-shopping-basket"></i> Add to Cart</button>
     </div>

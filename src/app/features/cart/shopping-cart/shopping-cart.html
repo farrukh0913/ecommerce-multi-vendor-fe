@@ -1,0 +1,20 @@
+<div>
+    <div class="left-section">
+
+        <div class="free-shipping">
+
+            <p>
+                <i class="fa-solid fa-box"></i>
+                  Add {{300-totalCost}}$ to cart and get free shipping!
+            </p>
+            <div>
+                <div  class="bar-container">
+                    <div class="bar" [style.height.%]="(totalCost / 300) * 100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right-section">
+
+    </div>
+</div>
