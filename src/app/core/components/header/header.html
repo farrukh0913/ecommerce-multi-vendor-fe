@@ -26,17 +26,20 @@
         <span class="text">Multi<span class="highlight">Vendor</span></span>
       </div>
 
-      <nav class="nav" [class.open]="menuOpen">
-        @for (link of mainNavLinks; track $index) {
-        <a
-          [routerLink]="link.path"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          (click)="closeMenu()"
-          >{{ link.label }}</a
-        >
-        }
-      </nav>
+    <nav class="nav" [class.open]="menuOpen">
+  @for (link of mainNavLinks; track $index) {
+    <a
+      [routerLink]="link.path"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="closeMenu()"
+    >
+      <i [class]="link.icon"></i>
+      <span>{{ link.label }}</span>
+    </a>
+  }
+</nav>
+
 
       <div class="search-bar">
         <input type="text" placeholder="Search products..." />
@@ -58,7 +61,7 @@
       </div>
 
       <div class="right-section">
-        <a routerLink="/cart" class="cart-btn" routerLinkActive="active">
+        <a  (click)="toggleMenu()" class="cart-btn" >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="cart-icon"
@@ -76,15 +79,27 @@
           <span class="cart-count">3</span>
         </a>
 
-        <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle menu">
+        <!-- <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle menu">
           <span class="bar top" [class.open]="menuOpen"></span>
           <span class="bar middle" [class.open]="menuOpen"></span>
           <span class="bar bottom" [class.open]="menuOpen"></span>
-        </button>
+        </button> -->
       </div>
     </div>
-    @if (menuOpen) {
-    <div class="backdrop" (click)="closeMenu()"></div>
-    }
+   @if (menuOpen) {
+  <div class="cart-panel" [class.open]="menuOpen">
+    <h3>Shopping Cart</h3>
+
+    <app-shopping-cart class="cart-content"></app-shopping-cart>
+
+    <!-- Footer with “View Cart” button -->
+    <div class="cart-footer">
+      <button class="view-btn" routerLink="/cart" routerLinkActive="active">View Cart</button>
+    </div>
+  </div>
+
+  <div class="backdrop" (click)="closeMenu()"></div>
+}
+
   </header>
 </div>
