@@ -14,13 +14,11 @@ export class Header {
     { label: 'FAQ', path: '/faq' },
     { label: 'Contact Us', path: '/contact-us' },
   ];
- mainNavLinks = [
-  { label: 'Home', path: '/', icon: 'fa-solid fa-house' },
-  { label: 'Design Tool', path: '/shop', icon: 'fa-solid fa-pencil-ruler' },
-  { label: 'Shop Now', path: '/shop-now', icon: 'fa-solid fa-cart-shopping' },
-];
-
-
+  mainNavLinks = [
+    { label: 'Home', path: '/', icon: 'home-outline' },
+    { label: 'Design Tool', path: '/design-tool', icon: 'pencil-outline' },
+    { label: 'Shop Now', path: '/shop-now', icon: 'bag-handle-outline' },
+  ];
 
   /**
    * toggle side menu

@@ -21,7 +21,7 @@
 </section>
 
 @if (showDetailModal) {
-<app-base-modal [show]="showDetailModal" title="Product View" (close)="showDetailModal = false">
+<app-base-modal [show]="showDetailModal" title="Product View" class="product-detail-modal" (close)="showDetailModal = false">
   <app-product-detail></app-product-detail>
 </app-base-modal>
 }

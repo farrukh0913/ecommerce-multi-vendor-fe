@@ -1,48 +1,132 @@
-<!-- Hero Section -->
-<div class="hero-section">
-  <div class="hero-content">
-    <h1>Discover Your Style</h1>
-    <p>Shop the latest trends and exclusive collections</p>
+<div class="title-conatiner">
+  <h4 class="title-inner">special offer</h4>
+  <h2 class="title-inner1">Latest Drops</h2>
+  <p class="sub-title">
+    Looking for the latest trends in clothing, shoes and accessories? Welcome to our 'Latest Drops'
+    edit, bringing you all the latest styles from all your fave brands.
+  </p>
+</div>
+<!-- swiper section -->
+<swiper-container
+  class="latest-drop-swiper section-b-p"
+  slides-per-view="auto"
+  space-between="30"
+  loop="true"
+  pagination="false"
+  navigation="false"
+  autoplay="false"
+>
+  @for (item of [].constructor(30); track $index) {
+  <swiper-slide class="product-slide">
+    <app-product-card (quickViewClicked)="showDetailModal = true"></app-product-card>
+  </swiper-slide>
+  }
+</swiper-container>
 
-    <!-- Hero Benefits / Features -->
-    <div class="hero-benefits">
-      <div class="benefit-box">
-        <div class="text">
-          <h4>FREE SHIPPING</h4>
-          <p>On orders over $300</p>
-        </div>
+<div class="title-conatiner">
+  <h4 class="title-inner">exclusive products</h4>
+  <h2 class="title-inner1">everyday casual</h2>
+</div>
+
+<section class="products section-b-p">
+  <div class="tabs-content">
+    <ul class="tabs">
+      <li *ngFor="let tab of tabs" [class.active]="selectedTab === tab" (click)="selectTab(tab)">
+        {{ tab }}
+      </li>
+    </ul>
+    <div class="content">
+      @for (item of [].constructor(4); track $index) {
+      <div class="product-loop">
+        <app-product-card (quickViewClicked)="showDetailModal = true"></app-product-card>
       </div>
-      <div class="benefit-box">
-        <div class="text">
-          <h4>MONEY BACK</h4>
-          <p>100% guarantee</p>
-        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<div class="offers-container section-b-p">
+  <div class="offer-content">
+    <div class="service">
+      <ion-icon name="car-outline"></ion-icon>
+      <div>
+        <h4>free shipping</h4>
+        <p>free shipping world wide</p>
       </div>
-      <div class="benefit-box">
-        <div class="text">
-          <h4>ONLINE SUPPORT</h4>
-          <p>hello@myimprint.ca</p>
-        </div>
+    </div>
+    <div class="service">
+      <ion-icon name="time-outline"></ion-icon>
+      <div>
+        <h4>24 X 7 service</h4>
+        <p>online service for new customer</p>
+      </div>
+    </div>
+    <div class="service">
+      <ion-icon name="gift-outline"></ion-icon>
+      <div>
+        <h4>festival offer</h4>
+        <p>new online special festival offer</p>
       </div>
     </div>
   </div>
-
-  <!-- <div class="hero-image"> -->
-  <!-- <img src="assets/images/hero-banner.png" alt="Hero Banner" /> -->
-  <!-- </div> -->
 </div>
 
-<h2 class="page-title">Featured Products</h2>
-<section class="products">
-  @for (item of [].constructor(30); track $index) {
-  <div class="product-loop">
-    <app-product-card (quickViewClicked)="showDetailModal = true"></app-product-card>
+<div class="product-categories">
+  <h2>#WHOWEARWHAT</h2>
+  <swiper-container
+    class="section-b-p"
+    style="width: 100%"
+    slides-per-view="auto"
+    space-between="0"
+    loop="true"
+    pagination="false"
+    navigation="false"
+    autoplay="false"
+  >
+    @for (item of [].constructor(30); track $index) {
+    <swiper-slide class="category-slide">
+      <div class="image-wrapper">
+        <img
+          src="https://laravel.pixelstrap.net/multikart/storage/3221/fashion_one_insta_3.png"
+          alt="Category Image"
+          height="200px"
+        />
+        <div class="animated-overlay">
+          <ion-icon name="logo-instagram"></ion-icon>
+        </div>
+      </div>
+    </swiper-slide>
+    }
+  </swiper-container>
+
+  <div class="categories-inner-container section-b-p">
+    <swiper-container
+      style="width: 100%"
+      slides-per-view="auto"
+      space-between="0"
+      loop="true"
+      pagination="false"
+      navigation="false"
+      autoplay="false"
+    >
+      @for (item of [].constructor(30); track $index) {
+      <swiper-slide class="logo-section">
+        <div>
+          <img src="https://laravel.pixelstrap.net/multikart/storage/3079/46.png" />
+        </div>
+      </swiper-slide>
+      }
+    </swiper-container>
   </div>
-  }
-</section>
+</div>
 
 @if (showDetailModal) {
-<app-base-modal [show]="showDetailModal" title="Product View" (close)="showDetailModal = false">
+<app-base-modal
+  [show]="showDetailModal"
+  title="Product View"
+  class="product-detail-modal"
+  (close)="showDetailModal = false"
+>
   <app-product-detail></app-product-detail>
 </app-base-modal>
 }

@@ -26,20 +26,23 @@
         <span class="text">Multi<span class="highlight">Vendor</span></span>
       </div>
 
-    <nav class="nav" [class.open]="menuOpen">
-  @for (link of mainNavLinks; track $index) {
-    <a
-      [routerLink]="link.path"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="closeMenu()"
-    >
-      <i [class]="link.icon"></i>
-      <span>{{ link.label }}</span>
-    </a>
-  }
-</nav>
-
+      <nav class="nav" [class.open]="menuOpen">
+        @for (link of mainNavLinks; track $index) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMenu()"
+        >
+          <ion-icon [name]="link.icon"></ion-icon>
+          <span>{{ link.label }}</span>
+        </a>
+        }
+        <a (click)="toggleMenu()" class="cart-mobile-menu">
+          <ion-icon name="cart-outline"></ion-icon>
+          <span>Cart</span>
+        </a>
+      </nav>
 
       <div class="search-bar">
         <input type="text" placeholder="Search products..." />
@@ -61,21 +64,8 @@
       </div>
 
       <div class="right-section">
-        <a  (click)="toggleMenu()" class="cart-btn" >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="cart-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="9" cy="21" r="1" />
-            <circle cx="20" cy="21" r="1" />
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-          </svg>
+        <a (click)="toggleMenu()" class="cart-btn">
+          <ion-icon name="cart-outline"></ion-icon>
           <span class="cart-count">3</span>
         </a>
 
@@ -86,20 +76,28 @@
         </button> -->
       </div>
     </div>
-   @if (menuOpen) {
-  <div class="cart-panel" [class.open]="menuOpen">
-    <h3>Shopping Cart</h3>
+    @if (menuOpen) {
+    <div class="cart-panel" [class.open]="menuOpen">
+      <div class="cart-header">
+        <h3>Shopping Cart</h3>
+        <button class="close-btn" (click)="closeMenu()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <app-shopping-cart class="cart-content"></app-shopping-cart>
 
-    <app-shopping-cart class="cart-content"></app-shopping-cart>
-
-    <!-- Footer with “View Cart” button -->
-    <div class="cart-footer">
-      <button class="view-btn" routerLink="/cart" routerLinkActive="active">View Cart</button>
+      <!-- Footer with “View Cart” button -->
+      <div class="cart-footer">
+        <button class="view-btn" routerLink="/cart" routerLinkActive="active" (click)="closeMenu()">
+          View Cart
+        </button>
+        <button class="cart-btn" routerLink="/cart" routerLinkActive="active" (click)="closeMenu()">
+          Checkout
+        </button>
+      </div>
     </div>
-  </div>
 
-  <div class="backdrop" (click)="closeMenu()"></div>
-}
-
+    <div class="backdrop" (click)="closeMenu()"></div>
+    }
   </header>
 </div>

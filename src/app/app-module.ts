@@ -1,4 +1,4 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { App } from './app';
@@ -20,9 +20,7 @@ import { ShoppingCart } from './features/cart/shopping-cart/shopping-cart';
 import { Cart } from './features/cart/cart/cart';
 import { Checkout } from './features/cart/checkout/checkout';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { OrderComplete } from './features/cart/order-complete/order-complete';
-
 @NgModule({
   declarations: [
     App,
@@ -46,6 +44,7 @@ import { OrderComplete } from './features/cart/order-complete/order-complete';
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [provideBrowserGlobalErrorListeners()],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [App],
 })
 export class AppModule {}

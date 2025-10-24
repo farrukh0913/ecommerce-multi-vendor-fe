@@ -3,32 +3,36 @@
 </div>
 <div class="description-section">
   <div class="tab-bar">
-    <div
-      class="tab"
-      [class.active]="activeTab === 'description'"
-      (click)="setActiveTab('description')"
-    >
+    <div class="tab" [class.active]="activeTab === 'description'" (click)="setActiveTab('description')">
       Description
     </div>
 
-    <div
-      class="tab"
-      [class.active]="activeTab === 'additionalInfo'"
-      (click)="setActiveTab('additionalInfo')"
-    >
-      Additional Information
+    <div class="tab" [class.active]="activeTab === 'additionalInfo'" (click)="setActiveTab('additionalInfo')">
+      Review
+    </div>
+    <div class="tab" [class.active]="activeTab === 'FAQ'" (click)="setActiveTab('FAQ')">
+      FAQ
     </div>
   </div>
 
   @if (activeTab === 'description') {
   <div class="tab-content">
-    <ul>
-      @for (desc of productFeatures; track $index) {
-      <li>{{ desc }}</li>
-      }
-    </ul>
+    <p>
+      Boyfriend shirts are a contemporary take on classic men's shirts, reimagined for the modern woman. Characterized
+      by their relaxed and oversized fit, these shirts exude a casual yet effortlessly chic vibe. Drawing inspiration
+      from the idea of borrowing clothing from a boyfriend's wardrobe, they typically feature a loose silhouette with
+      dropped shoulders and longer hemlines, perfect for achieving that relaxed, borrowed-from-the-boys look.Boyfriend
+      shirts are a contemporary take on classic men's shirts, reimagined for the modern woman. Characterized by their
+      relaxed and oversized fit, these shirts exude a casual yet effortlessly chic vibe. Drawing inspiration from the
+      idea of borrowing clothing from a boyfriend's wardrobe, they typically feature a loose silhouette with dropped
+      shoulders and longer hemlines, perfect for achieving that relaxed, borrowed-from-the-boys look.Boyfriend shirts
+      are a contemporary take on classic men's shirts, reimagined for the modern woman. Characterized by their relaxed
+      and oversized fit, these shirts exude a casual yet effortlessly chic vibe. Drawing inspiration from the idea of
+      borrowing clothing from a boyfriend's wardrobe, they typically feature a loose silhouette with dropped shoulders
+      and longer hemlines, perfect for achieving that relaxed, borrowed-from-the-boys look.
+    </p>
   </div>
-  } @if (activeTab === 'additionalInfo') {
+  } @if (activeTab === 'additionalInfo' && additionalInfo.length>0) {
   <div class="tab-content">
     <table class="info-table">
       <tbody>
@@ -42,19 +46,25 @@
     </table>
   </div>
   }
+  @if(activeTab==="FAQ"){
+    <div class="empty-content">
+      <h1>Nothing Yet!</h1>
+      <p>There are currently no ratings or reviews for this product</p>
+    </div>
+  }
 </div>
 
-<div class="related-section">
+<!-- <div class="related-section">
   <h3>RELATED PRODUCTS</h3>
   <div class="related-products">
     @for (item of [].constructor(4); track $index) {
     <app-product-card (quickViewClicked)="showDetailModal = true"></app-product-card>
     }
   </div>
-</div>
-
+</div> -->
+<!-- 
 @if (showDetailModal) {
 <app-base-modal [show]="showDetailModal" title="Product View" (close)="showDetailModal = false">
   <app-product-detail></app-product-detail>
 </app-base-modal>
-}
+} -->

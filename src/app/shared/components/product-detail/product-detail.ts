@@ -9,9 +9,11 @@ import { Component } from '@angular/core';
 export class ProductDetail {
   count=1
   productImages = [
-    'https://myimprint.ca/wp-content/uploads/2024/11/33504_fm.jpg.webp',
-    'https://pluspng.com/img-png/shirt-png-hd-download-png-image-dress-shirt-png-hd-480.png',
-    'https://m.media-amazon.com/images/I/710mqhd9mCL._UY1100_.jpg',
+    'https://laravel.pixelstrap.net/multikart/storage/52/fashion_172.jpg',
+    'https://laravel.pixelstrap.net/multikart/storage/51/fashion_171.jpg',
+    'https://laravel.pixelstrap.net/multikart/storage/51/fashion_171.jpg',
+    'https://laravel.pixelstrap.net/multikart/storage/51/fashion_171.jpg',
+    'https://laravel.pixelstrap.net/multikart/storage/51/fashion_171.jpg',
   ];
   selectedImage = this.productImages[0];
 

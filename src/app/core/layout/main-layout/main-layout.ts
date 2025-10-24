@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-layout',
@@ -12,8 +13,15 @@ export class MainLayout {
   private delta = 20;
   hideTopBar = false;
 
+  constructor(public router: Router) {}
+
+  /**
+   * update show/hide top-bar in header compoenet
+   * @param event
+   * @returns
+   */
   onScroll(event: any) {
-     this.scrollTop = event.target.scrollTop;
+    this.scrollTop = event.target.scrollTop;
 
     if (Math.abs(this.scrollTop - this.lastScrollTop) <= this.delta) {
       return;
@@ -27,5 +35,4 @@ export class MainLayout {
 
     this.lastScrollTop = this.scrollTop <= 0 ? 0 : this.scrollTop;
   }
-
 }

@@ -1,61 +1,111 @@
 <div class="product-modal-content">
+  <!-- Product Images -->
   <div class="product-images">
     <div class="main-image-wrapper">
       <img [src]="selectedImage" alt="Product" class="main-image" />
     </div>
 
-    <div class="thumbnail-list">
+    <div class="thumbnail-list" >
       @for (img of productImages; track $index) {
-      <img
-        [src]="img"
-        alt="Thumbnail"
-        [class.active]="img === selectedImage"
-        (click)="onSelectImage(img)"
-      />
+      <img [src]="img" alt="Thumbnail" [class.active]="img === selectedImage" (click)="onSelectImage(img)" />
       }
     </div>
   </div>
 
+  <!-- Product Details -->
   <div class="product-info">
-    <div>
-      <h2 class="product-title">CORE 365 – Men’s Origin Performance Piqué Polo – 88181</h2>
-      <p class="price">$22.99</p>
+    <div class="price-detail">
+      <h2 class="product-title">
+        CORE 365 – Men’s Origin Performance Piqué Polo – 88181
+      </h2>
+      <p class="category"><strong>Category:</strong> Athlete</p>
+      <p class="price-tag">
+        MRP:
+        <span class="price">$22.99</span>
+        <span class="old-price">$25</span>
+        <span class="discount">12%</span>
+      </p>
+      <p class="tax-desc">Inclusive of all taxes</p>
     </div>
-    <p class="category"><strong>Category:</strong> Athlete</p>
-
-    <div class="selectors">
-      <div class="dropdown">
-        <label for="color">Color</label>
-        <select id="color">
-          <option selected disabled>Select Color</option>
-          <option>Black</option>
-          <option>White</option>
-          <option>Navy Blue</option>
-          <option>Red</option>
-        </select>
-      </div>
-
-      <div class="dropdown">
-        <label for="size">Size</label>
-        <select id="size">
-          <option selected disabled>Select Size</option>
-          <option>Small</option>
-          <option>Medium</option>
-          <option>Large</option>
-          <option>XL</option>
-        </select>
-      </div>
+    <div class="size-chart">
+      <i class="fa fa-ruler"></i>
+      <p>Size Chart</p>
     </div>
 
-    <button class="design-now">Design Now</button>
+    <div class="product-meta">
+      <h4>Product Info</h4>
+      <ul class="product-meta-list">
+        <li>SKU: KIDS06</li>
+        <li>Unit: 1 piece</li>
+        <li>Weight: 100 Gms</li>
+        <li>Stock Status: In stock</li>
+        <li>Quantity: 20 Items Left</li>
+      </ul>
+    </div>
+
+    <div class="product-delivery">
+      <h4>Delivery Details</h4>
+      <div class="delivery-detail">
+        <i class="fa fa-truck"></i>
+        <p>Your order is likely to reach you within 7 days.</p>
+      </div>
+    </div>
+    <div class="safe-checkout">
+      <h4>Guaranteed Safe Checkout</h4>
+      <img src="https://laravel.pixelstrap.net/multikart/storage/3835/payments.png" alt="">
+
+    </div>
+    
+    <div class="safe-checkout">
+      <h4>Secure Checkout</h4>
+      <img src="https://laravel.pixelstrap.net/multikart/storage/3836/secure_payments.png" alt="">
+
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions-section">
 
     <div class="actions">
       <div class="quantity-counter">
         <button class="counter-btn" (click)="onDecrement()">−</button>
-        <span class="quantity">{{count}}</span>
+        <span class="quantity">{{ count }}</span>
         <button class="counter-btn" (click)="onIncrement()">+</button>
       </div>
-      <button class="add-to-cart"><i class="fa fa-shopping-basket"></i> Add to Cart</button>
+
+      <button class="design-now">Design Now</button>
+
+      <div class="shop-actions">
+        <button class="add-to-cart">
+          <i class="fa fa-shopping-basket"></i> Add to Cart
+        </button>
+        <button class="add-to-cart">
+          Buy Now
+        </button>
+      </div>
+
     </div>
+    <div class="sale-ends">
+  <h4>Sales Ends In</h4>
+  <div class="countdown compact" role="timer" aria-live="polite">
+    <div class="cd-item">
+      <span class="cd-value" id="days">0</span>
+      <span class="cd-label">Days</span>
+    </div>
+    <div class="cd-item">
+      <span class="cd-value" id="hours">0</span>
+      <span class="cd-label">Hours</span>
+    </div>
+    <div class="cd-item">
+      <span class="cd-value" id="mins">0</span>
+      <span class="cd-label">Min</span>
+    </div>
+    <div class="cd-item">
+      <span class="cd-value" id="secs">0</span>
+      <span class="cd-label">Sec</span>
+    </div>
+  </div>
+</div>
+
   </div>
 </div>

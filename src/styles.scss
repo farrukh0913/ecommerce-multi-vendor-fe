@@ -1,9 +1,11 @@
-// @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
-// $app-font: 'Roboto Condensed', sans-serif;
+$app-font: 'Montserrat', sans-serif;
 /* You can add global styles to this file, and also import other style files */
+@import '../node_modules/swiper/swiper.min.css';
+
 body {
-  // font-family: $app-font;
+  font-family: $app-font;
   margin: 0px;
   padding: 0px;
 }
@@ -11,9 +13,92 @@ body {
   --app-primary: #ec8951; /* original orange */
   --app-dark: #121212;
   --app-light: #ffffff;
+  --app-border-color: #eee;
+}
+ion-icon {
+  cursor: pointer;
 }
 .page-title {
   font-size: 2rem;
   font-weight: 600;
   color: var(--app-primary);
+}
+.title-conatiner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 20px;
+
+  h2,
+  h4 {
+    margin: 0;
+  }
+
+  h4 {
+    font-size: 18px;
+    font-weight: 400;
+    text-transform: capitalize;
+    color: var(--app-primary);
+  }
+
+  h2 {
+    position: relative;
+    font-size: 32px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding-bottom: 10px;
+
+    &::after {
+      position: absolute;
+      height: 3px;
+      width: 70px;
+      background-color: var(--app-primary);
+      content: '';
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      bottom: 0;
+    }
+  }
+  .sub-title {
+    color: #777;
+    font-size: 14px;
+    margin: 0px;
+    max-width: 340px;
+    text-align: center;
+  }
+}
+.tabs {
+  font-size: calc(16px + 0.00125 * (100vw - 320px));
+  padding-bottom: 30px;
+  padding-top: 10px;
+  font-size: 18px;
+  padding-bottom: 30px;
+  padding-left: 0px;
+  display: flex;
+  gap: 20px;
+  list-style-type: none;
+  margin: 0px;
+  li {
+    text-transform: uppercase;
+    cursor: pointer;
+    &.active {
+      color: var(--app-primary);
+      font-weight: 600;
+    }
+  }
+}
+.section-b-p {
+  padding-bottom: 70px;
+  @media (max-width: 576px) {
+    padding-bottom: 30px;
+  }
+}
+.product-detail-modal {
+  .modal-container {
+    max-width: 1200px !important;
+  }
 }
