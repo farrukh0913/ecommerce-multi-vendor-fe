@@ -111,7 +111,7 @@
       .discount {
         background-color: #ec8a513c;
         color: var(--app-primary);
-        padding: 2px 6px;
+        padding: 6px 1rem;
         border-radius: 6px;
         font-size: 0.8rem;
         font-weight: 600;
@@ -258,15 +258,17 @@
 
     .design-now {
       width: 100%;
-      background: var(--app-dark);
-      color: var(--app-light);
+      background-color: transparent;
+      border: 1px solid var(--app-primary);
+      color: var(--app-primary);
 
       &:hover {
         background: var(--app-primary);
+        color: white;
       }
     }
 
-    .shop-actions {
+  .shop-actions {
       display: flex;
       gap: 0.8rem;
 
@@ -274,6 +276,8 @@
         flex: 1;
         background: var(--app-primary);
         color: #fff;
+        position: relative;
+        overflow: hidden; // needed for the shine effect
 
         &:hover {
           box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
@@ -282,8 +286,70 @@
         i {
           margin-right: 6px;
         }
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -75%; 
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(120deg,
+              rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, 0.5) 50%,
+              rgba(255, 255, 255, 0) 100%);
+          transform: skewX(-25deg);
+          animation: shiny-btn 3s ease-in-out infinite;
+          pointer-events: none;
+
+
+        @keyframes shiny-btn {
+          0% {
+            left: -75%;
+          }
+
+          50% {
+            left: 125%;
+          }
+
+          100% {
+            left: 125%;
+          }
+        }
+
+        // 🛒 cart icon jiggle
+        i {
+          animation: jiggle 2s infinite;
+          transform-origin: top center;
+        }
+
+        @keyframes jiggle {
+
+          0%,
+          100% {
+            transform: rotate(0deg);
+          }
+
+          10%,
+          30%,
+          50%,
+          70%,
+          90% {
+            transform: rotate(-8deg);
+          }
+
+          20%,
+          40%,
+          60%,
+          80% {
+            transform: rotate(8deg);
+          }
+        }
       }
     }
+
+  }
+
   }
 
   .sale-ends {
@@ -302,13 +368,69 @@
       font-size: 1rem;
       font-weight: 700;
     }
+    .clock-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .clock {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #000;
+    border-radius: 50%;
+    
+    .hour-hand, .minute-hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      background: #000;
+      transform-origin: bottom center;
+      border-radius: 2px;
+    }
+
+    .hour-hand {
+      width: 2px;
+      height: 6px;
+      animation: rotate-hour 12s linear infinite; // faster demo rotation
+    }
+
+    .minute-hand {
+      width: 1px;
+      height: 10px;
+      animation: rotate-minute 6s linear infinite; // faster demo rotation
+    }
+
+    .center-dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #000;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+// Keyframes for hands rotation
+@keyframes rotate-hour {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes rotate-minute {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
     .countdown {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       position: relative;
     }
 

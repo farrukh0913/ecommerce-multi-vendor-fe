@@ -7,6 +7,16 @@ import { Component } from '@angular/core';
   styleUrl: './contact-us.scss',
 })
 export class ContactUs {
+   breadcrumb=[
+      {
+      name:'Home',
+      path:'/'
+    },
+    {
+      name:'Contact',
+      path:null
+    },
+  ]
   contacts = [
     {
       icon: 'fa-solid fa-location-dot',

@@ -8,6 +8,16 @@ import { Router } from '@angular/router';
   styleUrl: './shop-now.scss',
 })
 export class ShopNow {
+  breadcrumb=[
+    {
+      name:'Home',
+      path:'/'
+    },
+    {
+      name:'Categories',
+      path:null
+    }
+  ]
   categories = [
     {
       name: 'T-Shirts',

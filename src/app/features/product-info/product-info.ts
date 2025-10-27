@@ -7,6 +7,20 @@ import { Component } from '@angular/core';
   styleUrl: './product-info.scss',
 })
 export class ProductInfo {
+  breadcrumb=[
+     {
+      name:'Home',
+      path:'/'
+    },
+    {
+      name:'Categories',
+      path:'/shop-now'
+    },
+    {
+      name:'kkkk',
+      path:null
+    }
+  ]
   activeTab = 'description';
   showDetailModal = false;
   productFeatures: string[] = [

@@ -77,6 +77,11 @@
                             color: #333;
                             vertical-align: middle;
 
+                             .delete-icon{
+                                    font-size: 1.25rem;
+                                    cursor: pointer;
+                                }
+
                             &.item {
                                 display: flex;
                                 align-items: center;
@@ -96,6 +101,7 @@
                                     font-weight: 500;
                                     color: #222;
                                 }
+                               
                             }
 
                             .quantity {
@@ -181,7 +187,6 @@
             display: flex;
             justify-content: space-between;
             color: #444;
-            font-size: clamp(0.9rem, 1vw, 1rem);
             padding: 0.4rem 0;
 
             &.total {

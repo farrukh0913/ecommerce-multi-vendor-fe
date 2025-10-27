@@ -7,6 +7,16 @@ import { Component } from '@angular/core';
   styleUrl: './news-events.scss',
 })
 export class NewsEvents {
+  breadcrumb=[
+      {
+      name:'Home',
+      path:'/'
+    },
+    {
+      name:'News And Events',
+      path:null
+    },
+  ]
   newsEvents = [
     {
       title: 'Autumn Collection Launch',

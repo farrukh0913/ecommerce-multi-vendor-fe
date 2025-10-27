@@ -11,6 +11,20 @@ export class ProductsByCategory {
   showDetailModal: boolean = false;
   productCategory: string = 'T-Shirts';
   viewMode: 'grid' | 'list' = 'grid';
+  breadcrumb=[
+    {
+      name:'Home',
+      path:'/'
+    },
+    {
+      name:'Categories',
+      path:'/shop-now'
+    },
+    {
+      name:this.productCategory,
+      path:null
+    }
+  ]
 
   constructor(private route: ActivatedRoute) {
     /**

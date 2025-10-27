@@ -1,0 +1,9 @@
+<div class="header-box">
+    <h2>{{pageName}}</h2>
+    <ol>
+        @for (route of routePath; track $index) {
+        <li [routerLink]="route.path" routerLinkActive="Active">{{ route.name }}</li>
+        }
+
+    </ol>
+</div>

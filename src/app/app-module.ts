@@ -21,6 +21,7 @@ import { Cart } from './features/cart/cart/cart';
 import { Checkout } from './features/cart/checkout/checkout';
 import { FormsModule } from '@angular/forms';
 import { OrderComplete } from './features/cart/order-complete/order-complete';
+import { ContentHeader } from './shared/components/content-header/content-header';
 @NgModule({
   declarations: [
     App,
@@ -41,6 +42,7 @@ import { OrderComplete } from './features/cart/order-complete/order-complete';
     ShoppingCart,
     Checkout,
     OrderComplete,
+    ContentHeader
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [provideBrowserGlobalErrorListeners()],
