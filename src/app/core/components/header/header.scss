@@ -85,10 +85,20 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.6rem;
+    justify-content: center;
 
     .offer {
       color: var(--app-light);
       font-weight: 500;
+    }
+    a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-whatsapp {
+      font-size: 20px;
+      margin-left: 20px;
     }
   }
 
@@ -239,7 +249,7 @@
         color: var(--app-primary);
       }
     }
-    .cart-mobile-menu{
+    .cart-mobile-menu {
       display: none;
     }
 
@@ -261,7 +271,7 @@
         display: block;
         font-size: 20px;
       }
-      .cart-mobile-menu{
+      .cart-mobile-menu {
         display: flex;
         cursor: pointer;
       }
@@ -285,7 +295,6 @@
           color: var(--app-primary);
         }
       }
-      
     }
   }
 
