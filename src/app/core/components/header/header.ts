@@ -16,8 +16,8 @@ export class Header {
   ];
   mainNavLinks = [
     { label: 'Home', path: '/', icon: 'home-outline' },
-    { label: 'Design Tool', path: '/design-tool', icon: 'pencil-outline' },
     { label: 'Shop Now', path: '/shop-now', icon: 'bag-handle-outline' },
+    { label: 'Design Tool', path: '/design-tool', icon: 'pencil-outline' },
   ];
 
   /**

@@ -135,6 +135,7 @@
   background: var(--app-light);
   color: var(--app-dark);
   padding: 1.2rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 
   .container {
@@ -154,8 +155,8 @@
     gap: 6px;
 
     .icon {
-      font-size: 1.8rem;
       color: var(--app-primary);
+      font-size: 1.8rem;
     }
 
     .highlight {

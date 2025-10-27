@@ -1,13 +1,17 @@
-<div class="product-box" [ngClass]="viewMode" (click)="goToDetail(232323)">
+<div class="product-box" [ngClass]="viewMode" (click)="goToDetail(product?.id || '232323')">
   <div class="image-holder">
     <img
       class="main-img"
-      src="https://laravel.pixelstrap.net/multikart/storage/49/fashion_173.jpg"
-      alt="Men’s Polo"
+      [src]="
+        product?.thumbnail_url
+          ? imageBaseUrl + product?.thumbnail_url
+          : 'https://laravel.pixelstrap.net/multikart/storage/49/fashion_173.jpg'
+      "
+      alt="Product Image"
     />
 
     <div class="new-tag">
-      <span>New</span>
+      <span>{{ product?.condition || 'new' }}</span>
     </div>
     <div class="bucket-icon">
       <i class="fa fa-shopping-basket"></i>

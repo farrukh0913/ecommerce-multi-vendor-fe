@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { CategoryService } from '../../shared/services/category';
+import { ActivatedRoute } from '@angular/router';
+import { ProductService } from '../../shared/services/product';
 
 @Component({
   selector: 'app-product-info',
@@ -44,8 +48,33 @@ export class ProductInfo {
       value: '2XL, L, M, S, XL',
     },
   ];
+  constructor(
+    private spinner: NgxUiLoaderService,
+    private categoryService: CategoryService,
+    private route: ActivatedRoute,
+    private productService: ProductService
+  ) {
+    const productId = this.route.snapshot.paramMap.get('id');
+    console.log('Product ID:', productId);
+    if (productId) {
+      this.fetchProductById(productId);
+    }
+  }
   ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
+  fetchProductById(productId: string) {
+    this.spinner.start();
+    this.productService.getById(productId).subscribe({
+      next: (data) => {
+        console.log('Categories data:', data);
+      },
+      error: (err) => {},
+      complete: () => {
+        this.spinner.stop();
+      },
+    });
   }
   setActiveTab(tabName: string) {
     this.activeTab = tabName;

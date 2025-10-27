@@ -1,33 +1,9 @@
 <div class="main-app-conatiner">
   <app-header class="header" [hideTopBar]="hideTopBar"></app-header>
   <div class="page-content" (scroll)="onScroll($event)">
-    <main class="content">
-      @if (router.url === '/') {
-      <!-- hero section -->
-      <swiper-container
-        class="hero-swiper"
-        slides-per-view="1"
-        space-between="20"
-        loop="true"
-        navigation="true"
-        pagination="false"
-        autoplay="false"
-      >
-        @for (item of [].constructor(4); track $index) {
-        <swiper-slide>
-          <img
-            src="https://laravel.pixelstrap.net/multikart/storage/2772/fashion_one_9.png"
-            alt="Slide"
-            style="width: 100%"
-          />
-        </swiper-slide>
-        }
-      </swiper-container>
-
-      }
-      <div class="routes-content">
+    <main class="content" [ngClass]="{ 'no-padding': router.url === '/' }">
+      <ngx-ui-loader></ngx-ui-loader>
         <router-outlet></router-outlet>
-      </div>
     </main>
     <app-footer></app-footer>
   </div>

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-product-card',
@@ -10,8 +11,10 @@ import { Router } from '@angular/router';
 export class ProductCard {
   @Output() quickViewClicked = new EventEmitter<void>();
   @Input() viewMode: 'grid' | 'list' = 'grid';
+  @Input() product: any = null;
+  imageBaseUrl: string = environment.s3BaseUrl;
   constructor(private router: Router) {}
-  
+
   /**
    * quick view clicked
    */
@@ -24,7 +27,9 @@ export class ProductCard {
    * go to product detail info
    * @param productId
    */
-  goToDetail(productId: number) {
-    this.router.navigate(['/product-detail', productId]);
+  goToDetail(productId: string) {
+    this.router.navigate(['/product-detail', productId]).then(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll to top after navigation
+    });
   }
 }

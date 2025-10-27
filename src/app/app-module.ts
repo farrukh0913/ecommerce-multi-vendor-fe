@@ -1,4 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  NgModule,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { App } from './app';
@@ -22,6 +26,19 @@ import { Checkout } from './features/cart/checkout/checkout';
 import { FormsModule } from '@angular/forms';
 import { OrderComplete } from './features/cart/order-complete/order-complete';
 import { ContentHeader } from './shared/components/content-header/content-header';
+import { BaseSideMenu } from './shared/components/base-side-menu/base-side-menu';
+import { NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, SPINNER } from 'ngx-ui-loader';
+import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+const ngxUiLoaderConfig: NgxUiLoaderConfig = {
+  pbColor: '#ec8951',
+  hasProgressBar: false,
+  fgsColor: '#ec8951',
+  fgsType: SPINNER.cubeGrid,
+  fgsSize: 70,
+  pbDirection: PB_DIRECTION.leftToRight,
+  pbThickness: 5,
+  text: '',
+};
 @NgModule({
   declarations: [
     App,
@@ -42,10 +59,16 @@ import { ContentHeader } from './shared/components/content-header/content-header
     ShoppingCart,
     Checkout,
     OrderComplete,
-    ContentHeader
+    ContentHeader,
+    BaseSideMenu,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
-  providers: [provideBrowserGlobalErrorListeners()],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
+  ],
+  providers: [provideBrowserGlobalErrorListeners(), provideHttpClient(withInterceptorsFromDi())],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [App],
 })

@@ -38,11 +38,11 @@
     }
   }
 }
-.content,
-.routes-content {
+.content{
   background: white;
   flex: 1 1 auto;
-}
-.routes-content {
   padding: 1.5rem;
+}
+.no-padding{
+  padding: 0px;
 }

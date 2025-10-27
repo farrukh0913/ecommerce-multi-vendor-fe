@@ -1,3 +1,28 @@
+.section-two {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  width: 100%;
+  justify-content: center;
+  .img-wrapper {
+    max-width: 45%;
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: auto;
+      transition: transform 0.4s ease;
+      display: block;
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.04);
+      }
+    }
+  }
+}
+img {
+  cursor: pointer;
+}
+
 .products {
   gap: 2rem;
   display: flex;
@@ -10,6 +35,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
     .content {
       display: grid;
       width: 100%;
@@ -24,6 +52,12 @@
 }
 .latest-drop-swiper {
   max-width: 1140px;
+}
+.img-new-arrivals {
+  width: 100%;
+  img {
+    width: 100%;
+  }
 }
 .offers-container {
   width: 100%;
@@ -48,6 +82,7 @@
       ion-icon {
         font-size: 40px;
         color: var(--app-primary);
+        transition: transform 0.3s ease;
       }
       div {
         display: flex;
@@ -64,6 +99,14 @@
         font-size: 14px;
         color: #777;
         line-height: 20px;
+      }
+      &:hover {
+        ion-icon {
+          transform: scale(1.15);
+        }
+        h4 {
+          color: var(--app-primary);
+        }
       }
     }
   }
@@ -167,7 +210,6 @@
     .products {
       .product-loop {
         width: 100%;
-
         app-product-card {
           width: 100%;
 
@@ -178,5 +220,17 @@
         }
       }
     }
+  }
+  swiper-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .hero-swiper {
+    padding-left: 0rem;
+    padding-right: 0rem;
+  }
+  .offers-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }

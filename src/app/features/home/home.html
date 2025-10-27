@@ -1,3 +1,39 @@
+<!-- hero section -->
+<swiper-container
+  class="hero-swiper section-b-p"
+  slides-per-view="1"
+  loop="true"
+  navigation="true"
+  pagination="false"
+  autoplay="false"
+>
+  @for (item of [].constructor(4); track $index) {
+  <swiper-slide>
+    <img
+      src="https://laravel.pixelstrap.net/multikart/storage/2772/fashion_one_9.png"
+      alt="Slide"
+      style="width: 100%"
+      (click)="moveToCategoryPage()"
+    />
+  </swiper-slide>
+  }
+</swiper-container>
+
+<div class="section-two section-b-p">
+  <div class="img-wrapper">
+    <img
+      src="https://laravel.pixelstrap.net/multikart/storage/1300/fashion_one_8.png"
+      (click)="moveToCategoryPage()"
+    />
+  </div>
+  <div class="img-wrapper">
+    <img
+      src="https://laravel.pixelstrap.net/multikart/storage/1299/fashion_one_7.png"
+      (click)="moveToCategoryPage()"
+    />
+  </div>
+</div>
+
 <div class="title-conatiner">
   <h4 class="title-inner">special offer</h4>
   <h2 class="title-inner1">Latest Drops</h2>
@@ -6,11 +42,12 @@
     edit, bringing you all the latest styles from all your fave brands.
   </p>
 </div>
+
 <!-- swiper section -->
 <swiper-container
   class="latest-drop-swiper section-b-p"
   slides-per-view="auto"
-  space-between="30"
+  space-between="20"
   loop="true"
   pagination="false"
   navigation="false"
@@ -23,6 +60,13 @@
   }
 </swiper-container>
 
+<div class="img-new-arrivals section-b-p">
+  <img
+    src="https://laravel.pixelstrap.net/multikart/storage/149/fashion_one_5.png"
+    (click)="moveToCategoryPage()"
+  />
+</div>
+
 <div class="title-conatiner">
   <h4 class="title-inner">exclusive products</h4>
   <h2 class="title-inner1">everyday casual</h2>
@@ -31,15 +75,24 @@
 <section class="products section-b-p">
   <div class="tabs-content">
     <ul class="tabs">
-      <li *ngFor="let tab of tabs" [class.active]="selectedTab === tab" (click)="selectTab(tab)">
-        {{ tab }}
+      <li
+        *ngFor="let tab of tabs"
+        [class.active]="selectedTab.id === tab.id"
+        (click)="selectTab(tab)"
+      >
+        {{ tab.name }}
       </li>
     </ul>
     <div class="content">
-      @for (item of [].constructor(4); track $index) {
+      @for (item of products; track $index) {
       <div class="product-loop">
-        <app-product-card (quickViewClicked)="showDetailModal = true"></app-product-card>
+        <app-product-card
+          [product]="item"
+          (quickViewClicked)="showDetailModal = true"
+        ></app-product-card>
       </div>
+      }@empty {
+      <p>No product to display.</p>
       }
     </div>
   </div>
