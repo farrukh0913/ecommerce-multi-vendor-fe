@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { CategoryService } from '../../../shared/services/category';
 
 @Component({
   selector: 'app-main-layout',
@@ -13,7 +14,9 @@ export class MainLayout {
   private delta = 20;
   hideTopBar = false;
 
-  constructor(public router: Router) {}
+  constructor(public router: Router, private categoryService: CategoryService) {
+    this.getAllCategories();
+  }
 
   /**
    * update show/hide top-bar in header compoenet
@@ -34,5 +37,17 @@ export class MainLayout {
     }
 
     this.lastScrollTop = this.scrollTop <= 0 ? 0 : this.scrollTop;
+  }
+
+  /**
+   * Fetches all product categories
+   * @returns {void}
+   */
+  getAllCategories(): void {
+    this.categoryService.getAll().subscribe({
+      next: (data) => {},
+      error: (err) => {},
+      complete: () => {},
+    });
   }
 }

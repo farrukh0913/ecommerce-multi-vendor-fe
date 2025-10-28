@@ -11,7 +11,7 @@ const BASE_URL = environment.apiBaseUrl;
 })
 export class ProductService {
   productFilters = {
-    limit: 20,
+    limit: 50,
     offset: 0,
     order: '',
     name: '',
@@ -42,7 +42,7 @@ export class ProductService {
 
   private readonly endpoint = `${BASE_URL}/shop/products`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Get all products with optional filters
@@ -97,13 +97,12 @@ export class ProductService {
     let params = new HttpParams();
     Object.keys(options).forEach((key) => {
       const value = options[key];
-      if (value !== undefined && value !== null && value !== '') {
+      if (value) {
         params = params.append(key, value as any);
       }
     });
     return this.http.get(this.endpoint, { params });
   }
-
 
   getProductDetails(productId: string): Observable<any> {
     const productUrl = `${BASE_URL}/shop/products?id=eq.${productId}`;
@@ -116,7 +115,7 @@ export class ProductService {
       product: this.http.get(productUrl),
       variants: this.http.get(variantsUrl),
       media: this.http.get(mediaUrl),
-      priceList: this.http.get(priceUrl)
+      priceList: this.http.get(priceUrl),
     }).pipe(
       map((response: any) => {
         const product = Array.isArray(response.product) ? response.product[0] : response.product;
@@ -125,11 +124,9 @@ export class ProductService {
           ...product,
           variants: response.variants || [],
           media: response.media || [],
-          priceList: response.priceList || []
+          priceList: response.priceList || [],
         };
       })
     );
   }
-
-
 }

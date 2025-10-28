@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { CategoryService } from '../../shared/services/category';
 import { ProductService } from '../../shared/services/product';
+import { OrganizationService } from '../../shared/services/organization';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -16,15 +18,35 @@ export class Home {
   selectedTab = this.tabs[0];
   products: any = [];
   newProducts: any = [];
-  selectedProductId:any ={}
+  organizations: any = [];
+  selectedProductId: any = {};
+  private destroy$ = new Subject<void>();
+
   constructor(
     private router: Router,
     private spinner: NgxUiLoaderService,
     private categoryService: CategoryService,
-    private productService: ProductService
-  ) {
-    this.getAllCategories();
+    private productService: ProductService,
+    private organizationService: OrganizationService
+  ) {}
+
+  /**
+   * Initial Fetch
+   * @returns {void}
+   */
+  ngOnInit(): void {
+    // Subscribe to shared categories observable
+    this.categoryService.categories$.pipe(takeUntil(this.destroy$)).subscribe((cats) => {
+      if (cats.length) {
+        this.tabs = cats.slice(0, 3);
+        this.selectedTab = this.tabs[0];
+        this.getProductByCategories();
+      }
+    });
+    this.getProductNewArrival();
+    this.getShopOrganizations();
   }
+
   /**
    * update tab selection value
    * @param tab
@@ -36,33 +58,6 @@ export class Home {
   }
 
   /**
-   * Initial Fetch
-   * @returns {void}
-   */
-  ngOnInit(): void{
-    this.getProductNewArrival()
-  }
-
-  /**
-   * Fetches all product categories
-   * @returns {void}
-   */
-  getAllCategories(): void {
-    this.spinner.start();
-    this.categoryService.getAll().subscribe({
-      next: (data) => {
-        this.tabs = data.slice(0, 3);
-        this.selectedTab = this.tabs[0];
-        this.getProductByCategories();
-      },
-      error: (err) => {},
-      complete: () => {
-        this.spinner.stop();
-      },
-    });
-  }
-
-  /**
    * Fetches all product by Categories
    * @returns {void}
    */
@@ -70,7 +65,7 @@ export class Home {
     this.spinner.start();
     this.productService.getByCategory(this.selectedTab.id).subscribe({
       next: (data) => {
-        this.products = data.slice(0,4);
+        this.products = data.slice(0, 4);
         // console.log('Categories data:', data);
       },
       error: (err) => {},
@@ -86,35 +81,64 @@ export class Home {
    */
   getProductNewArrival(): void {
     this.spinner.start();
-    const filters = { ...this.productService.productFilters, order: 'created_at.desc'};
+    const filters = { ...this.productService.productFilters, order: 'created_at.desc' };
     this.productService.getFiltered(filters).subscribe({
       next: (data) => {
         this.newProducts = data;
         // console.log('Categories data:', data);
       },
-      error: (err) => {console.log(err) },
+      error: (err) => {
+        console.log(err);
+      },
       complete: () => {
         this.spinner.stop();
       },
     });
   }
 
-
-  
+  /**
+   * fecth all shop organizations
+   * @returns {void}
+   */
+  getShopOrganizations() {
+    this.organizationService.getAll().subscribe({
+      next: (data) => {
+        this.organizations = data;
+        console.log('data: organizations ', data);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {},
+    });
+  }
 
   /**
    * route to catgeory pagee
    */
   quickViewClicked(item: any) {
-    this.selectedProductId = item.id
-    this.showDetailModal = true
+    this.selectedProductId = item.id;
+    this.showDetailModal = true;
   }
-
 
   /**
    * route to catgeory pagee
    */
   moveToCategoryPage() {
     this.router.navigate(['/products-by-category/t-shirts']);
+  }
+
+  /**
+   * open wesbite url on click on organization name
+   * @param item
+   */
+  openWebUrl(item: any) {
+    if (item?.website) {
+      window.open(item.website, '_blank');
+    }
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

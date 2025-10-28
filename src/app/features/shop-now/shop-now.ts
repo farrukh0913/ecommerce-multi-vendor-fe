@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { CategoryService } from '../../shared/services/category';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-shop-now',
@@ -8,17 +10,17 @@ import { Router } from '@angular/router';
   styleUrl: './shop-now.scss',
 })
 export class ShopNow {
-  breadcrumb=[
+  breadcrumb = [
     {
-      name:'Home',
-      path:'/'
+      name: 'Home',
+      path: '/',
     },
     {
-      name:'Categories',
-      path:null
-    }
-  ]
-  categories = [
+      name: 'Categories',
+      path: null,
+    },
+  ];
+  categories: any = [
     {
       name: 'T-Shirts',
       products: 102,
@@ -175,7 +177,16 @@ export class ShopNow {
       image: 'https://myimprint.ca/wp-content/uploads/2024/11/33504_fm.jpg.webp',
     },
   ];
-  constructor(private router: Router) {}
+  private destroy$ = new Subject<void>();
+  constructor(private router: Router, private categoryService: CategoryService) {}
+  ngOnInit(): void {
+    // Subscribe to shared categories observable
+    this.categoryService.categories$.pipe(takeUntil(this.destroy$)).subscribe((cats) => {
+      this.categories = cats;
+      console.log('this.categories: ', this.categories);
+    });
+  }
+
   /**
    * Navigates to the page displaying products of the selected category.
    * @param category
@@ -183,5 +194,10 @@ export class ShopNow {
   goToCategory(category: string) {
     console.log('category: ', category);
     this.router.navigate(['/products-by-category', category.toLowerCase().replace(/\s+/g, '-')]);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

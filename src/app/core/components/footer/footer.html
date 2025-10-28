@@ -21,18 +21,18 @@
         </div>
       </div>
     </div>
-
+    @if (categories.length) {
     <div class="footer-section">
       <h3 class="footer-title">Categories</h3>
       <ul class="footer-links">
-        <li><a href="#">Baby Essentials</a></li>
-        <li><a href="#">Bag Emporium</a></li>
-        <li><a href="#">Books</a></li>
-        <li><a href="#">Christmas</a></li>
-        <li><a href="#">Classic Furnishings</a></li>
-        <li><a href="#">Crystal Clarity Optics</a></li>
+        @for (item of categories.slice(0,6); track $index) {
+        <li>
+          <a href="#">{{ item.name }}</a>
+        </li>
+        }
       </ul>
     </div>
+    }
     <div class="footer-section">
       <h3 class="footer-title">Useful Links</h3>
       <ul class="footer-links">
@@ -62,14 +62,29 @@
 
     <div class="footer-section">
       <h3 class="footer-title">Follow Us</h3>
-      <!-- <img
-        src="https://myimprint.ca/wp-content/uploads/2025/05/Summer-Custom-Outfits-314x300.png.webp"
-        alt="Customize your brand"
-        class="footer-image"
-      /> -->
+      <span class="footer-subtext">
+        Stay connected and be the first to know about new arrivals, exclusive offers, and trends.
+      </span>
+      <div class="social-icons">
+        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+          <ion-icon name="logo-facebook"></ion-icon>
+        </a>
+        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+          <ion-icon name="logo-instagram"></ion-icon>
+        </a>
+        <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+          <ion-icon name="logo-twitter"></ion-icon>
+        </a>
+        <a href="https://youtube.com" target="_blank" aria-label="YouTube">
+          <ion-icon name="logo-youtube"></ion-icon>
+        </a>
+        <a href="https://wa.me/1234567890" target="_blank" aria-label="WhatsApp">
+          <ion-icon name="logo-whatsapp"></ion-icon>
+        </a>
+      </div>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>&copy; {{ currentYear }} Multi-Vendor Ecommerce. All rights reserved.</p>
+    <p>&copy; {{ currentYear }} Shopfinity. All rights reserved.</p>
   </div>
 </footer>

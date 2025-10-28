@@ -9,47 +9,44 @@ import { getCurrencySymbol } from '../../shared/utils/currency.utils';
   styleUrl: './product-info.scss',
 })
 export class ProductInfo {
-
   // Expose global objects for use in template
   Object = Object;
   Array = Array;
 
-  productId:any=null
-  product:any=null
+  productId: any = null;
+  product: any = null;
   activeTab = 'Specification';
   showDetailModal = false;
-  breadcrumb=[
-     {
-      name:'Home',
-      path:'/'
+  breadcrumb = [
+    {
+      name: 'Home',
+      path: '/',
     },
     {
-      name:'Categories',
-      path:'/shop-now'
+      name: 'Categories',
+      path: '/shop-now',
     },
     {
-      name:'kkkk',
-      path:null
-    }
-  ]
+      name: '',
+      path: null,
+    },
+  ];
   getCurrencySymbol = getCurrencySymbol;
- 
-  
-  constructor(
-    private route: ActivatedRoute,
-  ) {
+
+  constructor(private route: ActivatedRoute) {
     this.productId = this.route.snapshot.paramMap.get('id');
   }
 
   ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  
+
   setActiveTab(tabName: string) {
     this.activeTab = tabName;
   }
 
   onProductReceived(product: any): void {
     this.product = product;
+    this.breadcrumb[2].name = product.name;
   }
 }

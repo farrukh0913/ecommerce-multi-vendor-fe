@@ -7,7 +7,7 @@
     @for (category of categories; track $index) {
     <div class="category-card" (click)="goToCategory(category.name)">
       <div class="image-holder">
-        <img [src]="category.image" [alt]="category.name" class="main-img" />
+        <img [src]="category.thumbnail_url" [alt]="category.name" class="main-img" />
         <div class="overlay">
           <button class="view-btn">View Products</button>
         </div>

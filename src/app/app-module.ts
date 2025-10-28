@@ -29,6 +29,7 @@ import { ContentHeader } from './shared/components/content-header/content-header
 import { BaseSideMenu } from './shared/components/base-side-menu/base-side-menu';
 import { NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, SPINNER } from 'ngx-ui-loader';
 import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { SearchProduct } from './shared/components/search-product/search-product';
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   pbColor: '#ec8951',
   hasProgressBar: false,
@@ -61,6 +62,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     OrderComplete,
     ContentHeader,
     BaseSideMenu,
+    SearchProduct,
   ],
   imports: [
     BrowserModule,

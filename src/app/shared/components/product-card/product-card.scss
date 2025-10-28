@@ -46,19 +46,23 @@
       position: absolute;
       top: 12px;
       right: 12px;
-      background: var(--app-primary);
+      background: #fff;
       color: var(--app-light);
-      padding: 8px;
+      padding: 6px;
       border-radius: 50%;
       font-size: 1rem;
       opacity: 0;
       transform: translateY(-10px);
       transition: all 0.3s ease;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
       z-index: 3;
-
-      &:hover {
-        background: var(--app-primary);
+      ion-icon {
+        font-size: 20px;
+        color: var(--app-primary);
       }
     }
 

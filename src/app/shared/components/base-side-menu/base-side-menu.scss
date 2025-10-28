@@ -15,11 +15,24 @@
     width: 320px;
     max-width: 90%;
     height: 100%;
-    transform: translateX(100%);
     transition: transform 0.35s ease;
     display: flex;
     flex-direction: column;
     box-shadow: -3px 0 15px rgba(0, 0, 0, 0.15);
+  }
+
+  &.right .side-menu-container {
+    transform: translateX(100%);
+    box-shadow: -3px 0 15px rgba(0, 0, 0, 0.15);
+  }
+
+  &.left {
+    justify-content: flex-start;
+
+    .side-menu-container {
+      transform: translateX(-100%);
+      box-shadow: 3px 0 15px rgba(0, 0, 0, 0.15);
+    }
   }
 
   &.active {

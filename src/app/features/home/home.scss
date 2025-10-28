@@ -188,16 +188,25 @@ img {
     max-width: 1400px;
     .logo-section {
       width: 200px;
+      min-height: 70px;
       cursor: pointer;
       background: #f8f8f8;
       border: 1px solid var(--app-border-color);
       opacity: 0.6;
       margin-left: 20px;
       padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       div {
         display: flex;
         justify-content: center;
         align-items: center;
+        span {
+          font-size: 22px;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
       }
       img {
         height: 62px;

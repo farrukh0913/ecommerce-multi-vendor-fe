@@ -14,6 +14,7 @@ export class BaseSideMenu {
   @Input() title = 'Menu';
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
+  @Input() position: 'left' | 'right' = 'right';
 
   onBackdropClick(event: MouseEvent) {
     const target = event.target as HTMLElement;

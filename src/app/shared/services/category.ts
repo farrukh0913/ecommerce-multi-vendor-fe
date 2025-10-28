@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 const BASE_URL = environment.apiBaseUrl;
@@ -10,6 +10,9 @@ const BASE_URL = environment.apiBaseUrl;
 })
 export class CategoryService {
   private readonly endpoint = `${BASE_URL}/inventory/product_categories`;
+
+  private categoriesSubject = new BehaviorSubject<any[]>([]);
+  categories$ = this.categoriesSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -23,7 +26,9 @@ export class CategoryService {
       });
     }
 
-    return this.http.get(this.endpoint, { params });
+    return this.http
+      .get<any[]>(this.endpoint, { params })
+      .pipe(tap((categories) => this.categoriesSubject.next(categories)));
   }
 
   /** Get single category */

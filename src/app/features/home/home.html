@@ -56,9 +56,9 @@
   @for (item of newProducts; track $index) {
   <swiper-slide class="product-slide">
     <app-product-card
-          [product]="item"
-          (quickViewClicked)="quickViewClicked($event)"
-        ></app-product-card>
+      [product]="item"
+      (quickViewClicked)="quickViewClicked($event)"
+    ></app-product-card>
   </swiper-slide>
   }
 </swiper-container>
@@ -165,10 +165,14 @@
       navigation="false"
       autoplay="false"
     >
-      @for (item of [].constructor(30); track $index) {
+      @for (organization of organizations; track $index) {
       <swiper-slide class="logo-section">
         <div>
+          @if (organization.logo_url) {
           <img src="https://laravel.pixelstrap.net/multikart/storage/3079/46.png" />
+          }@else {
+          <span (click)="openWebUrl(organization)">{{ organization.name }}</span>
+          }
         </div>
       </swiper-slide>
       }
