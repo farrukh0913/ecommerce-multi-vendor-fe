@@ -7,6 +7,16 @@ import { Component } from '@angular/core';
   styleUrl: './faq.scss',
 })
 export class Faq {
+   breadcrumb=[
+      {
+      name:'Home',
+      path:'/'
+    },
+    {
+      name:'FAQs',
+      path:null
+    },
+  ]
   faqs = [
     {
       question: 'How can I place an order?',

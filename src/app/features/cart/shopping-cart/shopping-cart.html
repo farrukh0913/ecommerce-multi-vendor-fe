@@ -29,8 +29,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of cartItems">
+          <tr *ngFor="let item of cartItems;let index=index">
             <td class="item">
+              
               <img [src]="item.image" alt="{{ item.name }}" />
               <span>{{ item.name }}</span>
             </td>
@@ -43,6 +44,10 @@
               </div>
             </td>
             <td>${{ item.price * item.quantity }}</td>
+            <td>
+
+              <i class="fa fa-close delete-icon" (click)="removeFromCart(index)"></i>
+            </td>
           </tr>
         </tbody>
       </table>

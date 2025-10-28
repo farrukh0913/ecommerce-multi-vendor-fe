@@ -7,6 +7,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./cart.scss'],
 })
 export class Cart {
+  breadcrumb=[
+      {
+      name:'Home',
+      path:'/'
+    },
+    {
+      name:'Cart',
+      path:null
+    },
+  ]
   currentStep: number = 1;
   steps = [
     { label: 'Shopping Cart', index: 1 },

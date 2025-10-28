@@ -12,7 +12,8 @@
   .modal-container {
     background: #ffffff;
     border-radius: 18px;
-    max-height: 80vh;
+    height: 80dvh;
+    max-height: fit-content;
     width: 92%;
     max-width: 900px;
     padding: 1.8rem;
@@ -59,6 +60,8 @@
       line-height: 1.6;
       color: #333;
       padding-top: 0.3rem;
+      flex: 1;
+      height: calc(100% - 80px);
     }
   }
 }

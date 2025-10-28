@@ -1,7 +1,7 @@
 <footer class="app-footer">
   <div class="footer-layout">
     <div class="footer-section">
-      <h3 class="footer-title">Contact Info</h3>
+      <h3 class="footer-title contact-us-title">Contact Info</h3>
 
       <div class="footer-item">
         <ion-icon name="location-outline"></ion-icon>
@@ -21,34 +21,53 @@
         </div>
       </div>
     </div>
-
+    @if (categories.length) {
     <div class="footer-section">
-      <h3 class="footer-title">Categories</h3>
+      <h3 class="footer-title" (click)="setVisible('1')">
+        Categories @if (isMobile()) {
+        <ion-icon class="arrow" name="chevron-down-outline"> </ion-icon>
+        }
+      </h3>
+      @if(!isMobile() || visible[1]){
       <ul class="footer-links">
-        <li><a href="#">Baby Essentials</a></li>
-        <li><a href="#">Bag Emporium</a></li>
-        <li><a href="#">Books</a></li>
-        <li><a href="#">Christmas</a></li>
-        <li><a href="#">Classic Furnishings</a></li>
-        <li><a href="#">Crystal Clarity Optics</a></li>
+        @for (item of categories.slice(0,6); track $index) {
+        <li>
+          <a href="#">{{ item.name }}</a>
+        </li>
+        }
       </ul>
+      }
     </div>
+    }
     <div class="footer-section">
-      <h3 class="footer-title">Useful Links</h3>
+      <h3 class="footer-title" (click)="setVisible('2')">
+        Useful Links @if (isMobile()) {
+        <ion-icon class="arrow" name="chevron-down-outline"> </ion-icon>
+        }
+      </h3>
+      @if(!isMobile() || visible[2]){
       <ul class="footer-links">
         <li><a href="/">Home</a></li>
         <li><a href="">Design Tool</a></li>
         <li><a href="/shop-now">Shop Now</a></li>
         <li><a href="/cart">Cart</a></li>
       </ul>
+      }
     </div>
     <div class="footer-section">
-      <h3 class="footer-title">Help Center</h3>
+      <h3 class="footer-title" (click)="setVisible('3')">
+        Help Center @if (isMobile()) {
+        <ion-icon class="arrow" name="chevron-down-outline"> </ion-icon>
+        }
+      </h3>
+      @if(!isMobile() || visible[3]){
+
       <ul class="footer-links">
         <li><a href="/faq">Faq</a></li>
         <li><a href="/news-events">News & Events</a></li>
         <li><a href="/contact-us">Contact Us</a></li>
       </ul>
+      }
     </div>
 
     <!-- <div class="footer-section">
@@ -61,15 +80,36 @@
     </div> -->
 
     <div class="footer-section">
-      <h3 class="footer-title">Follow Us</h3>
-      <!-- <img
-        src="https://myimprint.ca/wp-content/uploads/2025/05/Summer-Custom-Outfits-314x300.png.webp"
-        alt="Customize your brand"
-        class="footer-image"
-      /> -->
+      <h3 class="footer-title" (click)="setVisible('4')">
+        Follow Us @if (isMobile()) {
+        <ion-icon class="arrow" name="chevron-down-outline"> </ion-icon>
+        }
+      </h3>
+      @if(!isMobile() || visible[4]){
+      <span class="footer-subtext">
+        Stay connected and be the first to know about new arrivals, exclusive offers, and trends.
+      </span>
+      <div class="social-icons">
+        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+          <ion-icon name="logo-facebook"></ion-icon>
+        </a>
+        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+          <ion-icon name="logo-instagram"></ion-icon>
+        </a>
+        <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+          <ion-icon name="logo-twitter"></ion-icon>
+        </a>
+        <a href="https://youtube.com" target="_blank" aria-label="YouTube">
+          <ion-icon name="logo-youtube"></ion-icon>
+        </a>
+        <a href="https://wa.me/1234567890" target="_blank" aria-label="WhatsApp">
+          <ion-icon name="logo-whatsapp"></ion-icon>
+        </a>
+      </div>
+      }
     </div>
   </div>
   <div class="footer-bottom">
-    <p>&copy; {{ currentYear }} Multi-Vendor Ecommerce. All rights reserved.</p>
+    <p>&copy; {{ currentYear }} Shopfinity. All rights reserved.</p>
   </div>
 </footer>

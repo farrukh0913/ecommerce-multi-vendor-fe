@@ -1,0 +1,50 @@
+.header-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 2rem;
+  padding: 2rem 0rem;
+  background-color: #f8f8f8;
+
+  h2 {
+    font-size: calc(21px + 11 * (100vw - 320px) / 1600);
+    line-height: 1.3;
+    text-transform: capitalize;
+    font-weight: 500;
+    margin: 0;
+    padding-bottom: 10px;
+  }
+
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex; // puts items in a row
+    align-items: center; // vertically centers them
+    gap: 10px; // space between items
+
+    li {
+      text-transform: uppercase;
+      font-size: calc(13px + 1 * (100vw - 320px) / 1600);
+      color: #555;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #000;
+      }
+
+      // optional divider between items
+      &:not(:last-child)::after {
+        content: '/';
+        margin-left: 10px;
+        color: #999;
+      }
+    }
+  }
+
+
+}

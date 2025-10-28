@@ -85,10 +85,20 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.6rem;
+    justify-content: center;
 
     .offer {
       color: var(--app-light);
       font-weight: 500;
+    }
+    a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-whatsapp {
+      font-size: 20px;
+      margin-left: 20px;
     }
   }
 
@@ -135,6 +145,7 @@
   background: var(--app-light);
   color: var(--app-dark);
   padding: 1.2rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 
   .container {
@@ -151,11 +162,10 @@
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 12px;
 
-    .icon {
+    ion-icon {
       font-size: 1.8rem;
-      color: var(--app-primary);
     }
 
     .highlight {
@@ -165,13 +175,11 @@
 
   /* ===== Search Bar ===== */
   .search-bar {
-    flex: 1;
     display: flex;
     align-items: center;
     max-width: 400px;
     background: rgba(0, 0, 0, 0.05);
     border-radius: 25px;
-    padding: 0.3rem 0.8rem;
     transition: all 0.3s ease;
     input {
       flex: 1;
@@ -180,7 +188,6 @@
       background: transparent;
       color: var(--app-dark);
       font-size: 0.95rem;
-      padding: 0.3rem 0.5rem;
     }
 
     .search-icon {
@@ -195,6 +202,15 @@
       cursor: pointer;
       padding: 0.2rem;
       transition: transform 0.2s;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      ion-icon {
+        font-size: 20px;
+      }
       &:hover {
         transform: scale(1.1);
       }
@@ -238,7 +254,7 @@
         color: var(--app-primary);
       }
     }
-    .cart-mobile-menu{
+    .cart-mobile-menu {
       display: none;
     }
 
@@ -260,7 +276,7 @@
         display: block;
         font-size: 20px;
       }
-      .cart-mobile-menu{
+      .cart-mobile-menu {
         display: flex;
         cursor: pointer;
       }
@@ -284,7 +300,6 @@
           color: var(--app-primary);
         }
       }
-      
     }
   }
 
@@ -304,6 +319,7 @@
       padding: 0.6rem;
       border-radius: 50%;
       transition: all 0.3s ease;
+      background: rgba(0, 0, 0, 0.05);
       box-shadow: 0 0 10px rgba(var(--app-primary), 0.6);
 
       &:hover {
@@ -372,12 +388,6 @@
   @media (max-width: 992px) {
     .search-bar {
       max-width: 300px;
-    }
-  }
-
-  @media (max-width: 630px) {
-    .search-bar {
-      display: none;
     }
   }
 }
@@ -494,4 +504,38 @@
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
   z-index: 1999;
+}
+.category-list {
+  display: flex;
+  flex-direction: column;
+
+  .category-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.8rem 0rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--app-border-color);
+    color: var(--app-dark);
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--app-light);
+
+    ion-icon {
+      font-size: 1.25rem;
+      color: var(--app-primary);
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      background: var(--app-primary-light);
+      color: var(--app-primary);
+
+      ion-icon {
+        transform: translateX(5px);
+      }
+    }
+  }
 }

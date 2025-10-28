@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { getCurrencySymbol } from '../../shared/utils/currency.utils';
 
 @Component({
   selector: 'app-product-info',
@@ -7,33 +9,55 @@ import { Component } from '@angular/core';
   styleUrl: './product-info.scss',
 })
 export class ProductInfo {
-  activeTab = 'description';
+  // Expose global objects for use in template
+  Object = Object;
+  Array = Array;
+
+  productId: any = null;
+  product: any = null;
+  activeTab = 'Specification';
   showDetailModal = false;
-  productFeatures: string[] = [
-    '5.3 oz./yd² (US), 8.8 oz./L yd (CA), 100% cotton',
-    'Sport Grey: 90/10 cotton/polyester',
-    'Midweight fabric',
-    'Semi-fitted',
-    '½" rib collar',
-    'Taped neck and shoulders',
-    'Double-needle sleeve and bottom hem',
-    'Side seams',
-    'Tear-away label',
-  ];
-  additionalInfo = [
+  breadcrumb = [
     {
-      label: 'Color',
-      value: 'Black, Heliconia, Navy, Purple, Red, Sport Grey, White',
+      name: 'Home',
+      path: '/',
     },
     {
-      label: 'Size',
-      value: '2XL, L, M, S, XL',
+      name: 'Categories',
+      path: '/shop-now',
+    },
+    {
+      name: '',
+      path: null,
     },
   ];
-  ngOnInit() {
+  getCurrencySymbol = getCurrencySymbol;
+
+ constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    // Subscribe to route param changes
+    this.route.paramMap.subscribe(params => {
+      this.productId = params.get('id');
+
+      this.loadProduct(this.productId);
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  loadProduct(id: string | null): void {
+    
+  }
+
+
+ 
+
   setActiveTab(tabName: string) {
     this.activeTab = tabName;
+  }
+
+  onProductReceived(product: any): void {
+    this.product = product;
+    this.breadcrumb[2].name = product.name;
   }
 }

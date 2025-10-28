@@ -1,14 +1,34 @@
 <div class="product-modal-content">
+  @if(this.product){
+
   <!-- Product Images -->
   <div class="product-images">
     <div class="main-image-wrapper">
-      <img [src]="selectedImage" alt="Product" class="main-image" />
+      <img [src]="imageBaseUrl + product?.thumbnail_url" alt="Product" class="main-image" />
     </div>
 
-    <div class="thumbnail-list" >
-      @for (img of productImages; track $index) {
-      <img [src]="img" alt="Thumbnail" [class.active]="img === selectedImage" (click)="onSelectImage(img)" />
-      }
+    <div class="thumbnail-list">
+      <!-- @if(product.thu) -->
+      @if (typeof product.thumbnail_url === 'string' && product.thumbnail_url) {
+
+      <img
+        [src]="
+          product?.thumbnail_url
+            ? imageBaseUrl + product?.thumbnail_url
+            : 'https://laravel.pixelstrap.net/multikart/storage/49/fashion_173.jpg'
+        "
+        alt="Thumbnail"
+        [class.active]="imageBaseUrl + product?.thumbnail_url === selectedImage"
+        (click)="onSelectImage(imageBaseUrl + product?.thumbnail_url)"
+      />
+      } @else { @for (img of product.thumbnail_url; track $index) {
+      <img
+        [src]="img"
+        alt="Thumbnail"
+        [class.active]="img === selectedImage"
+        (click)="onSelectImage(img)"
+      />
+      } }
     </div>
   </div>
 
@@ -16,96 +36,118 @@
   <div class="product-info">
     <div class="price-detail">
       <h2 class="product-title">
-        CORE 365 – Men’s Origin Performance Piqué Polo – 88181
+        {{ product.name }}
       </h2>
       <p class="category"><strong>Category:</strong> Athlete</p>
       <p class="price-tag">
         MRP:
-        <span class="price">$22.99</span>
-        <span class="old-price">$25</span>
-        <span class="discount">12%</span>
+        <span class="price"
+          >{{ product?.priceList[0]?.price_amount - product.priceList?.[0]?.discount_amount }}
+          {{ getCurrencySymbol(product.priceList?.[0]?.currency_code) }}</span
+        >
+        @if(product.priceList?.[0]?.discount_percentage!==0){
+        <span class="old-price"
+          >{{ product.priceList?.[0]?.price_amount }}
+          {{ getCurrencySymbol(product.priceList?.[0]?.currency_code) }}</span
+        >
+        <span class="discount">{{ product.priceList?.[0]?.discount_percentage }}%</span>
+        }
       </p>
       <p class="tax-desc">Inclusive of all taxes</p>
     </div>
-    <div class="size-chart">
-      <i class="fa fa-ruler"></i>
-      <p>Size Chart</p>
-    </div>
 
     <div class="product-meta">
-      <h4>Product Info</h4>
-      <ul class="product-meta-list">
-        <li>SKU: KIDS06</li>
-        <li>Unit: 1 piece</li>
-        <li>Weight: 100 Gms</li>
-        <li>Stock Status: In stock</li>
-        <li>Quantity: 20 Items Left</li>
-      </ul>
+      <h4>Product Description</h4>
+      <p>
+        {{ product.description }}
+      </p>
+      <!-- <ul class="product-meta-list">
+          <li>SKU: KIDS06</li>
+          <li>Unit: 1 piece</li>
+          <li>Weight: 100 Gms</li>
+          <li>Stock Status: In stock</li>
+          <li>Quantity: 20 Items Left</li>
+        </ul> -->
     </div>
 
     <div class="product-delivery">
       <h4>Delivery Details</h4>
       <div class="delivery-detail">
         <i class="fa fa-truck"></i>
-        <p>Your order is likely to reach you within 7 days.</p>
+        <p>
+          Your order is likely to reach you within
+          {{ product.priceList?.[0]?.estimated_delivery_days_range.Lower }} -
+          {{ product.priceList?.[0]?.estimated_delivery_days_range.Upper }} days.
+        </p>
+      </div>
+      <div class="delivery-detail">
+        <i class="fa fa-money-bill"></i>
+        <p>Shipping Cost: {{ product.priceList?.[0]?.shipping_cost }}</p>
       </div>
     </div>
     <div class="safe-checkout">
       <h4>Guaranteed Safe Checkout</h4>
-      <img src="https://laravel.pixelstrap.net/multikart/storage/3835/payments.png" alt="">
-
+      <img src="https://laravel.pixelstrap.net/multikart/storage/3835/payments.png" alt="" />
     </div>
-    
+
     <div class="safe-checkout">
       <h4>Secure Checkout</h4>
-      <img src="https://laravel.pixelstrap.net/multikart/storage/3836/secure_payments.png" alt="">
-
+      <img src="https://laravel.pixelstrap.net/multikart/storage/3836/secure_payments.png" alt="" />
     </div>
   </div>
 
   <!-- Actions -->
   <div class="actions-section">
-
     <div class="actions">
       <div class="quantity-counter">
-        <button class="counter-btn" (click)="onDecrement()">−</button>
+        <button class="counter-btn" [ngClass]="{ disable: count === 1 }" (click)="onDecrement()">
+          −
+        </button>
         <span class="quantity">{{ count }}</span>
-        <button class="counter-btn" (click)="onIncrement()">+</button>
+        <button
+          class="counter-btn"
+          [ngClass]="{ disable: count === product?.priceList[0]?.stock_quantity }"
+          (click)="onIncrement()"
+        >
+          +
+        </button>
       </div>
 
       <button class="design-now">Design Now</button>
 
       <div class="shop-actions">
-        <button class="add-to-cart">
-          <i class="fa fa-shopping-basket"></i> Add to Cart
-        </button>
-        <button class="add-to-cart">
-          Buy Now
-        </button>
+        <button class="add-to-cart"><i class="fa fa-shopping-basket"></i> Add to Cart</button>
+        <button class="add-to-cart">Buy Now</button>
       </div>
-
     </div>
     <div class="sale-ends">
-  <h4>Sales Ends In</h4>
-  <div class="countdown compact" role="timer" aria-live="polite">
-    <div class="cd-item">
-      <span class="cd-value" id="days">0</span>
-      <span class="cd-label">Days</span>
-    </div>
-    <div class="cd-item">
-      <span class="cd-value" id="hours">0</span>
-      <span class="cd-label">Hours</span>
-    </div>
-    <div class="cd-item">
-      <span class="cd-value" id="mins">0</span>
-      <span class="cd-label">Min</span>
-    </div>
-    <div class="cd-item">
-      <span class="cd-value" id="secs">0</span>
-      <span class="cd-label">Sec</span>
+      <h4 class="clock-container">
+        <span class="clock">
+          <span class="hour-hand"></span>
+          <span class="minute-hand"></span>
+          <span class="center-dot"></span>
+        </span>
+        Sales Ends In
+      </h4>
+      <div class="countdown compact" role="timer" aria-live="polite">
+        <div class="cd-item">
+          <span class="cd-value" id="days">0</span>
+          <span class="cd-label">Days</span>
+        </div>
+        <div class="cd-item">
+          <span class="cd-value" id="hours">0</span>
+          <span class="cd-label">Hours</span>
+        </div>
+        <div class="cd-item">
+          <span class="cd-value" id="mins">0</span>
+          <span class="cd-label">Min</span>
+        </div>
+        <div class="cd-item">
+          <span class="cd-value" id="secs">0</span>
+          <span class="cd-label">Sec</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-  </div>
+  }
 </div>

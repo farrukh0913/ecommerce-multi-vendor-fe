@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
+import { ResponsiveService } from '../../../shared/services/responsive';
 
 @Component({
   selector: 'app-header',
@@ -16,9 +17,13 @@ export class Header {
   ];
   mainNavLinks = [
     { label: 'Home', path: '/', icon: 'home-outline' },
-    { label: 'Design Tool', path: '/design-tool', icon: 'pencil-outline' },
     { label: 'Shop Now', path: '/shop-now', icon: 'bag-handle-outline' },
+    { label: 'Design Tool', path: '/design-tool', icon: 'pencil-outline' },
   ];
+  isMobile = inject(ResponsiveService).isMobile;
+  categoryMenuOpen: boolean = false;
+  showSearchModal: boolean = false;
+  categories = ['New Arrivals', 'Men', 'Women', 'Kids', 'Sport', 'Sportswear'];
 
   /**
    * toggle side menu
@@ -32,5 +37,11 @@ export class Header {
    */
   closeMenu() {
     this.menuOpen = false;
+  }
+
+  onCategorySelect(category: string) {
+    console.log('Selected:', category);
+    this.categoryMenuOpen = false; // close menu after selecting
+    // navigate or filter products as needed
   }
 }

@@ -3,11 +3,15 @@
     grid-template-columns: unset;
     .product-loop {
       width: 100%;
+
       app-product-card {
         width: 100%;
         .product-box {
           width: unset !important;
           max-width: 100% !important;
+        }
+        .image-holder{
+          height: 320px;
         }
       }
     }
@@ -61,6 +65,9 @@
   }
 }
 @media (max-width: 700px) {
+  .view-toggle-container{
+    display: none;
+  }
   :host ::ng-deep {
     .products {
       .product-loop {

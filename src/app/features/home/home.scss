@@ -1,3 +1,28 @@
+.section-two {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  width: 100%;
+  justify-content: center;
+  .img-wrapper {
+    max-width: 45%;
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: auto;
+      transition: transform 0.4s ease;
+      display: block;
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.04);
+      }
+    }
+  }
+}
+img {
+  cursor: pointer;
+}
+
 .products {
   gap: 2rem;
   display: flex;
@@ -10,6 +35,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
     .content {
       display: grid;
       width: 100%;
@@ -24,6 +52,12 @@
 }
 .latest-drop-swiper {
   max-width: 1140px;
+}
+.img-new-arrivals {
+  width: 100%;
+  img {
+    width: 100%;
+  }
 }
 .offers-container {
   width: 100%;
@@ -48,6 +82,7 @@
       ion-icon {
         font-size: 40px;
         color: var(--app-primary);
+        transition: transform 0.3s ease;
       }
       div {
         display: flex;
@@ -64,6 +99,14 @@
         font-size: 14px;
         color: #777;
         line-height: 20px;
+      }
+      &:hover {
+        ion-icon {
+          transform: scale(1.15);
+        }
+        h4 {
+          color: var(--app-primary);
+        }
       }
     }
   }
@@ -145,16 +188,25 @@
     max-width: 1400px;
     .logo-section {
       width: 200px;
-      cursor: pointer;
+      min-height: 70px;
       background: #f8f8f8;
       border: 1px solid var(--app-border-color);
       opacity: 0.6;
       margin-left: 20px;
       padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       div {
         display: flex;
         justify-content: center;
         align-items: center;
+        span {
+          cursor: pointer;
+          font-size: 22px;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
       }
       img {
         height: 62px;
@@ -162,21 +214,130 @@
     }
   }
 }
+.blogs-swiper {
+  width: 100%;
+  max-width: 1400px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  .blog-slider {
+    width: 335px;
+    .blogs {
+      display: flex;
+      flex-direction: column;
+      width: 335px;
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding-top: 1rem;
+        p,
+        h4,
+        h6 {
+          text-align: center;
+        }
+        h4 {
+          color: var(--app-primary);
+          margin: 0px;
+          font-size: 16px;
+          font-weight: 400;
+        }
+        p {
+          margin: 0px;
+          color: #222;
+          font-size: 16px;
+          text-transform: capitalize;
+          font-weight: 700;
+          line-height: 1.5;
+          letter-spacing: 0.03em;
+          position: relative;
+          &::after {
+            position: absolute;
+            height: 3px;
+            width: 70px;
+            background-color: var(--app-primary);
+            content: '';
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            bottom: 0;
+            top: 50px;
+          }
+        }
+        h6 {
+          margin: 0px;
+          line-height: 1;
+          letter-spacing: 0.1em;
+          margin-bottom: 0;
+          font-size: 14px;
+          font-weight: 400;
+          color: #777;
+        }
+      }
+    }
+  }
+}
 @media (max-width: 700px) {
+  .products {
+    .content {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+      gap: 6px !important;
+    }
+  }
   :host ::ng-deep {
     .products {
       .product-loop {
-        width: 100%;
+        width: 160px;
+      }
+    }
+    .products,
+    .product-slide {
+      app-product-card {
+        width: 160px;
 
-        app-product-card {
-          width: 100%;
-
-          .product-box {
-            width: unset !important;
-            max-width: 100% !important;
+        .product-box {
+          width: 160px !important;
+          max-width: 160px !important;
+          height: 100%;
+          .image-holder {
+            height: 190px !important;
           }
         }
       }
+    }
+  }
+  .product-slide {
+    width: 160px;
+  }
+  swiper-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .hero-swiper {
+    padding-left: 0rem;
+    padding-right: 0rem;
+  }
+  .offers-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    .offer-content {
+      justify-content: center;
+    }
+    .service {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+      flex-direction: column;
+      div {
+        align-items: center;
+      }
+    }
+  }
+  .category-slide {
+    width: 114px !important;
+    height: 110px;
+    img {
+      height: 100% !important;
     }
   }
 }

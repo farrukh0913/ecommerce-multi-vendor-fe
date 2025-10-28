@@ -26,6 +26,15 @@ export class ShoppingCart {
   ];
 
   /**
+   * Removing item from Cart
+   */
+  removeFromCart(index:number){
+    console.log('index: ', index);
+    this.cartItems.splice(index,1)
+  }
+
+
+  /**
    * Calculates the total cost of all items in the cart
    * by summing up (price × quantity) for each item.
    */
