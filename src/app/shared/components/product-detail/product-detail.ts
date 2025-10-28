@@ -1,4 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { environment } from '../../../../environments/environment';
+import { getCurrencySymbol } from '../../utils/currency.utils';
+import { Router } from '@angular/router';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ProductService } from '../../services/product';
 
 @Component({
   selector: 'app-product-detail',
@@ -7,28 +12,41 @@ import { Component, Input } from '@angular/core';
   styleUrl: './product-detail.scss',
 })
 export class ProductDetail {
-  count=1
-  @Input() product: any = null;
-
+  count = 1
+  @Input() productId: any = null;
+  product:any=null
+   @Output() productLoaded = new EventEmitter<any>();
+  imageBaseUrl: string = environment.s3BaseUrl;
+  getCurrencySymbol = getCurrencySymbol;
   productImages = [
     'https://laravel.pixelstrap.net/multikart/storage/51/fashion_171.jpg',
     'https://laravel.pixelstrap.net/multikart/storage/52/fashion_172.jpg',
   ];
-  selectedImage = this.productImages[0];
+  selectedImage = ""
+
+constructor(
+    private router: Router,
+    private spinner: NgxUiLoaderService,
+    private productService: ProductService
+  ) {}
+
+  ngOnInit(){
+    this.getProductDetail(this.productId)
+  }
 
   onSelectImage(image: string) {
     this.selectedImage = image;
   }
   onIncrement() {
-    if(this.product.priceList[0].stock_quantity){
+    if (this.product.priceList[0].stock_quantity) {
 
-      if(this.count<this.product.priceList[0].stock_quantity){
-  
+      if (this.count < this.product.priceList[0].stock_quantity) {
+
         this.count++;
       }
     }
-    else{
-      this.count=0
+    else {
+      this.count = 0
     }
 
   }
@@ -36,5 +54,27 @@ export class ProductDetail {
     if (this.count > 1) {
       this.count--;
     }
+  }
+
+   /**
+   * Fetches all New products
+   * @returns {void}
+   */
+  getProductDetail(productId:string): void {
+    console.log('productId: ', productId);
+    this.spinner.start();
+    this.productService.getProductDetails(productId).subscribe({
+      next: (data) => {
+        this.product = data;
+        console.log('this.selectedItem: ', this.product);
+        // console.log('Categories data:', data);
+      },
+      error: (err) => {console.log(err) },
+      complete: () => {
+        this.spinner.stop();
+        this.productLoaded.emit(this.product);
+       this.selectedImage=this.imageBaseUrl + this.product?.thumbnail_url;
+      },
+    });
   }
 }

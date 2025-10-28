@@ -16,7 +16,7 @@ export class Home {
   selectedTab = this.tabs[0];
   products: any = [];
   newProducts: any = [];
-  selectedItem:any ={}
+  selectedProductId:any ={}
   constructor(
     private router: Router,
     private spinner: NgxUiLoaderService,
@@ -100,32 +100,14 @@ export class Home {
   }
 
 
-  /**
-   * Fetches all New products
-   * @returns {void}
-   */
-  getProductDetail(productId:string): void {
-    this.spinner.start();
-    this.productService.getProductDetails(productId).subscribe({
-      next: (data) => {
-        this.selectedItem = data;
-        console.log('this.selectedItem: ', this.selectedItem);
-        // console.log('Categories data:', data);
-      },
-      error: (err) => {console.log(err) },
-      complete: () => {
-        this.spinner.stop();
-        this.showDetailModal = true
-      },
-    });
-  }
+  
 
   /**
    * route to catgeory pagee
    */
-  quickViewClicked(item:any){
-   this.getProductDetail(item.id)
-    
+  quickViewClicked(item: any) {
+    this.selectedProductId = item.id
+    this.showDetailModal = true
   }
 
 

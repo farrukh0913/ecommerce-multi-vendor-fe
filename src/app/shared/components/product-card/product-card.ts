@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { getCurrencySymbol } from '../../utils/currency.utils';
 
 @Component({
   selector: 'app-product-card',
@@ -13,6 +14,8 @@ export class ProductCard {
   @Input() viewMode: 'grid' | 'list' = 'grid';
   @Input() product: any = null;
   imageBaseUrl: string = environment.s3BaseUrl;
+  getCurrencySymbol = getCurrencySymbol;
+
   constructor(private router: Router) {}
 
   /**

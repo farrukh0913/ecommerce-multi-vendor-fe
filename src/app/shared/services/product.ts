@@ -40,7 +40,7 @@ export class ProductService {
     weight: null,
   };
 
-  private readonly endpoint = `${BASE_URL}/inventory/products`;
+  private readonly endpoint = `${BASE_URL}/shop/products`;
 
   constructor(private http: HttpClient) { }
 

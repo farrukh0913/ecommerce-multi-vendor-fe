@@ -1,49 +1,112 @@
 <app-content-header pageName="Shop" [routePath]="breadcrumb"></app-content-header>
 <div class="detail-container">
-  <app-product-detail></app-product-detail>
+  <app-product-detail [productId]="productId" (productLoaded)="onProductReceived($event)"></app-product-detail>
 </div>
 <div class="description-section">
   <div class="tab-bar">
     <div
       class="tab"
-      [class.active]="activeTab === 'description'"
-      (click)="setActiveTab('description')"
+      [class.active]="activeTab === 'Specification'"
+      (click)="setActiveTab('Specification')"
     >
-      Description
+      Specification
     </div>
 
+    <div class="tab" [class.active]="activeTab === 'Price'" (click)="setActiveTab('Price')">Price</div>
     <div class="tab" [class.active]="activeTab === 'review'" (click)="setActiveTab('review')">
-      Review
+      Reviews
     </div>
-    <div class="tab" [class.active]="activeTab === 'FAQ'" (click)="setActiveTab('FAQ')">FAQ</div>
   </div>
 
-  @if (activeTab === 'description') {
+  @if (activeTab === 'Specification') {
   <div class="tab-content">
-    <p>
-      Boyfriend shirts are a contemporary take on classic men's shirts, reimagined for the modern
-      woman. Characterized by their relaxed and oversized fit, these shirts exude a casual yet
-      effortlessly chic vibe. Drawing inspiration from the idea of borrowing clothing from a
-      boyfriend's wardrobe, they typically feature a loose silhouette with dropped shoulders and
-      longer hemlines, perfect for achieving that relaxed, borrowed-from-the-boys look.Boyfriend
-      shirts are a contemporary take on classic men's shirts, reimagined for the modern woman.
-      Characterized by their relaxed and oversized fit, these shirts exude a casual yet effortlessly
-      chic vibe. Drawing inspiration from the idea of borrowing clothing from a boyfriend's
-      wardrobe, they typically feature a loose silhouette with dropped shoulders and longer
-      hemlines, perfect for achieving that relaxed, borrowed-from-the-boys look.Boyfriend shirts are
-      a contemporary take on classic men's shirts, reimagined for the modern woman. Characterized by
-      their relaxed and oversized fit, these shirts exude a casual yet effortlessly chic vibe.
-      Drawing inspiration from the idea of borrowing clothing from a boyfriend's wardrobe, they
-      typically feature a loose silhouette with dropped shoulders and longer hemlines, perfect for
-      achieving that relaxed, borrowed-from-the-boys look.
-    </p>
+  <table class="product-table">
+
+  <tbody>
+    @for (key of Object.keys(product?.attributes || {}); track key) {
+      <tr>
+        <td class="attr-key">{{ key | titlecase }}</td>
+        <td class="attr-value">
+  @if (Array.isArray(product.attributes[key])) {
+    <ul>
+      @for (item of product.attributes[key]; track item) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+  } @else if (typeof product.attributes[key] === 'object' && product.attributes[key] !== null) {
+    <table class="nested-table">
+      <tbody>
+        @for (innerKey of Object.keys(product.attributes[key]); track innerKey) {
+          <tr>
+            <td class="nested-key">{{ innerKey | titlecase }}</td>
+            <td class="nested-value">
+              {{ product.attributes[key][innerKey] }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    {{ product.attributes[key] }}
+  }
+</td>
+
+      </tr>
+    }
+  </tbody>
+</table>
+
+
   </div>
-  } @if (activeTab === 'review' && additionalInfo.length > 0) {
+  } @if (activeTab === 'review') {
   <div class="empty-content">
     <h1>No Review Yet</h1>
     <p>There are currently no ratings or reviews for this product</p>
   </div>
-  } @if(activeTab==="FAQ"){
+  } @if(activeTab==="Price"){
+  <div class="tab-content">
+    <table class="product-table">
+      
+      
+      <tbody>
+        <tr>
+          <td class="attr-key">Price</td>
+          <td class="attr-value accent">{{ getCurrencySymbol(product.priceList[0].currency_code) }} {{ product?.price }}</td>
+        </tr>
+        <tr>
+          <td class="attr-key">Shipping</td>
+          <td class="attr-value">{{ getCurrencySymbol(product.priceList[0].currency_code) }} {{product.priceList[0].shipping_cost}}</td>
+        </tr>
+        <tr>
+          <td class="attr-key">Delivery</td>
+          <td class="attr-value">{{product.priceList[0].estimated_delivery_days_range.Lower}} - {{product.priceList[0].estimated_delivery_days_range.Upper}} days.</td>
+        </tr>
+        <tr>
+          <td class="attr-key">Stock</td>
+          <td
+          class="attr-value"
+          [ngClass]="{
+            'in-stock': product.priceList[0].stock_quantity > 0,
+            'out-of-stock': product.priceList[0].stock_quantity === 0
+          }"
+  >
+  @if (product.priceList[0].stock_quantity > 0) {
+    In Stock ({{product.priceList[0].stock_quantity}} avalible)
+  } @else {
+    Out of Stock
+  }
+</td>
+</tr>
+<tr>
+  <td class="attr-key">Seller</td>
+  <td class="attr-value code"></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
   <div class="empty-content">
     <h1>No Question Posted Yet</h1>
     <p>There are currently no question for this product</p>
