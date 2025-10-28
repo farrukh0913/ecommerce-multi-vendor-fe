@@ -33,13 +33,24 @@ export class ProductInfo {
   ];
   getCurrencySymbol = getCurrencySymbol;
 
-  constructor(private route: ActivatedRoute) {
-    this.productId = this.route.snapshot.paramMap.get('id');
-  }
+ constructor(private route: ActivatedRoute) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Subscribe to route param changes
+    this.route.paramMap.subscribe(params => {
+      this.productId = params.get('id');
+
+      this.loadProduct(this.productId);
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  loadProduct(id: string | null): void {
+    
+  }
+
+
+ 
 
   setActiveTab(tabName: string) {
     this.activeTab = tabName;

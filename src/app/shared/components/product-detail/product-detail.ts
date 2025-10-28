@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { getCurrencySymbol } from '../../utils/currency.utils';
 import { Router } from '@angular/router';
@@ -12,10 +12,10 @@ import { ProductService } from '../../services/product';
   styleUrl: './product-detail.scss',
 })
 export class ProductDetail {
-  count = 1
   @Input() productId: any = null;
+  @Output() productLoaded = new EventEmitter<any>();
+  count = 1
   product:any=null
-   @Output() productLoaded = new EventEmitter<any>();
   imageBaseUrl: string = environment.s3BaseUrl;
   getCurrencySymbol = getCurrencySymbol;
   productImages = [
@@ -32,6 +32,14 @@ constructor(
 
   ngOnInit(){
     this.getProductDetail(this.productId)
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['productId']) {
+      console.log('productId changed to:', this.productId);
+      this.getProductDetail(this.productId)
+
+      // Run your logic whenever productId changes
+    }
   }
 
   onSelectImage(image: string) {
