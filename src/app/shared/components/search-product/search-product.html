@@ -2,7 +2,7 @@
   [show]="showSearchModal"
   title="Search in Store"
   (close)="closeModal()"
-  class="product-detail-modal"
+  class="product-detail-modal search-modal"
 >
   <div class="search-container">
     <div class="search-header">
@@ -31,8 +31,18 @@
   }@else {
   <div class="products">
     @for (item of products; track $index) {
-    <app-product-card [product]="item" (detailViewClicked)="closeModal()"></app-product-card>
+    <app-product-card
+      [product]="item"
+      (detailViewClicked)="closeModal()"
+      (quickViewClicked)="productId = item.id"
+    ></app-product-card>
     }
   </div>
   }
 </app-base-modal>
+
+@if (productId) {
+<app-base-modal title="Product View" class="product-detail-modal" (close)="productId = ''">
+  <app-product-detail [productId]="productId"></app-product-detail>
+</app-base-modal>
+}

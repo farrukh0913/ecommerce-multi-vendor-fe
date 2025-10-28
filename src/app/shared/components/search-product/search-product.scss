@@ -1,13 +1,15 @@
 :host ::ng-deep {
-  .modal-body {
-    overflow: auto;
-    padding-top: 0px !important;
-  }
-  .modal-header {
-    margin-bottom: 0px !important;
-  }
-  .modal-container {
-    height: 95dvh !important;
+  .search-modal {
+    .modal-body {
+      overflow: auto;
+      padding-top: 0px !important;
+    }
+    .modal-header {
+      margin-bottom: 0px !important;
+    }
+    .modal-container {
+      height: 95dvh !important;
+    }
   }
   .product-box {
     width: unset !important;

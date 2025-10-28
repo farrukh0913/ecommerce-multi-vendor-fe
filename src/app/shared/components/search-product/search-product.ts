@@ -19,6 +19,7 @@ export class SearchProduct {
   loading = false;
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
+  productId: string = '';
 
   constructor(private productService: ProductService, private spinner: NgxUiLoaderService) {}
 
