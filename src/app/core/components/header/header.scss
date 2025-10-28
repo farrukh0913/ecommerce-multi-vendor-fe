@@ -307,7 +307,7 @@
   .right-section {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 
     .cart-btn {
       position: relative;
@@ -319,6 +319,7 @@
       padding: 0.6rem;
       border-radius: 50%;
       transition: all 0.3s ease;
+      background: rgba(0, 0, 0, 0.05);
       box-shadow: 0 0 10px rgba(var(--app-primary), 0.6);
 
       &:hover {

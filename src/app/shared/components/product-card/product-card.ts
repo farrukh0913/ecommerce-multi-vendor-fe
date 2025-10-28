@@ -11,6 +11,7 @@ import { getCurrencySymbol } from '../../utils/currency.utils';
 })
 export class ProductCard {
   @Output() quickViewClicked = new EventEmitter<any>();
+  @Output() detailViewClicked = new EventEmitter<any>();
   @Input() viewMode: 'grid' | 'list' = 'grid';
   @Input() product: any = null;
   imageBaseUrl: string = environment.s3BaseUrl;
@@ -34,5 +35,6 @@ export class ProductCard {
     this.router.navigate(['/product-detail', productId]).then(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll to top after navigation
     });
+    this.detailViewClicked.emit(this.product);
   }
 }

@@ -31,7 +31,7 @@
   }@else {
   <div class="products">
     @for (item of products; track $index) {
-    <app-product-card [product]="item"></app-product-card>
+    <app-product-card [product]="item" (detailViewClicked)="closeModal()"></app-product-card>
     }
   </div>
   }
