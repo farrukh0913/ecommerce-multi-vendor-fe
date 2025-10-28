@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { forkJoin, map } from 'rxjs';
 
 const BASE_URL = environment.apiBaseUrl;
 
@@ -12,7 +13,7 @@ export class ProductService {
   productFilters = {
     limit: 20,
     offset: 0,
-    order: 'created_at.desc',
+    order: '',
     name: '',
     template_id: '',
     category_id: '',
@@ -41,7 +42,7 @@ export class ProductService {
 
   private readonly endpoint = `${BASE_URL}/inventory/products`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Get all products with optional filters
@@ -95,9 +96,40 @@ export class ProductService {
   getFiltered(options: any): Observable<any> {
     let params = new HttpParams();
     Object.keys(options).forEach((key) => {
-      if (options[key] !== undefined && options[key] !== null)
-        params = params.append(key, options[key] as any);
+      const value = options[key];
+      if (value !== undefined && value !== null && value !== '') {
+        params = params.append(key, value as any);
+      }
     });
     return this.http.get(this.endpoint, { params });
   }
+
+
+  getProductDetails(productId: string): Observable<any> {
+    const productUrl = `${BASE_URL}/shop/products?id=eq.${productId}`;
+    const variantsUrl = `${BASE_URL}/shop/product_variants?product_id=eq.${productId}`;
+    const mediaUrl = `${BASE_URL}/inventory/product_media?product_id=eq.${productId}`;
+    const priceUrl = `${BASE_URL}/shop/pricelist?product_id=eq.${productId}`;
+
+    // Execute all requests in parallel
+    return forkJoin({
+      product: this.http.get(productUrl),
+      variants: this.http.get(variantsUrl),
+      media: this.http.get(mediaUrl),
+      priceList: this.http.get(priceUrl)
+    }).pipe(
+      map((response: any) => {
+        const product = Array.isArray(response.product) ? response.product[0] : response.product;
+
+        return {
+          ...product,
+          variants: response.variants || [],
+          media: response.media || [],
+          priceList: response.priceList || []
+        };
+      })
+    );
+  }
+
+
 }

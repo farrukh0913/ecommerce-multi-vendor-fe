@@ -53,9 +53,12 @@
   navigation="false"
   autoplay="false"
 >
-  @for (item of [].constructor(30); track $index) {
+  @for (item of newProducts; track $index) {
   <swiper-slide class="product-slide">
-    <app-product-card (quickViewClicked)="showDetailModal = true"></app-product-card>
+    <app-product-card
+          [product]="item"
+          (quickViewClicked)="quickViewClicked($event)"
+        ></app-product-card>
   </swiper-slide>
   }
 </swiper-container>
@@ -88,7 +91,7 @@
       <div class="product-loop">
         <app-product-card
           [product]="item"
-          (quickViewClicked)="showDetailModal = true"
+          (quickViewClicked)="quickViewClicked($event)"
         ></app-product-card>
       </div>
       }@empty {
@@ -180,6 +183,6 @@
   class="product-detail-modal"
   (close)="showDetailModal = false"
 >
-  <app-product-detail></app-product-detail>
+  <app-product-detail [product]="selectedItem"></app-product-detail>
 </app-base-modal>
 }

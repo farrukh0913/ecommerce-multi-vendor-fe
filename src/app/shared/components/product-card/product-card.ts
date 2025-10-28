@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
   styleUrl: './product-card.scss',
 })
 export class ProductCard {
-  @Output() quickViewClicked = new EventEmitter<void>();
+  @Output() quickViewClicked = new EventEmitter<any>();
   @Input() viewMode: 'grid' | 'list' = 'grid';
   @Input() product: any = null;
   imageBaseUrl: string = environment.s3BaseUrl;
@@ -20,7 +20,7 @@ export class ProductCard {
    */
   quickView(event: MouseEvent) {
     event.stopPropagation();
-    this.quickViewClicked.emit();
+    this.quickViewClicked.emit(this.product);
   }
 
   /**

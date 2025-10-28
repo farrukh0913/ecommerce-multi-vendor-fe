@@ -15,6 +15,8 @@ export class Home {
   tabs: any = [];
   selectedTab = this.tabs[0];
   products: any = [];
+  newProducts: any = [];
+  selectedItem:any ={}
   constructor(
     private router: Router,
     private spinner: NgxUiLoaderService,
@@ -31,6 +33,14 @@ export class Home {
     this.selectedTab = tab;
     this.getProductByCategories();
     // you can trigger filtering logic or API call here
+  }
+
+  /**
+   * Initial Fetch
+   * @returns {void}
+   */
+  ngOnInit(): void{
+    this.getProductNewArrival()
   }
 
   /**
@@ -60,8 +70,8 @@ export class Home {
     this.spinner.start();
     this.productService.getByCategory(this.selectedTab.id).subscribe({
       next: (data) => {
-        this.products = data;
-        console.log('Categories data:', data);
+        this.products = data.slice(0,4);
+        // console.log('Categories data:', data);
       },
       error: (err) => {},
       complete: () => {
@@ -69,6 +79,55 @@ export class Home {
       },
     });
   }
+
+  /**
+   * Fetches all New products
+   * @returns {void}
+   */
+  getProductNewArrival(): void {
+    this.spinner.start();
+    const filters = { ...this.productService.productFilters, order: 'created_at.desc'};
+    this.productService.getFiltered(filters).subscribe({
+      next: (data) => {
+        this.newProducts = data;
+        // console.log('Categories data:', data);
+      },
+      error: (err) => {console.log(err) },
+      complete: () => {
+        this.spinner.stop();
+      },
+    });
+  }
+
+
+  /**
+   * Fetches all New products
+   * @returns {void}
+   */
+  getProductDetail(productId:string): void {
+    this.spinner.start();
+    this.productService.getProductDetails(productId).subscribe({
+      next: (data) => {
+        this.selectedItem = data;
+        console.log('this.selectedItem: ', this.selectedItem);
+        // console.log('Categories data:', data);
+      },
+      error: (err) => {console.log(err) },
+      complete: () => {
+        this.spinner.stop();
+        this.showDetailModal = true
+      },
+    });
+  }
+
+  /**
+   * route to catgeory pagee
+   */
+  quickViewClicked(item:any){
+   this.getProductDetail(item.id)
+    
+  }
+
 
   /**
    * route to catgeory pagee
