@@ -189,7 +189,6 @@ img {
     .logo-section {
       width: 200px;
       min-height: 70px;
-      cursor: pointer;
       background: #f8f8f8;
       border: 1px solid var(--app-border-color);
       opacity: 0.6;
@@ -203,6 +202,7 @@ img {
         justify-content: center;
         align-items: center;
         span {
+          cursor: pointer;
           font-size: 22px;
           font-weight: 500;
           text-transform: uppercase;
@@ -214,21 +214,101 @@ img {
     }
   }
 }
+.blogs-swiper {
+  width: 100%;
+  max-width: 1400px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  .blog-slider {
+    width: 335px;
+    .blogs {
+      display: flex;
+      flex-direction: column;
+      width: 335px;
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding-top: 1rem;
+        p,
+        h4,
+        h6 {
+          text-align: center;
+        }
+        h4 {
+          color: var(--app-primary);
+          margin: 0px;
+          font-size: 16px;
+          font-weight: 400;
+        }
+        p {
+          margin: 0px;
+          color: #222;
+          font-size: 16px;
+          text-transform: capitalize;
+          font-weight: 700;
+          line-height: 1.5;
+          letter-spacing: 0.03em;
+          position: relative;
+          &::after {
+            position: absolute;
+            height: 3px;
+            width: 70px;
+            background-color: var(--app-primary);
+            content: '';
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            bottom: 0;
+            top: 50px;
+          }
+        }
+        h6 {
+          margin: 0px;
+          line-height: 1;
+          letter-spacing: 0.1em;
+          margin-bottom: 0;
+          font-size: 14px;
+          font-weight: 400;
+          color: #777;
+        }
+      }
+    }
+  }
+}
 @media (max-width: 700px) {
+  .products {
+    .content {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+      gap: 6px !important;
+    }
+  }
   :host ::ng-deep {
     .products {
       .product-loop {
-        width: 100%;
-        app-product-card {
-          width: 100%;
+        width: 160px;
+      }
+    }
+    .products,
+    .product-slide {
+      app-product-card {
+        width: 160px;
 
-          .product-box {
-            width: unset !important;
-            max-width: 100% !important;
+        .product-box {
+          width: 160px !important;
+          max-width: 160px !important;
+          height: 100%;
+          .image-holder {
+            height: 190px !important;
           }
         }
       }
     }
+  }
+  .product-slide {
+    width: 160px;
   }
   swiper-container {
     padding-left: 1rem;
@@ -241,5 +321,23 @@ img {
   .offers-container {
     padding-left: 1rem;
     padding-right: 1rem;
+    .offer-content {
+      justify-content: center;
+    }
+    .service {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+      flex-direction: column;
+      div {
+        align-items: center;
+      }
+    }
+  }
+  .category-slide {
+    width: 114px !important;
+    height: 110px;
+    img {
+      height: 100% !important;
+    }
   }
 }

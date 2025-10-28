@@ -127,6 +127,40 @@
   </div>
 </div>
 
+<div class="title-conatiner">
+  <h4 class="title-inner">From the Blog</h4>
+  <h2 class="title-inner1">From the Blog</h2>
+</div>
+
+<swiper-container
+  class="section-b-p blogs-swiper"
+  style="width: 100%"
+  slides-per-view="auto"
+  space-between="20"
+  loop="true"
+  pagination="false"
+  navigation="false"
+>
+  @for (item of [].constructor(30); track $index) {
+  <swiper-slide class="blog-slider">
+    <div class="blogs">
+      <div class="img-wrapper">
+        <img
+          src="https://laravel.pixelstrap.net/multikart/storage/126/fashion_one_blog_3.png"
+          alt="Category Image"
+          height="200px"
+        />
+      </div>
+      <div class="content">
+        <h4>06 May 2025 09:40:AM</h4>
+        <p>Vintage Vibes: Channeling Old-World Glamour in Modern Fashion</p>
+        <h6>By: admin</h6>
+      </div>
+    </div>
+  </swiper-slide>
+  }
+</swiper-container>
+
 <div class="product-categories">
   <h2>#WHOWEARWHAT</h2>
   <swiper-container

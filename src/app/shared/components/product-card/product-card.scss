@@ -38,16 +38,15 @@
       transform: rotate(-45deg);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       z-index: 5;
-      pointer-events: none; 
+      pointer-events: none;
     }
- 
-    
+
     .bucket-icons {
       position: absolute;
       top: 12px;
       right: 12px;
       display: flex;
-      flex-direction: column; 
+      flex-direction: column;
       gap: 8px;
       opacity: 0;
       transform: translateY(-10px);
@@ -55,7 +54,6 @@
       z-index: 10;
     }
 
-    
     .bucket-icon {
       background: #fff;
       color: var(--app-light);
@@ -80,15 +78,10 @@
       }
     }
 
-   
     &:hover .bucket-icons {
       opacity: 1;
       transform: translateY(0);
     }
-    
-
-
-
 
     .quick-view {
       position: absolute;
@@ -110,6 +103,22 @@
         background-color: var(--app-dark);
       }
     }
+    .review-tag {
+      position: absolute;
+      bottom: 4px;
+      left: 20px;
+      background: #fff;
+      padding: 0.3rem 0.5rem;
+      display: flex;
+      gap: 5px;
+      span,
+      ion-icon {
+        font-size: 14px;
+      }
+      ion-icon {
+        color: #ffa200;
+      }
+    }
 
     &:hover .quick-view {
       opacity: 1;
@@ -124,6 +133,8 @@
     padding-left: 1rem;
     width: 100%;
     gap: 6px;
+    flex: 1;
+    justify-content: end;
 
     .category {
       font-size: 14px;
@@ -262,5 +273,31 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+.limited-offer {
+  overflow: hidden;
+}
+
+.marquee {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  animation: scroll-left 10s linear infinite;
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
   }
 }
