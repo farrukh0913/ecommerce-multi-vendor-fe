@@ -145,3 +145,18 @@
     color: #9ca3af;
   }
 }
+@media (max-width: 768px) {
+  .footer-layout{
+    gap: 0.5rem !important;
+  }
+  .footer-section{
+    &:first-child {
+      align-items: center !important;
+    }
+  }
+  .footer-title{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}

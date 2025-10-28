@@ -20,6 +20,7 @@ export class Home {
   newProducts: any = [];
   organizations: any = [];
   selectedProductId: any = {};
+  heroImages=['https://laravel.pixelstrap.net/multikart/storage/146/fashion_one_2.png','https://laravel.pixelstrap.net/multikart/storage/2772/fashion_one_9.png']
   private destroy$ = new Subject<void>();
 
   constructor(

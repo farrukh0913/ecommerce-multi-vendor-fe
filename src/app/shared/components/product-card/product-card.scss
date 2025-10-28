@@ -38,38 +38,57 @@
       transform: rotate(-45deg);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       z-index: 5;
-      pointer-events: none; /* optional: so clicks pass through */
+      pointer-events: none; 
     }
-
-    /* Bucket icon on right side, hidden by default */
-    .bucket-icon {
+ 
+    
+    .bucket-icons {
       position: absolute;
       top: 12px;
       right: 12px;
+      display: flex;
+      flex-direction: column; 
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    
+    .bucket-icon {
       background: #fff;
       color: var(--app-light);
       padding: 6px;
       border-radius: 50%;
       font-size: 1rem;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-      z-index: 3;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
       ion-icon {
         font-size: 20px;
         color: var(--app-primary);
       }
+
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
     }
 
-    &:hover .bucket-icon {
+   
+    &:hover .bucket-icons {
       opacity: 1;
       transform: translateY(0);
     }
+    
+
+
+
 
     .quick-view {
       position: absolute;
