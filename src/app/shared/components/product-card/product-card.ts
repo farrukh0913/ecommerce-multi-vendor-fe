@@ -16,6 +16,13 @@ export class ProductCard {
   @Input() product: any = null;
   imageBaseUrl: string = environment.s3BaseUrl;
   getCurrencySymbol = getCurrencySymbol;
+  colors: string[] = ['red', 'green', 'blue', '#ff00ff', '#00ffff'];
+  // colors=[]
+  selectedColor: string = 'red';
+  // sizes=['XS','S','M','L','XL']
+  sizes=[]
+  selectedSize:string=this.sizes[0]
+
 
   constructor(private router: Router) {}
 

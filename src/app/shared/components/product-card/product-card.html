@@ -1,14 +1,10 @@
 <div class="product-box" [ngClass]="viewMode" (click)="goToDetail(product?.id || '232323')">
   <div class="image-holder">
-    <img
-      class="main-img"
-      [src]="
+    <img class="main-img" [src]="
         product?.thumbnail_url
           ? imageBaseUrl + product?.thumbnail_url
           : imageBaseUrl + 'public/amd-ryzen-5-7600.jpg'
-      "
-      alt="Product Image"
-    />
+      " alt="Product Image" />
 
     <div class="new-tag">
       <span>{{ product?.condition || 'new' }}</span>
@@ -32,36 +28,50 @@
   <div class="product-details">
     <span class="product-title">{{ product.name }}</span>
     <span class="category">Chic Crop Top</span>
-    <span class="price"
-      >{{ product?.price ? product?.price : '10' }} € <span class="old-price">$25</span>
+    <span class="price">{{ product?.price ? product?.price : '10' }} € <span class="old-price">$25</span>
       <span class="discout"> 12%</span>
     </span>
     <!-- <button class="design-button">Design Now</button> -->
-
-    <div class="limited-offer">
-  <div class="marquee">
-    <div class="marquee-track">
-      <div class="marquee-content">
-        <div class="icon">
-          <i class="fa fa-percent"></i>
-        </div>
-        <div class="text">
-          <span>Limited Offer</span>
-          <span class="countdown">02:34:52</span>
-        </div>
+    <div class="attributes">
+      @if(colors.length>0){
+      @for (color of colors; track $index) {
+      <div class="color-icon" [style.background-color]="color" (click)="selectedColor = color"
+        [ngClass]="{'selected-attribute': selectedColor == color }">
       </div>
-      <div class="marquee-content">
-        <div class="icon">
-          <i class="fa fa-percent"></i>
-        </div>
-        <div class="text">
-          <span>Limited Offer</span>
-          <span class="countdown">02:34:52</span>
+      }
+      }
+      @else if(sizes.length>0){
+      @for (size of sizes; track $index) {
+      <div class="size-icon" [ngClass]="{'selected-attribute':selectedSize===size} " (click)="selectedSize=size">
+        {{size}}
+      </div>
+      }
+      }
+    </div>
+    <div class="limited-offer">
+      <div class="marquee">
+        <div class="marquee-track">
+          <div class="marquee-content">
+            <div class="icon">
+              <i class="fa fa-percent"></i>
+            </div>
+            <div class="text">
+              <span>Limited Offer</span>
+              <span class="countdown">02:34:52</span>
+            </div>
+          </div>
+          <div class="marquee-content">
+            <div class="icon">
+              <i class="fa fa-percent"></i>
+            </div>
+            <div class="text">
+              <span>Limited Offer</span>
+              <span class="countdown">02:34:52</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
   </div>
 </div>
