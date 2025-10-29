@@ -1,0 +1,84 @@
+<div class="cart-layout">
+  <div class="left-section">
+    <div class="free-shipping">
+      @if(totalCost < 300){
+
+      <p>
+        <i class="fa-solid fa-box"></i>
+        Add <strong>{{ 300 - totalCost }}$</strong> to your cart for free shipping!
+      </p>
+      } @else{
+      <p class="eligible">
+        <i class="fa-solid fa-truck-fast"></i>
+        Congratulations! You are eligible for free shipping.
+      </p>
+      }
+      <div class="bar-container">
+        <div class="bar" [style.width.%]="(totalCost / 300) * 100"></div>
+      </div>
+    </div>
+
+    <div class="cart-items">
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of cartItems;let index=index">
+            <td class="item">
+              
+              <img [src]="item.image" alt="{{ item.name }}" />
+              <span>{{ item.name }}</span>
+            </td>
+            <td>${{ item.price }}</td>
+            <td>
+              <div class="quantity">
+                <button (click)="decreaseQty(item)">−</button>
+                <span>{{ item.quantity }}</span>
+                <button (click)="increaseQty(item)">+</button>
+              </div>
+            </td>
+            <td>${{ item.price * item.quantity }}</td>
+            <td>
+
+              <i class="fa fa-close delete-icon" (click)="removeFromCart(index)"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="summary-card">
+      <h3>Order Summary</h3>
+
+      <!-- <div class="coupon">
+        <input type="text" placeholder="Enter coupon code" [(ngModel)]="couponCode" />
+        <button (click)="applyCoupon()">Apply</button>
+      </div> -->
+
+      <div class="summary-line">
+        <span>Subtotal</span>
+        <span>${{ totalCost.toFixed(2) }}</span>
+      </div>
+
+      <div class="summary-line">
+        <span>GST (5%)</span>
+        <span>${{ gstAmount.toFixed(2) }}</span>
+      </div>
+
+      <div class="summary-line total">
+        <span>Total</span>
+        <span>${{ grandTotal.toFixed(2) }}</span>
+      </div>
+
+      <button class="checkout-btn">Proceed to Checkout</button>
+    </div>
+  </div>
+  <div class="right-section">
+    
+  </div>
+</div>

@@ -1,0 +1,39 @@
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-products-by-category',
+  standalone: false,
+  templateUrl: './products-by-category.component.html',
+  styleUrl: './products-by-category.component.scss',
+})
+export class ProductsByCategory {
+  showDetailModal: boolean = false;
+  productCategory: string = 'T-Shirts';
+  viewMode: 'grid' | 'list' = 'grid';
+  breadcrumb=[
+    {
+      name:'Home',
+      path:'/'
+    },
+    {
+      name:'Categories',
+      path:'/shop-now'
+    },
+    {
+      name:this.productCategory,
+      path:null
+    }
+  ]
+
+  constructor(private route: ActivatedRoute) {
+    /**
+     * get current category
+     */
+    const category = this.route.snapshot.paramMap.get('category');
+    if (category) {
+      // this.productCategory = category;
+    }
+    console.log('Selected Category:', category);
+  }
+}

@@ -1,0 +1,67 @@
+<div class="product-box" [ngClass]="viewMode" (click)="goToDetail(product?.id || '232323')">
+  <div class="image-holder">
+    <img
+      class="main-img"
+      [src]="
+        product?.thumbnail_url
+          ? imageBaseUrl + product?.thumbnail_url
+          : imageBaseUrl + 'public/amd-ryzen-5-7600.jpg'
+      "
+      alt="Product Image"
+    />
+
+    <div class="new-tag">
+      <span>{{ product?.condition || 'new' }}</span>
+    </div>
+    <div class="bucket-icons">
+      <div class="bucket-icon"><ion-icon name="heart-outline"></ion-icon></div>
+      <div class="bucket-icon"><ion-icon name="cart-outline"></ion-icon></div>
+      <div class="bucket-icon"><ion-icon name="search-outline"></ion-icon></div>
+      <div class="bucket-icon"><ion-icon name="refresh-outline"></ion-icon></div>
+    </div>
+    <div class="review-tag">
+      <ion-icon name="star" style="color: #f4c430; font-size: 16px"></ion-icon>
+      <span>3</span>
+    </div>
+
+    <div class="quick-view" (click)="quickView($event)">
+      <span>Quick View</span>
+    </div>
+  </div>
+
+  <div class="product-details">
+    <span class="product-title">{{ product.name }}</span>
+    <span class="category">Chic Crop Top</span>
+    <span class="price"
+      >{{ product?.price ? product?.price : '10' }} € <span class="old-price">$25</span>
+      <span class="discout"> 12%</span>
+    </span>
+    <!-- <button class="design-button">Design Now</button> -->
+
+    <div class="limited-offer">
+  <div class="marquee">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <div class="icon">
+          <i class="fa fa-percent"></i>
+        </div>
+        <div class="text">
+          <span>Limited Offer</span>
+          <span class="countdown">02:34:52</span>
+        </div>
+      </div>
+      <div class="marquee-content">
+        <div class="icon">
+          <i class="fa fa-percent"></i>
+        </div>
+        <div class="text">
+          <span>Limited Offer</span>
+          <span class="countdown">02:34:52</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>

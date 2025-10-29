@@ -1,0 +1,226 @@
+<!-- hero section -->
+<swiper-container
+  class="hero-swiper section-b-p"
+  slides-per-view="1"
+  loop="true"
+  navigation="true"
+  pagination="false"
+  autoplay="false"
+>
+  @for (item of heroImages; track $index) {
+  <swiper-slide>
+    <img
+      [src]="item"
+      alt="Slide"
+      style="width: 100%"
+      (click)="moveToCategoryPage()"
+    />
+  </swiper-slide>
+  }
+</swiper-container>
+
+<div class="section-two section-b-p">
+  <div class="img-wrapper">
+    <img
+      src="https://laravel.pixelstrap.net/multikart/storage/1300/fashion_one_8.png"
+      (click)="moveToCategoryPage()"
+    />
+  </div>
+  <div class="img-wrapper">
+    <img
+      src="https://laravel.pixelstrap.net/multikart/storage/1299/fashion_one_7.png"
+      (click)="moveToCategoryPage()"
+    />
+  </div>
+</div>
+
+<div class="title-conatiner">
+  <h4 class="title-inner">special offer</h4>
+  <h2 class="title-inner1">Latest Drops</h2>
+  <p class="sub-title">
+    Looking for the latest trends in clothing, shoes and accessories? Welcome to our 'Latest Drops'
+    edit, bringing you all the latest styles from all your fave brands.
+  </p>
+</div>
+
+<!-- swiper section -->
+<swiper-container
+  class="latest-drop-swiper section-b-p"
+  slides-per-view="auto"
+  space-between="20"
+  loop="true"
+  pagination="false"
+  navigation="false"
+  autoplay="false"
+>
+  @for (item of newProducts; track $index) {
+  <swiper-slide class="product-slide">
+    <app-product-card
+      [product]="item"
+      (quickViewClicked)="quickViewClicked($event)"
+    ></app-product-card>
+  </swiper-slide>
+  }
+</swiper-container>
+
+<div class="img-new-arrivals section-b-p">
+  <img
+    src="https://laravel.pixelstrap.net/multikart/storage/149/fashion_one_5.png"
+    (click)="moveToCategoryPage()"
+  />
+</div>
+
+<div class="title-conatiner">
+  <h4 class="title-inner">exclusive products</h4>
+  <h2 class="title-inner1">everyday casual</h2>
+</div>
+
+<section class="products section-b-p">
+  <div class="tabs-content">
+    <ul class="tabs">
+      <li
+        *ngFor="let tab of tabs"
+        [class.active]="selectedTab.id === tab.id"
+        (click)="selectTab(tab)"
+      >
+        {{ tab.name }}
+      </li>
+    </ul>
+    <div class="content">
+      @for (item of products; track $index) {
+      <div class="product-loop">
+        <app-product-card
+          [product]="item"
+          (quickViewClicked)="quickViewClicked($event)"
+        ></app-product-card>
+      </div>
+      }@empty {
+      <p>No product to display.</p>
+      }
+    </div>
+  </div>
+</section>
+
+<div class="offers-container section-b-p">
+  <div class="offer-content">
+    <div class="service">
+      <ion-icon name="car-outline"></ion-icon>
+      <div>
+        <h4>free shipping</h4>
+        <p>free shipping world wide</p>
+      </div>
+    </div>
+    <div class="service">
+      <ion-icon name="time-outline"></ion-icon>
+      <div>
+        <h4>24 X 7 service</h4>
+        <p>online service for new customer</p>
+      </div>
+    </div>
+    <div class="service">
+      <ion-icon name="gift-outline"></ion-icon>
+      <div>
+        <h4>festival offer</h4>
+        <p>new online special festival offer</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="title-conatiner">
+  <h4 class="title-inner">From the Blog</h4>
+  <h2 class="title-inner1">From the Blog</h2>
+</div>
+
+<swiper-container
+  class="section-b-p blogs-swiper"
+  style="width: 100%"
+  slides-per-view="auto"
+  space-between="20"
+  loop="true"
+  pagination="false"
+  navigation="false"
+>
+  @for (item of [].constructor(30); track $index) {
+  <swiper-slide class="blog-slider">
+    <div class="blogs">
+      <div class="img-wrapper">
+        <img
+          src="https://laravel.pixelstrap.net/multikart/storage/126/fashion_one_blog_3.png"
+          alt="Category Image"
+          height="200px"
+        />
+      </div>
+      <div class="content">
+        <h4>06 May 2025 09:40:AM</h4>
+        <p>Vintage Vibes: Channeling Old-World Glamour in Modern Fashion</p>
+        <h6>By: admin</h6>
+      </div>
+    </div>
+  </swiper-slide>
+  }
+</swiper-container>
+
+<div class="product-categories">
+  <h2>#WHOWEARWHAT</h2>
+  <swiper-container
+    class="section-b-p"
+    style="width: 100%"
+    slides-per-view="auto"
+    space-between="0"
+    loop="true"
+    pagination="false"
+    navigation="false"
+    autoplay="false"
+  >
+    @for (item of [].constructor(30); track $index) {
+    <swiper-slide class="category-slide">
+      <div class="image-wrapper">
+        <img
+          src="https://laravel.pixelstrap.net/multikart/storage/3221/fashion_one_insta_3.png"
+          alt="Category Image"
+          height="200px"
+        />
+        <div class="animated-overlay">
+          <ion-icon name="logo-instagram"></ion-icon>
+        </div>
+      </div>
+    </swiper-slide>
+    }
+  </swiper-container>
+
+  <div class="categories-inner-container section-b-p">
+    <swiper-container
+      style="width: 100%"
+      slides-per-view="auto"
+      space-between="0"
+      loop="true"
+      pagination="false"
+      navigation="false"
+      autoplay="false"
+    >
+      @for (organization of organizations; track $index) {
+      <swiper-slide class="logo-section">
+        <div>
+          @if (organization.logo_url) {
+          <img src="https://laravel.pixelstrap.net/multikart/storage/3079/46.png" />
+          }@else {
+          <span (click)="openWebUrl(organization)">{{ organization.name }}</span>
+          }
+        </div>
+      </swiper-slide>
+      }
+    </swiper-container>
+  </div>
+</div>
+
+@if (showDetailModal) {
+<app-base-modal
+  [show]="showDetailModal"
+  title="Product View"
+  class="product-detail-modal"
+  (close)="showDetailModal = false"
+>
+  <app-product-detail [productId]="selectedProductId"></app-product-detail>
+</app-base-modal>
+}

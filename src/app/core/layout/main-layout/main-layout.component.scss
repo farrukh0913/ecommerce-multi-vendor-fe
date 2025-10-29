@@ -1,0 +1,48 @@
+:host ::ng-deep {
+  .hero-swiper {
+    --swiper-theme-color: var(--app-primary) !important;
+  }
+  .hero-swiper::part(button-next),
+  .hero-swiper::part(button-prev) {
+    background: white;
+    border-radius: 50%;
+    width: 16px;
+    padding: 10px;
+    height: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+  .hero-swiper::part(button-next) {
+    right: 30px;
+  }
+  .hero-swiper::part(button-prev) {
+    left: 30px;
+  }
+}
+
+.main-app-conatiner {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+
+  .header {
+    flex-shrink: 0;
+  }
+
+  .page-content {
+    flex: 1 1 auto;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    @media (max-width: 768px) {
+      padding-bottom: 80px;
+    }
+  }
+}
+.content{
+  background: white;
+  flex: 1 1 auto;
+  padding: 1.5rem;
+}
+.no-padding{
+  padding: 0px;
+}

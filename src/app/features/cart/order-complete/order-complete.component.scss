@@ -1,0 +1,164 @@
+.order-complete-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  .success-animation {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .checkmark-glow {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ffffff, #f2f2f2);
+    box-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.6), 0 0 25px rgba(255, 111, 0, 0.3),
+      0 10px 25px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: softPop 0.6s ease-out forwards;
+  }
+
+  .checkmark-svg {
+    width: 90px;
+    height: 90px;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: var(--app-primary);
+    fill: none;
+    filter: drop-shadow(0 2px 6px rgba(255, 111, 0, 0.3));
+  }
+
+  .checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke: rgba(255, 111, 0, 0.5);
+    animation: drawCircle 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  }
+
+  .checkmark-check {
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: drawCheck 0.7s cubic-bezier(0.77, 0, 0.175, 1) 0.9s forwards;
+  }
+
+  .title {
+    font-size: 2rem;
+    color: var(--app-primary);
+    margin-bottom: 0.5rem;
+    animation: fadeIn 1s ease 1.4s both;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    color: #666;
+    max-width: 500px;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 1.2s ease 1.6s both;
+  }
+
+  .order-summary {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 1.5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    animation: fadeInUp 1.3s ease 1.8s both;
+
+    p {
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+      color: #444;
+    }
+  }
+
+  .home-btn {
+    margin-top: 2rem;
+    padding: 0.9rem 2rem;
+    background-color: var(--app-primary);
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+    animation: fadeInUp 1.4s ease 2s both;
+
+    &:hover {
+      background-color: #e65c00;
+      transform: translateY(-3px);
+    }
+  }
+}
+
+/* === ANIMATIONS === */
+@keyframes softPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes drawCircle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .order-complete-container {
+    .title {
+      font-size: 1.6rem;
+    }
+    .order-summary {
+      padding: 1rem;
+    }
+  }
+}
