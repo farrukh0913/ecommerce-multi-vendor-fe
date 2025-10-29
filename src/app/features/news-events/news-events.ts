@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-news-events',
   standalone: false,
-  templateUrl: './news-events.component.html',
-  styleUrl: './news-events.component.scss',
+  templateUrl: './news-events.html',
+  styleUrl: './news-events.scss',
 })
 export class NewsEvents {
   breadcrumb=[

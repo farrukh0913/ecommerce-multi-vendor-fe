@@ -6,8 +6,8 @@ import { ResponsiveService } from '../../../shared/services/responsive.service';
 @Component({
   selector: 'app-footer',
   standalone: false,
-  templateUrl: './footer.component.html',
-  styleUrl: './footer.component.scss',
+  templateUrl: './footer.html',
+  styleUrl: './footer.scss',
 })
 export class Footer implements OnInit, OnDestroy {
   currentYear = new Date().getFullYear();

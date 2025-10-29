@@ -3,8 +3,8 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 @Component({
   selector: 'app-base-modal',
   standalone: false,
-  templateUrl: './base-modal.component.html',
-  styleUrl: './base-modal.component.scss',
+  templateUrl: './base-modal.html',
+  styleUrl: './base-modal.scss',
 })
 export class BaseModal {
   @Input() show = false;

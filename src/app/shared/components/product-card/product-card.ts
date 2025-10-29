@@ -6,8 +6,8 @@ import { getCurrencySymbol } from '../../utils/currency.utils';
 @Component({
   selector: 'app-product-card',
   standalone: false,
-  templateUrl: './product-card.component.html',
-  styleUrl: './product-card.component.scss',
+  templateUrl: './product-card.html',
+  styleUrl: './product-card.scss',
 })
 export class ProductCard {
   @Output() quickViewClicked = new EventEmitter<any>();

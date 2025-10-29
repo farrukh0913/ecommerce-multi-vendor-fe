@@ -5,8 +5,8 @@ import { getCurrencySymbol } from '../../shared/utils/currency.utils';
 @Component({
   selector: 'app-product-info',
   standalone: false,
-  templateUrl: './product-info.component.html',
-  styleUrl: './product-info.component.scss',
+  templateUrl: './product-info.html',
+  styleUrl: './product-info.scss',
 })
 export class ProductInfo {
   // Expose global objects for use in template

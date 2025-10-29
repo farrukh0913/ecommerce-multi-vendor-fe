@@ -7,8 +7,8 @@ import { ProductService } from '../../shared/services/product.service';
 @Component({
   selector: 'app-products-by-category',
   standalone: false,
-  templateUrl: './products-by-category.component.html',
-  styleUrl: './products-by-category.component.scss',
+  templateUrl: './products-by-category.html',
+  styleUrl: './products-by-category.scss',
 })
 export class ProductsByCategory {
   showDetailModal: boolean = false;

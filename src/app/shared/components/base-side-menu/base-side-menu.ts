@@ -3,8 +3,8 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 @Component({
   selector: 'app-base-side-menu',
   standalone: false,
-  templateUrl: './base-side-menu.component.html',
-  styleUrl: './base-side-menu.component.scss',
+  templateUrl: './base-side-menu.html',
+  styleUrl: './base-side-menu.scss',
 })
 export class BaseSideMenu {
   @HostListener('document:keydown.escape')

@@ -9,8 +9,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-home',
   standalone: false,
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  templateUrl: './home.html',
+  styleUrl: './home.scss',
 })
 export class Home {
   showDetailModal: boolean = false;

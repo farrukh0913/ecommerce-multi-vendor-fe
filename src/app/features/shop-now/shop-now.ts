@@ -6,8 +6,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-shop-now',
   standalone: false,
-  templateUrl: './shop-now.component.html',
-  styleUrl: './shop-now.component.scss',
+  templateUrl: './shop-now.html',
+  styleUrl: './shop-now.scss',
 })
 export class ShopNow {
   breadcrumb = [

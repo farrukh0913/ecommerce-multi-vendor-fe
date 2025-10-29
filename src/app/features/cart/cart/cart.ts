@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-cart',
   standalone: false,
-  templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.scss'],
+  templateUrl: './cart.html',
+  styleUrls: ['./cart.scss'],
 })
 export class Cart {
   breadcrumb=[

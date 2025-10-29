@@ -3,8 +3,8 @@ import { Component, Input } from "@angular/core";
 @Component({
     selector: 'app-content-header',
     standalone: false,
-    templateUrl: './content-header.component.html',
-    styleUrls: ['./content-header.component.scss']
+    templateUrl: './content-header.html',
+    styleUrls: ['./content-header.scss']
 })
 
 export class ContentHeader {

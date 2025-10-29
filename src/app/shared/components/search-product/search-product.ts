@@ -6,8 +6,8 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 @Component({
   selector: 'app-search-product',
   standalone: false,
-  templateUrl: './search-product.component.html',
-  styleUrl: './search-product.component.scss',
+  templateUrl: './search-product.html',
+  styleUrl: './search-product.scss',
 })
 export class SearchProduct {
   @Output() close = new EventEmitter<void>();

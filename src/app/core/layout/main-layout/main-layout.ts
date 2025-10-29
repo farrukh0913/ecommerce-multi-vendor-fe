@@ -5,8 +5,8 @@ import { CategoryService } from '../../../shared/services/category.service';
 @Component({
   selector: 'app-main-layout',
   standalone: false,
-  templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.scss',
+  templateUrl: './main-layout.html',
+  styleUrl: './main-layout.scss',
 })
 export class MainLayout {
   scrollTop = 0;

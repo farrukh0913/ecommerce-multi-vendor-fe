@@ -8,8 +8,8 @@ import { ProductService } from '../../services/product.service';
 @Component({
   selector: 'app-product-detail',
   standalone: false,
-  templateUrl: './product-detail.component.html',
-  styleUrl: './product-detail.component.scss',
+  templateUrl: './product-detail.html',
+  styleUrl: './product-detail.scss',
 })
 export class ProductDetail {
   @Input() productId: any = null;

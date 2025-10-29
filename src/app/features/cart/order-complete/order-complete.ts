@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-order-complete',
   standalone: false,
-  templateUrl: './order-complete.component.html',
-  styleUrl: './order-complete.component.scss',
+  templateUrl: './order-complete.html',
+  styleUrl: './order-complete.scss',
 })
 export class OrderComplete {
   orderId = Math.floor(Math.random() * 1000000);
