@@ -1,5 +1,5 @@
 :host ::ng-deep {
-  .products.list {
+  .products {
     grid-template-columns: unset;
     .product-loop {
       width: 100%;
@@ -10,7 +10,7 @@
           width: unset !important;
           max-width: 100% !important;
         }
-        .image-holder{
+        .image-holder {
           height: 320px;
         }
       }
@@ -21,53 +21,167 @@
   margin-bottom: 0px;
   margin-top: 0px;
 }
+.main-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .inner-container {
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    gap: 1rem;
+
+    .products-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      .img-wrapper {
+        img {
+          width: 100%;
+        }
+      }
+      .product-top-filter {
+        padding: 12px 16px;
+        background-color: #f8f8f8;
+        position: relative;
+        border: 1px solid var(--app-border-color);
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        .filter-item {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          flex: 1;
+          justify-content: end;
+        }
+
+        .filter-item label {
+          font-size: 14px;
+          color: #444;
+        }
+
+        .filter-item select {
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          background: #fff;
+          color: #111;
+          font-size: 12px;
+          cursor: pointer;
+        }
+
+        .custom-select {
+          position: relative;
+          display: inline-block;
+        }
+
+        .custom-select select {
+          padding: 12px 52px 12px 12px;
+          font-size: 14px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          background: #fff;
+          color: #444;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          cursor: pointer;
+          width: 100%;
+        }
+
+        .custom-select .select-icon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 18px;
+          color: #777;
+          pointer-events: none;
+        }
+
+        .custom-select select:focus {
+          outline: none;
+          border-color: var(--app-primary);
+        }
+        .filters {
+          display: flex;
+          flex-direction: row;
+          gap: 1rem;
+        }
+        .grid-layouts {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+
+          div {
+            background-color: #fff;
+            border: 1px solid var(--app-border-color);
+            padding: 8px 12px;
+            font-weight: bold;
+            color: var(--app-primary);
+            border-radius: 4px;
+            cursor: pointer;
+
+            &.active {
+              background-color: var(--app-primary);
+              color: #fff;
+              border-color: var(--app-primary);
+              box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.filter-container {
+  padding: 20px;
+  width: 100%;
+  max-width: 350px;
+  background-color: #f9f9f9;
+  border: 1px solid var(--app-border-color);
+
+  .accordion-button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-weight: 600;
+    font-size: 18px;
+    color: #212529;
+    background-color: transparent;
+    border: none;
+    padding-bottom: 1rem;
+    cursor: pointer;
+
+    &:not(:first-child) {
+      border-top: 1px solid var(--app-border-color);
+      padding-top: 1rem;
+    }
+  }
+}
+.filter-btn-mob {
+  background-color: var(--app-primary);
+  padding: 10px 18px;
+  border-radius: 6px;
+  outline: none;
+  border: none;
+  color: #fff;
+  width: max-content;
+}
+
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 2rem;
   justify-items: center;
 }
-.toggle-btn {
-  background: var(--app-light);
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  color: var(--app-dark);
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
 
-  i {
-    font-size: 1rem;
-  }
-
-  &:hover {
-    background: #f7f7f7;
-    transform: translateY(-2px);
-  }
-
-  &.active {
-    background: var(--app-primary);
-    color: var(--app-light);
-    border-color: var(--app-primary);
-  }
-}
-.view-toggle-container {
-  padding-bottom: 20px;
-  .view-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: end;
-  }
-}
 @media (max-width: 700px) {
-  .view-toggle-container{
-    display: none;
-  }
   :host ::ng-deep {
     .products {
       .product-loop {
@@ -79,6 +193,22 @@
           .product-box {
             width: unset !important;
             max-width: 100% !important;
+          }
+        }
+      }
+    }
+    .products {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+      gap: 6px !important;
+      app-product-card {
+        width: 160px;
+
+        .product-box {
+          width: 160px !important;
+          max-width: 160px !important;
+          height: 100%;
+          .image-holder {
+            height: 190px !important;
           }
         }
       }

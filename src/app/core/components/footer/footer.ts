@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { CategoryService } from '../../../shared/services/category';
+import { CategoryService } from '../../../shared/services/category.service';
 import { Subject, takeUntil } from 'rxjs';
-import { ResponsiveService } from '../../../shared/services/responsive';
+import { ResponsiveService } from '../../../shared/services/responsive.service';
 
 @Component({
   selector: 'app-footer',

@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { ResponsiveService } from '../../../shared/services/responsive';
+import { ResponsiveService } from '../../../shared/services/responsive.service';
 
 @Component({
   selector: 'app-header',

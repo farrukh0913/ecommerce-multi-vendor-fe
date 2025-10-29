@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { getCurrencySymbol } from '../../utils/currency.utils';
@@ -16,8 +16,30 @@ export class ProductCard {
   @Input() product: any = null;
   imageBaseUrl: string = environment.s3BaseUrl;
   getCurrencySymbol = getCurrencySymbol;
+  selectedColor: any = null;
+  selectedSize: any = null;
 
   constructor(private router: Router) {}
+
+  /**
+   * Detect input changes
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['product'] && changes['product'].currentValue) {
+      const newProduct = changes['product'].currentValue;
+      console.log('Product changed:', newProduct);
+      // set default color
+      const defaultColor = this.product?.attributes?.colors?.find(
+        (data: any) => data.is_default === true
+      );
+      this.selectedColor = defaultColor ? defaultColor : this.product?.attributes?.colors?.[0];
+      // set default size
+      const defaultSize = this.product?.attributes?.sizes?.find(
+        (data: any) => data.is_default === true
+      );
+      this.selectedSize = defaultSize ? defaultSize : this.product?.attributes?.sizes?.[0];
+    }
+  }
 
   /**
    * quick view clicked
@@ -36,5 +58,10 @@ export class ProductCard {
       window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll to top after navigation
     });
     this.detailViewClicked.emit(this.product);
+  }
+
+  updateValue(event: MouseEvent, value: any, attr: 'selectedColor' | 'selectedSize') {
+    event.stopPropagation();
+    this[attr] = value;
   }
 }

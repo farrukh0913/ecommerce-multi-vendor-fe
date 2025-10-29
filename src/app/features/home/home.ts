@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { CategoryService } from '../../shared/services/category';
-import { ProductService } from '../../shared/services/product';
-import { OrganizationService } from '../../shared/services/organization';
+import { CategoryService } from '../../shared/services/category.service';
+import { ProductService } from '../../shared/services/product.service';
+import { OrganizationService } from '../../shared/services/organization.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

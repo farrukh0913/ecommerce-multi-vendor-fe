@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CategoryService } from '../../../shared/services/category';
+import { CategoryService } from '../../../shared/services/category.service';
 
 @Component({
   selector: 'app-main-layout',

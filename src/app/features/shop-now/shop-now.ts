@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CategoryService } from '../../shared/services/category';
+import { CategoryService } from '../../shared/services/category.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -191,9 +191,10 @@ export class ShopNow {
    * Navigates to the page displaying products of the selected category.
    * @param category
    */
-  goToCategory(category: string) {
+  goToCategory(category: any) {
     console.log('category: ', category);
-    this.router.navigate(['/products-by-category', category.toLowerCase().replace(/\s+/g, '-')]);
+    console.log('category.name: ', category.name);
+    this.router.navigate(['/products-by-category', category.id, category.name]);
   }
 
   ngOnDestroy(): void {

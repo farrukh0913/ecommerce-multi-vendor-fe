@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
-import { ProductService } from '../../services/product';
+import { ProductService } from '../../services/product.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({

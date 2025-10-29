@@ -37,31 +37,61 @@
       <span class="discout"> 12%</span>
     </span>
     <!-- <button class="design-button">Design Now</button> -->
-
-    <div class="limited-offer">
-  <div class="marquee">
-    <div class="marquee-track">
-      <div class="marquee-content">
-        <div class="icon">
-          <i class="fa fa-percent"></i>
-        </div>
-        <div class="text">
-          <span>Limited Offer</span>
-          <span class="countdown">02:34:52</span>
-        </div>
+    <div class="attributes">
+      <!-- show colors if available in product -->
+      @if(product?.attributes?.colors?.length > 0){
+      <!-- loop for color to display all colors -->
+      <div class="colors">
+        @for (color of product?.attributes?.colors; track $index) {
+        <div
+          class="color-icon"
+          [style.background-color]="color"
+          (click)="updateValue($event, color, 'selectedColor')"
+          [ngClass]="{ 'selected-attribute': selectedColor.hex == color.hex }"
+        ></div>
+        }
       </div>
-      <div class="marquee-content">
-        <div class="icon">
-          <i class="fa fa-percent"></i>
+      }
+
+      <!-- show sizes if available in product -->
+      @if(product?.attributes?.sizes.length > 0){
+      <!-- loop for sizes to display all sizes -->
+      <div class="sizes">
+        @for (size of product?.attributes?.sizes; track $index) {
+        <div
+          class="size-icon"
+          [ngClass]="{ 'selected-attribute': selectedSize.name === size.name }"
+          (click)="updateValue($event, size, 'selectedSize')"
+        >
+          {{ size.name }}
         </div>
-        <div class="text">
-          <span>Limited Offer</span>
-          <span class="countdown">02:34:52</span>
+        }
+      </div>
+      }
+    </div>
+    <div class="limited-offer">
+      <div class="marquee">
+        <div class="marquee-track">
+          <div class="marquee-content">
+            <div class="icon">
+              <i class="fa fa-percent"></i>
+            </div>
+            <div class="text">
+              <span>Limited Offer</span>
+              <span class="countdown">02:34:52</span>
+            </div>
+          </div>
+          <div class="marquee-content">
+            <div class="icon">
+              <i class="fa fa-percent"></i>
+            </div>
+            <div class="text">
+              <span>Limited Offer</span>
+              <span class="countdown">02:34:52</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-
   </div>
 </div>

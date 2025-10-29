@@ -3,7 +3,7 @@ import { environment } from '../../../../environments/environment';
 import { getCurrencySymbol } from '../../utils/currency.utils';
 import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { ProductService } from '../../services/product';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -31,14 +31,12 @@ constructor(
   ) {}
 
   ngOnInit(){
-    this.getProductDetail(this.productId)
+    // this.getProductDetail(this.productId)
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['productId']) {
       console.log('productId changed to:', this.productId);
       this.getProductDetail(this.productId)
-
-      // Run your logic whenever productId changes
     }
   }
 
