@@ -193,7 +193,8 @@ export class ShopNow {
    */
   goToCategory(category: any) {
     console.log('category: ', category);
-    this.router.navigate(['/products-by-category', category.id]);
+    console.log('category.name: ', category.name);
+    this.router.navigate(['/products-by-category', category.id, category.name]);
   }
 
   ngOnDestroy(): void {

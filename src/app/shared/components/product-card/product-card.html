@@ -1,10 +1,14 @@
 <div class="product-box" [ngClass]="viewMode" (click)="goToDetail(product?.id || '232323')">
   <div class="image-holder">
-    <img class="main-img" [src]="
+    <img
+      class="main-img"
+      [src]="
         product?.thumbnail_url
           ? imageBaseUrl + product?.thumbnail_url
           : imageBaseUrl + 'public/amd-ryzen-5-7600.jpg'
-      " alt="Product Image" />
+      "
+      alt="Product Image"
+    />
 
     <div class="new-tag">
       <span>{{ product?.condition || 'new' }}</span>
@@ -28,24 +32,41 @@
   <div class="product-details">
     <span class="product-title">{{ product.name }}</span>
     <span class="category">Chic Crop Top</span>
-    <span class="price">{{ product?.price ? product?.price : '10' }} € <span class="old-price">$25</span>
+    <span class="price"
+      >{{ product?.price ? product?.price : '10' }} € <span class="old-price">$25</span>
       <span class="discout"> 12%</span>
     </span>
     <!-- <button class="design-button">Design Now</button> -->
     <div class="attributes">
-      @if(colors.length>0){
-      @for (color of colors; track $index) {
-      <div class="color-icon" [style.background-color]="color" (click)="selectedColor = color"
-        [ngClass]="{'selected-attribute': selectedColor == color }">
+      <!-- show colors if available in product -->
+      @if(product?.attributes?.colors?.length > 0){
+      <!-- loop for color to display all colors -->
+      <div class="colors">
+        @for (color of product?.attributes?.colors; track $index) {
+        <div
+          class="color-icon"
+          [style.background-color]="color"
+          (click)="updateValue($event, color, 'selectedColor')"
+          [ngClass]="{ 'selected-attribute': selectedColor.hex == color.hex }"
+        ></div>
+        }
       </div>
       }
-      }
-      @else if(sizes.length>0){
-      @for (size of sizes; track $index) {
-      <div class="size-icon" [ngClass]="{'selected-attribute':selectedSize===size} " (click)="selectedSize=size">
-        {{size}}
+
+      <!-- show sizes if available in product -->
+      @if(product?.attributes?.sizes.length > 0){
+      <!-- loop for sizes to display all sizes -->
+      <div class="sizes">
+        @for (size of product?.attributes?.sizes; track $index) {
+        <div
+          class="size-icon"
+          [ngClass]="{ 'selected-attribute': selectedSize.name === size.name }"
+          (click)="updateValue($event, size, 'selectedSize')"
+        >
+          {{ size.name }}
+        </div>
+        }
       </div>
-      }
       }
     </div>
     <div class="limited-offer">
@@ -72,6 +93,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>

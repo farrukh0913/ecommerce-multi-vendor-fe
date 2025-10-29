@@ -12,7 +12,7 @@ import { ProductsByCategory } from './features/products-by-category/products-by-
 const routes: Routes = [
   { path: '', component: Home },
   { path: 'shop-now', component: ShopNow },
-  { path: 'products-by-category/:category', component: ProductsByCategory },
+  { path: 'products-by-category/:categoryId/:categoryName', component: ProductsByCategory },
   { path: 'product-detail/:id', component: ProductInfo },
   { path: 'news-events', component: NewsEvents },
   { path: 'faq', component: Faq },

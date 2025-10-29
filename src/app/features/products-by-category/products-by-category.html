@@ -1,24 +1,78 @@
 <!-- <h2 class="page-title">{{ productCategory }}</h2> -->
 <app-content-header pageName="Shop" [routePath]="breadcrumb"></app-content-header>
 
-<div class="view-toggle-container">
-  <div class="view-buttons">
-    <button class="toggle-btn" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
-      <i class="fa fa-th-large"></i> Grid
-    </button>
-    <button class="toggle-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
-      <i class="fa fa-bars"></i> List
-    </button>
-  </div>
-</div>
 <div class="main-container">
   <div class="inner-container">
-    <div class="filter-container"></div>
+    @if (!isMobile()) {
+    <div class="filter-container">
+      @for (filter of filters; track filter.id) {
+      <button class="accordion-button" (click)="toggleVisibleFilter(filter.id)">
+        {{ filter.title }}
+        <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+      </button>
+
+      @if (visibleFilter[filter.id]) {
+      <div class="accordion-content">
+        <!-- Reuse same accordion filter component -->
+        <app-accordion-filter
+          [categories]="filter.data"
+          [isRatingFilter]="filter.type === 'rating'"
+        ></app-accordion-filter>
+      </div>
+      } }
+    </div>
+
+    }
     <div class="products-container">
-      <div>
+      <div class="img-wrapper">
         <img src="https://laravel.pixelstrap.net/multikart/storage/3678/1.png" />
       </div>
-      <section class="products" [ngClass]="viewMode">
+      @if (isMobile()) {
+      <button class="filter-btn-mob" (click)="categoryMenuOpen = true">Filters</button>
+      }
+      <div class="product-top-filter">
+        <div class="filters">
+          <div class="filter-item">
+            <div class="custom-select">
+              <select id="sortOrder" (change)="onFilterChange($event, 'sortOrder')">
+                <!-- <option value="asc">Ascending (A–Z)</option> -->
+                <!-- <option value="desc">Descending (Z–A)</option> -->
+                <option value="created_at.desc">Newest First</option>
+                <option value="price.asc">Price: Low to High</option>
+                <option value="price.desc">Price: High to Low</option>
+              </select>
+              <ion-icon name="chevron-down-outline" class="select-icon"></ion-icon>
+            </div>
+          </div>
+
+          <div class="filter-item">
+            <div class="custom-select">
+              <select id="showCount" (change)="onFilterChange($event, 'showCount')">
+                <option value="10">10 Products</option>
+                <option value="30">30 Products</option>
+                <option value="50">50 Products</option>
+                <option value="100">100 Products</option>
+              </select>
+              <ion-icon name="chevron-down-outline" class="select-icon"></ion-icon>
+            </div>
+          </div>
+        </div>
+        @if (!isMobile()) {
+        <div class="grid-layouts">
+          <div (click)="gridLayout = 'grid-2'" [ngClass]="{ active: gridLayout === 'grid-2' }">
+            ||
+          </div>
+          <div (click)="gridLayout = 'grid-3'" [ngClass]="{ active: gridLayout === 'grid-3' }">
+            |||
+          </div>
+          <div (click)="gridLayout = 'grid-4'" [ngClass]="{ active: gridLayout === 'grid-4' }">
+            ||||
+          </div>
+          <div (click)="gridLayout = 'list'" [ngClass]="{ active: gridLayout === 'list' }">──</div>
+        </div>
+        }
+      </div>
+      <section class="products" [ngClass]="viewMode" [ngClass]="gridLayout">
         @for (product of productsByCategory; track $index) {
         <div class="product-loop">
           <app-product-card
@@ -29,12 +83,13 @@
         </div>
         }
       </section>
+      @if (!productsByCategory.length) {
+      <span>No product to display.</span>
+      }
     </div>
   </div>
 </div>
-@if (!productsByCategory.length) {
-<span>No product to display.</span>
-}
+
 <!-- show detail modal -->
 @if (showDetailModal) {
 <app-base-modal
@@ -46,3 +101,29 @@
   <app-product-detail></app-product-detail>
 </app-base-modal>
 }
+
+<!-- category side menu -->
+<app-base-side-menu
+  [isOpen]="categoryMenuOpen"
+  position="left"
+  title="Filters"
+  (close)="categoryMenuOpen = false"
+>
+  <div class="filter-container">
+    @for (filter of filters; track filter.id) {
+    <button class="accordion-button" (click)="toggleVisibleFilter(filter.id)">
+      {{ filter.title }}
+      <ion-icon class="arrow" name="chevron-down-outline"></ion-icon>
+    </button>
+
+    @if (visibleFilter[filter.id]) {
+    <div class="accordion-content">
+      <!-- Reuse same accordion filter component -->
+      <app-accordion-filter
+        [categories]="filter.data"
+        [isRatingFilter]="filter.type === 'rating'"
+      ></app-accordion-filter>
+    </div>
+    } }
+  </div>
+</app-base-side-menu>

@@ -31,14 +31,12 @@ constructor(
   ) {}
 
   ngOnInit(){
-    this.getProductDetail(this.productId)
+    // this.getProductDetail(this.productId)
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['productId']) {
       console.log('productId changed to:', this.productId);
       this.getProductDetail(this.productId)
-
-      // Run your logic whenever productId changes
     }
   }
 

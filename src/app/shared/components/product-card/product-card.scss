@@ -261,10 +261,12 @@
     
   }
 }
-.attributes {
+.attributes{
+  padding-bottom: 10px;
+}
+.attributes , .sizes , .colors{
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 1rem;
   flex-wrap: wrap;
   z-index: 100;
 }
