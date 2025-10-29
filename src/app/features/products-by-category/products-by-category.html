@@ -11,18 +11,38 @@
     </button>
   </div>
 </div>
-
-<section class="products" [ngClass]="viewMode">
-  <div *ngFor="let i of [].constructor(12); let idx = index" class="product-loop">
-    <app-product-card
-      [viewMode]="viewMode"
-      (quickViewClicked)="showDetailModal = true"
-    ></app-product-card>
+<div class="main-container">
+  <div class="inner-container">
+    <div class="filter-container"></div>
+    <div class="products-container">
+      <div>
+        <img src="https://laravel.pixelstrap.net/multikart/storage/3678/1.png" />
+      </div>
+      <section class="products" [ngClass]="viewMode">
+        @for (product of productsByCategory; track $index) {
+        <div class="product-loop">
+          <app-product-card
+            [product]="product"
+            [viewMode]="viewMode"
+            (quickViewClicked)="showDetailModal = true"
+          ></app-product-card>
+        </div>
+        }
+      </section>
+    </div>
   </div>
-</section>
-
+</div>
+@if (!productsByCategory.length) {
+<span>No product to display.</span>
+}
+<!-- show detail modal -->
 @if (showDetailModal) {
-<app-base-modal [show]="showDetailModal" title="Product View" class="product-detail-modal" (close)="showDetailModal = false">
+<app-base-modal
+  [show]="showDetailModal"
+  title="Product View"
+  class="product-detail-modal"
+  (close)="showDetailModal = false"
+>
   <app-product-detail></app-product-detail>
 </app-base-modal>
 }

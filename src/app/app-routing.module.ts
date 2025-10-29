@@ -10,13 +10,13 @@ import { ProductInfo } from './features/product-info/product-info';
 import { Cart } from './features/cart/cart/cart';
 const routes: Routes = [
   { path: '', component: Home },
-  // { path: 'shop-now', component: ShopNow },
-  // { path: 'products-by-category/:category', component: ProductsByCategory },
-  // { path: 'product-detail/:id', component: ProductInfo },
-  // { path: 'news-events', component: NewsEvents },
-  // { path: 'faq', component: Faq },
-  // { path: 'contact-us', component: ContactUs },
-  // { path: 'cart', component: Cart },
+  { path: 'shop-now', component: ShopNow },
+  { path: 'products-by-category/:category', component: ProductsByCategory },
+  { path: 'product-detail/:id', component: ProductInfo },
+  { path: 'news-events', component: NewsEvents },
+  { path: 'faq', component: Faq },
+  { path: 'contact-us', component: ContactUs },
+  { path: 'cart', component: Cart },
   { path: '**', redirectTo: '' },
 ];
 @NgModule({

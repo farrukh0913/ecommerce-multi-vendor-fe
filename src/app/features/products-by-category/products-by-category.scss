@@ -10,7 +10,7 @@
           width: unset !important;
           max-width: 100% !important;
         }
-        .image-holder{
+        .image-holder {
           height: 320px;
         }
       }
@@ -20,6 +20,35 @@
 .page-title {
   margin-bottom: 0px;
   margin-top: 0px;
+}
+.main-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .inner-container {
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    gap: 1rem;
+    .filter-container {
+      padding: 20px;
+      width: 100%;
+      max-width: 300px;
+      background-color: #f9f9f9;
+      border: 1px solid var(--app-border-color);
+    }
+    .products-container{
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      div{
+        img{
+          width: 100%;
+        }
+      }
+    }
+  }
 }
 .products {
   display: grid;
@@ -65,7 +94,7 @@
   }
 }
 @media (max-width: 700px) {
-  .view-toggle-container{
+  .view-toggle-container {
     display: none;
   }
   :host ::ng-deep {
