@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Home } from './features/home/home';
-import { NewsEvents } from './features/news-events/news-events';
-import { Faq } from './features/faq/faq';
-import { ContactUs } from './features/contact-us/contact-us';
-import { ShopNow } from './features/shop-now/shop-now';
-import { ProductsByCategory } from './features/products-by-category/products-by-category';
-import { ProductInfo } from './features/product-info/product-info';
-import { Cart } from './features/cart/cart/cart';
+import { Home } from './features/home/home.component';
+import { NewsEvents } from './features/news-events/news-events.component';
+import { Faq } from './features/faq/faq.component';
+import { ContactUs } from './features/contact-us/contact-us.component';
+import { ShopNow } from './features/shop-now/shop-now.component';
+import { ProductInfo } from './features/product-info/product-info.component';
+import { Cart } from './features/cart/cart/cart.component';
+import { ProductsByCategory } from './features/products-by-category/products-by-category.component';
+
 const routes: Routes = [
   { path: '', component: Home },
   { path: 'shop-now', component: ShopNow },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'cart', component: Cart },
   { path: '**', redirectTo: '' },
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],

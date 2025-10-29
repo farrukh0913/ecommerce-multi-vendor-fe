@@ -258,7 +258,36 @@
       white-space: normal;
       padding-top: 0px;
     }
+    
   }
+}
+.attributes {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  z-index: 100;
+}
+.size-icon{
+  width: 2rem;
+  cursor: pointer;
+  background-color: #ededed;
+  display: flex;
+  padding: 5px;
+
+  justify-content: center;
+}
+
+.color-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 10000px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+.selected-attribute{
+  outline: 2px solid var(--app-primary);
+  outline-offset: 3px;
 }
 
 @media (max-width: 768px) {

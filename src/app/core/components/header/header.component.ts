@@ -7,7 +7,6 @@ import { ResponsiveService } from '../../../shared/services/responsive.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-
 export class Header {
   @Input() hideTopBar = false;
   menuOpen = false;
