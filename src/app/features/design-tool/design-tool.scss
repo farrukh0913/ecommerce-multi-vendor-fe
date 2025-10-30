@@ -1,0 +1,26 @@
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  .image-actions {
+    display: flex;
+    gap: 1.5rem;
+    button {
+      background-color: var(--app-primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 10px;
+    }
+  }
+  .download {
+    background-color: grey;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+}

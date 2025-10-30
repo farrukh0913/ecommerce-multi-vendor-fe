@@ -26,7 +26,7 @@
     }
     <div class="products-container">
       <div class="img-wrapper">
-        <img src="https://laravel.pixelstrap.net/multikart/storage/3678/1.png" />
+        <img [src]="r2BaseUrl + '/uploads/fashion-style.png'" />
       </div>
       @if (isMobile()) {
       <button class="filter-btn-mob" (click)="categoryMenuOpen = true">Filters</button>

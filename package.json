@@ -28,7 +28,6 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
-    "@blueprintjs/core": "^6.3.2",
     "ionicons": "^8.0.13",
     "ngx-ui-loader": "^19.0.0",
     "polotno": "^2.29.5",

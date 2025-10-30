@@ -17,6 +17,17 @@ body {
   --app-light: #ffffff;
   --app-border-color: #eee;
 }
+:focus,
+:focus-visible {
+  outline: none !important;
+}
+.go1097019230{
+  width: 100% !important;
+}
+button[aria-label='Add page'],
+button[aria-label='Duplicate page'] {
+  display: none !important;
+}
 ion-icon {
   cursor: pointer;
 }
@@ -102,5 +113,10 @@ ion-icon {
 .product-detail-modal {
   .modal-container {
     max-width: 1200px !important;
+  }
+}
+@media (max-width: 700px) {
+  .go1693966287 {
+    width: 100% !important;
   }
 }

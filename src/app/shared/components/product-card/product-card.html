@@ -3,7 +3,9 @@
     <img
       class="main-img"
       [src]="
-        product?.thumbnail_url
+        selectedColor?.thumbnail_url
+          ? imageBaseUrl + selectedColor?.thumbnail_url
+          : product?.thumbnail_url
           ? imageBaseUrl + product?.thumbnail_url
           : imageBaseUrl + 'public/amd-ryzen-5-7600.jpg'
       "
@@ -37,7 +39,7 @@
       <span class="discout"> 12%</span>
     </span>
     <!-- <button class="design-button">Design Now</button> -->
-    <div class="attributes">
+    <div class="attributes" (click)="handleMouseEvent($event)">
       <!-- show colors if available in product -->
       @if(product?.attributes?.colors?.length > 0){
       <!-- loop for color to display all colors -->

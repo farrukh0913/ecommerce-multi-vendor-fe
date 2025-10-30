@@ -33,6 +33,7 @@ export class ProductCard {
         (data: any) => data.is_default === true
       );
       this.selectedColor = defaultColor ? defaultColor : this.product?.attributes?.colors?.[0];
+      console.log('this.selectedColor: ', this.selectedColor);
       // set default size
       const defaultSize = this.product?.attributes?.sizes?.find(
         (data: any) => data.is_default === true
@@ -60,8 +61,18 @@ export class ProductCard {
     this.detailViewClicked.emit(this.product);
   }
 
+  /**
+   * update variable on selection of color and sizes
+   * @param event
+   * @param value
+   * @param attr
+   */
   updateValue(event: MouseEvent, value: any, attr: 'selectedColor' | 'selectedSize') {
     event.stopPropagation();
     this[attr] = value;
+  }
+
+  handleMouseEvent(event: MouseEvent) {
+    event.stopPropagation();
   }
 }

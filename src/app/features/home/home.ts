@@ -5,6 +5,7 @@ import { CategoryService } from '../../shared/services/category.service';
 import { ProductService } from '../../shared/services/product.service';
 import { OrganizationService } from '../../shared/services/organization.service';
 import { Subject, takeUntil } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,11 @@ export class Home {
   newProducts: any = [];
   organizations: any = [];
   selectedProductId: any = {};
-  heroImages=['https://laravel.pixelstrap.net/multikart/storage/146/fashion_one_2.png','https://laravel.pixelstrap.net/multikart/storage/2772/fashion_one_9.png']
+  r2BaseUrl: string = environment.r2BaseUrl;
+  heroImages = [
+    `${this.r2BaseUrl}/uploads/hero-image.png`,
+    `${this.r2BaseUrl}/uploads/hero-image-2.png`,
+  ];
   private destroy$ = new Subject<void>();
 
   constructor(
