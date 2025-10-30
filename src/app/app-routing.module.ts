@@ -8,10 +8,12 @@ import { ShopNow } from './features/shop-now/shop-now';
 import { ProductInfo } from './features/product-info/product-info';
 import { Cart } from './features/cart/cart/cart';
 import { ProductsByCategory } from './features/products-by-category/products-by-category';
+import { DesignTool } from './features/design-tool/design-tool';
 
 const routes: Routes = [
   { path: '', component: Home },
   { path: 'shop-now', component: ShopNow },
+  { path: 'design-tool', component: DesignTool },
   { path: 'products-by-category/:categoryId/:categoryName', component: ProductsByCategory },
   { path: 'product-detail/:id', component: ProductInfo },
   { path: 'news-events', component: NewsEvents },

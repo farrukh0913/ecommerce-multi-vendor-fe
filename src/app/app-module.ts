@@ -31,6 +31,7 @@ import { Footer } from './core/components/footer/footer';
 import { ProductsByCategory } from './features/products-by-category/products-by-category';
 import { AppRoutingModule } from './app-routing.module';
 import { AccordionFilter } from './shared/components/accordion-filter/accordion-filter';
+import { DesignTool } from './features/design-tool/design-tool';
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   pbColor: '#ec8951',
   hasProgressBar: false,
@@ -66,6 +67,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     BaseSideMenu,
     SearchProduct,
     AccordionFilter,
+    DesignTool
   ],
   imports: [
     BrowserModule,

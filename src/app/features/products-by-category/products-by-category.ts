@@ -22,6 +22,62 @@ export class ProductsByCategory {
   sortOrder: string = 'created_at.desc';
   categoryMenuOpen: boolean = false;
   showCount: number = 10;
+
+  
+
+visibleFilter: { [key: string]: boolean } = {
+  1: true,
+  2: true,
+  3: true,
+  4: true,
+  5: true
+};
+
+// Example data sources
+categories = [
+  { name: 'Men' },
+  { name: 'Women' },
+  { name: 'Kids' }
+];
+
+brands = [
+  { name: 'UrbanEdge' },
+  { name: 'DenimX' },
+  { name: 'StreetWear Co.' },
+  { name: 'ClassicThreads' }
+];
+
+colors = [
+  { name: 'Black', hex: '#000000' },
+  { name: 'White', hex: '#FFFFFF' },
+  { name: 'Blue', hex: '#0078FF' },
+  { name: 'Olive', hex: '#808000' }
+];
+
+prices = [
+  { name: 'Under $50', min: 0, max: 50 },
+  { name: '$50 - $100', min: 50, max: 100 },
+  { name: '$100 - $200', min: 100, max: 200 },
+  { name: 'Above $200', min: 200, max: 1000 }
+];
+
+ ratings = [
+    { stars: 5, selected: false },
+    { stars: 4, selected: false },
+    { stars: 3, selected: false },
+    { stars: 2, selected: false },
+    { stars: 1, selected: false },
+  ];
+
+filters = [
+  { id: '1', title: 'Category', type: 'category', data: this.categories, selectedItems: <any[]>[] },
+  { id: '2', title: 'Brand', type: 'brand', data: this.brands, selectedItems: <any[]>[] },
+  { id: '3', title: 'Color', type: 'color', data: this.colors, selectedItems: <any[]>[] },
+  { id: '4', title: 'Price', type: 'price', data: this.prices, selectedItems: <any[]>[] },
+  { id: '5', title: 'Rating', type: 'rating', data: this.ratings, selectedItems: <any[]>[] }
+];
+
+
   breadcrumb = [
     {
       name: 'Home',
@@ -36,52 +92,9 @@ export class ProductsByCategory {
       path: null,
     },
   ];
-  visibleFilter: any = {
-    1: true,
-    2: true,
-    3: true,
-    4: true,
-    5: true,
-  };
+ 
+  
 
-  // Example data sources
-  categories = [{ name: 'Men' }, { name: 'Women' }, { name: 'Kids' }];
-  brands = [
-    { name: 'UrbanEdge' },
-    { name: 'DenimX' },
-    { name: 'StreetWear Co.' },
-    { name: 'ClassicThreads' },
-  ];
-
-  colors = [
-    { name: 'Black', hex: '#000000' },
-    { name: 'White', hex: '#FFFFFF' },
-    { name: 'Blue', hex: '#0078FF' },
-    { name: 'Olive', hex: '#808000' },
-  ];
-
-  prices = [
-    { name: 'Under $50', min: 0, max: 50 },
-    { name: '$50 - $100', min: 50, max: 100 },
-    { name: '$100 - $200', min: 100, max: 200 },
-    { name: 'Above $200', min: 200, max: 1000 },
-  ];
-
-  ratings = [
-    { stars: 5, selected: false },
-    { stars: 4, selected: false },
-    { stars: 3, selected: false },
-    { stars: 2, selected: false },
-    { stars: 1, selected: false },
-  ];
-
-  filters = [
-    { id: '1', title: 'Category', type: 'category', data: this.categories },
-    { id: '2', title: 'Brand', type: 'brand', data: this.brands },
-    { id: '3', title: 'Color', type: 'color', data: this.colors },
-    { id: '4', title: 'Price', type: 'price', data: this.prices },
-    { id: '5', title: 'Rating', type: 'rating', data: this.ratings },
-  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -149,4 +162,14 @@ export class ProductsByCategory {
     console.log('Selected:', category);
     this.categoryMenuOpen = false;
   }
+  /**
+   * getting selected Items from filter child
+   */
+  updateSelectedItems(filterId: string, selectedItems: any[]) {
+  const filter = this.filters.find(f => f.id === filterId);
+  if (filter) {
+    filter.selectedItems = selectedItems;
+  }
+  console.log('filter: ', filter);
+}
 }

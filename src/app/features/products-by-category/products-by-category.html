@@ -17,6 +17,7 @@
         <app-accordion-filter
           [categories]="filter.data"
           [isRatingFilter]="filter.type === 'rating'"
+          (selectionChange)="updateSelectedItems(filter.id, $event)"
         ></app-accordion-filter>
       </div>
       } }
