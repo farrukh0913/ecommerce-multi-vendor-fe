@@ -13,7 +13,7 @@ import { DesignTool } from './features/design-tool/design-tool';
 const routes: Routes = [
   { path: '', component: Home },
   { path: 'shop-now', component: ShopNow },
-  // { path: 'design-tool', component: DesignTool },
+  { path: 'design-tool', component: DesignTool },
   { path: 'products-by-category/:categoryId/:categoryName', component: ProductsByCategory },
   // { path: 'product-detail/:id', component: ProductInfo },
   // { path: 'news-events', component: NewsEvents },

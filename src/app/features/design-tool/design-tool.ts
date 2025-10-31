@@ -1,8 +1,7 @@
-import { Component, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
-import * as ReactDOM from 'react-dom/client';
-import * as React from 'react';
-import { App as PolotnoApp } from '../../polotno/polotno-editor';
-import { PolotnoService } from '../../shared/services/polotno.service';
+import { Component, OnDestroy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three-stdlib';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 @Component({
   selector: 'app-design-tool',
@@ -11,106 +10,121 @@ import { PolotnoService } from '../../shared/services/polotno.service';
   styleUrls: ['./design-tool.scss'],
 })
 export class DesignTool implements AfterViewInit, OnDestroy {
-  root?: ReactDOM.Root;
-  hasChanges = false;
-  isFrontImage = true;
-  changedImages: any = {
-    frontImage: null,
-    backImage: null,
-  };
-  image: any = {
-    front: 'https://m.media-amazon.com/images/I/710mqhd9mCL._AC_UY1100_.jpg',
-    back: 'https://img.sonofatailor.com/images/customizer/product/extra-heavy-cotton/ss/Black.jpg',
-  };
-  constructor(private polotnoService: PolotnoService, private zone: NgZone) {}
+  @ViewChild('canvasContainer') canvasContainer!: ElementRef;
 
-  ngOnInit() {
-    window.addEventListener('polotno:changed', (event: any) => {
-      this.zone.run(() => {
-        this.hasChanges = true;
-        console.log('🌀 Design updated:', event.detail);
-      });
+  private scene!: THREE.Scene;
+  private camera!: THREE.PerspectiveCamera;
+  private renderer!: THREE.WebGLRenderer;
+  private model!: THREE.Object3D;
+  private animationFrameId = 0;
+  private controls!: OrbitControls;
+
+  ngAfterViewInit(): void {
+    this.initScene();
+    this.loadModel();
+    this.animate();
+  }
+
+  private initScene() {
+    const container = this.canvasContainer.nativeElement;
+
+    // Scene setup
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x222222);
+
+    // Camera setup
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    this.camera.position.set(0, 1, 3);
+
+    // Renderer
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setSize(width, height);
+    container.appendChild(this.renderer.domElement);
+
+    // Lighting
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight.position.set(5, 5, 5);
+    this.scene.add(dirLight);
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+    // Add OrbitControls for user rotation
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.05;
+    this.controls.enableZoom = true; // allow zoom
+    this.controls.enablePan = false; // optional
+    this.controls.target.set(0, 1, 0);
+  }
+
+  private loadModel() {
+    const loader = new GLTFLoader();
+    loader.load(
+      'assets/uploads_files_3704025_High+Neck+T-shirt (1).glb',
+      (gltf) => {
+        this.model = gltf.scene;
+        this.scene.add(this.model);
+
+        // Optional: Center model
+        const box = new THREE.Box3().setFromObject(this.model);
+        const center = box.getCenter(new THREE.Vector3());
+        this.model.position.sub(center);
+      },
+      undefined,
+      (error) => {
+        console.error('Error loading model:', error);
+      }
+    );
+  }
+
+  changeColor(hexColor: string) {
+    if (!this.model) return;
+    this.model.traverse((child: any) => {
+      if (child.isMesh && child.material) {
+        child.material.color.set(hexColor);
+      }
     });
   }
 
-  async ngAfterViewInit() {
-    const container = document.getElementById('editor');
-    if (container) {
-      this.root = ReactDOM.createRoot(container);
-      this.root.render(React.createElement(PolotnoApp, { service: this.polotnoService }));
-    }
-    await this.polotnoService.readyPromise;
-    console.log('✅ Polotno workspace ready');
-    this.polotnoService.addImageToCanvas(this.image.front);
+  addText(text: string) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d')!;
+    canvas.width = 512;
+    canvas.height = 512;
+    ctx.fillStyle = 'white';
+    ctx.font = 'Bold 80px Arial';
+    ctx.fillText(text, 50, 250);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    );
+    plane.position.set(0, 1, 0);
+    this.scene.add(plane);
   }
 
-  /**
-   * add fron image fro editing
-   */
-  async addFrontImage() {
-    //  Save current changes first
-    if (this.polotnoService.hasUnsavedChanges) await this.saveCurrentImage();
-    // Explicitly reset store BEFORE adding new image
-    this.polotnoService.resetStore();
-    // Load previous design if exists
-    const saved = this.changedImages.frontImage;
-    if (saved?.design) {
-      await this.polotnoService.loadDesign(saved.design);
-    } else {
-      // Otherwise add new base image
-      this.polotnoService.addImageToCanvas(this.image.front);
-    }
-
-    this.isFrontImage = true;
+  addImage(imageUrl: string) {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(imageUrl, (texture) => {
+      const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+      );
+      plane.position.set(0, 1, 0);
+      this.scene.add(plane);
+    });
   }
 
-  /**
-   * add back image for editing
-   */
-  async addBackImage() {
-    if (this.polotnoService.hasUnsavedChanges) await this.saveCurrentImage();
-    this.polotnoService.resetStore();
-    const saved = this.changedImages.backImage;
-    if (saved?.design) {
-      await this.polotnoService.loadDesign(saved.design);
-    } else {
-      this.polotnoService.addImageToCanvas(this.image.back);
-    }
-    this.isFrontImage = false;
-  }
+  private animate = () => {
+    this.animationFrameId = requestAnimationFrame(this.animate);
+    this.controls.update(); // smooth user control
+    this.renderer.render(this.scene, this.camera);
+  };
 
-  /**
-   * save edited image
-   */
-  async saveCurrentImage() {
-    const data = await this.polotnoService.getExportData();
-    if (this.isFrontImage) {
-      this.changedImages.frontImage = data;
-    } else {
-      this.changedImages.backImage = data;
-    }
-    this.hasChanges = false;
-  }
-
-  // ✅ Centralized logic for front/back image switching
-  // private async handleImageChange(url: string, key: 'frontImage' | 'backImage') {
-  //   if (this.polotno.hasUnsavedChanges) {
-  //     await this.saveCurrentImage();
-  //   }
-
-  //   this.polotno.resetStore();
-
-  //   const saved = this.changedImages[key];
-  //   if (saved?.design) {
-  //     console.log(`🎨 Loading saved ${key}`);
-  //     await this.polotno.loadDesign(saved.design);
-  //   } else {
-  //     console.log(`🆕 Adding new ${key} image`);
-  //     this.polotno.addImageToCanvas(url);
-  //   }
-  // }
-
-  ngOnDestroy() {
-    this.root?.unmount();
+  ngOnDestroy(): void {
+    cancelAnimationFrame(this.animationFrameId);
+    this.renderer.dispose();
   }
 }

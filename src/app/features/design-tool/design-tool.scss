@@ -1,26 +1,27 @@
-.actions {
+.canvas-container {
+  width: 100%;
+  height: 80vh;
+  background: #000;
+}
+
+.toolbar {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
   align-items: center;
-  padding-bottom: 1rem;
-  .image-actions {
-    display: flex;
-    gap: 1.5rem;
-    button {
-      background-color: var(--app-primary);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border-radius: 10px;
-    }
-  }
-  .download {
-    background-color: grey;
+  padding: 10px;
+  background: #1e1e1e;
+  color: white;
+
+  input,
+  button {
+    background: #333;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    border-radius: 10px;
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+
+  button {
+    cursor: pointer;
   }
 }
