@@ -26,6 +26,7 @@ import { ProductsByCategory } from './features/products-by-category/products-by-
 import { AppRoutingModule } from './app-routing.module';
 import { DesignTool } from './features/design-tool/design-tool';
 import { SharedModule } from './shared/shared-module';
+import { ModelSelectorComponent } from './features/deign-model-selector/deign-model-selector';
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   pbColor: '#ec8951',
   hasProgressBar: false,
@@ -54,7 +55,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     ShoppingCart,
     Checkout,
     OrderComplete,
-    DesignTool
+    DesignTool,
+    ModelSelectorComponent
   ],
   imports: [
     BrowserModule,

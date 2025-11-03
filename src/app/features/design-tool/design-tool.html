@@ -1,22 +1,80 @@
-<!-- <div>
-  <div class="actions">
-    <div></div>
-    <div class="image-actions">
-      <button (click)="addFrontImage()">Front</button>
-      <button (click)="addBackImage()">Back</button>
-    </div>
-    <button class="download">Preview</button>
+
+
+  <div class="toolbar">
+    <label>
+      <input
+        type="radio"
+        name="decalMode"
+        [checked]="decalMode === 'image'"
+        (change)="toggleMode('image')"
+      />
+      Image Decal
+    </label>
+  
+    <label>
+      <input
+        type="radio"
+        name="decalMode"
+        [checked]="decalMode === 'text'"
+        (change)="toggleMode('text')"
+      />
+      Text Decal
+    </label>
+  
+    <input
+      *ngIf="decalMode === 'text'"
+      type="text"
+      placeholder="Enter text for decal"
+      [(ngModel)]="userText"
+    />
+  <div class="model-selector">
+    <select name="models" id="models" (change)="selectModel($event)">
+      <option *ngFor="let path of modelPaths" [value]="path" >
+        {{ getModelName(path) }}
+      </option>
+    </select>
   </div>
-  <div id="editor"></div>
-</div> -->
+    <!-- Place decal button -->
+    <!-- <button (click)="addTextDecal($event)" *ngIf="decalMode === 'text'">
+      Place Text Decal
+    </button> -->
+  </div>
+  <div id="colorButtons" style="margin: 10px; display: flex; gap: 8px;">
+    <button (click)="applySolidColor('#ff0000')" style="background-color: #ff0000; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
+    <button (click)="applySolidColor('#00ff00')" style="background-color: #00ff00; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
+    <button (click)="applySolidColor('#0000ff')" style="background-color: #0000ff; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
+    <button (click)="applySolidColor('#ffff00')" style="background-color: #ffff00; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
+    <button (click)="applySolidColor('#ffffff')" style="background-color: #ffffff; width: 30px; height: 30px; border: 1px solid #ccc; cursor: pointer;"></button>
+    <button (click)="applySolidColor('#000000')" style="background-color: #000000; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
+    <input type="color" id="colorPicker" (input)="applySolidColor($event.target.value)" style="margin-left: 10px;">
+  </div>
+  
+  <div id="decalList" style="margin-top: 10px;">
+    <h4>Decals</h4>
+    <ul>
+      @for(decal of decals;track $index){
+  
+        <li 
+          
+            style="display: flex; align-items: center; margin-bottom: 4px; padding: 2px 4px; border-radius: 4px;">
+          
+          <!-- Select decal -->
+          <span style="flex: 1; cursor: pointer;" >
+            {{ decal}}
+          </span>
+    
+          <!-- Delete decal -->
+          <!-- <button (click)="removeSelectedDecal(); $event.stopPropagation()" 
+                  style="margin-left: 8px; cursor: pointer;">
+            Delete
+          </button> -->
+        </li>
+      }
+    </ul>
+  </div>
+  
+  
+  
+  
+  <div #canvasContainer class="canvas-container"></div>
 
-
-<!-- <img src="../../../assets/uploads_files_3704025_High+Neck+T-shirt (1).glb"> -->
-<div class="toolbar">
-  <!-- <input type="color" (input)="changeColor($event.target.value)" title="Change Color" /> -->
-  <!-- <input type="file" accept="image/*" (change)="addImage($event)" title="Upload Logo" />
-  <input type="text" placeholder="Enter text..." #txt />
-  <button (click)="addText(txt.value)">Add Text</button> -->
-</div>
-
-<div #canvasContainer class="canvas-container"></div>

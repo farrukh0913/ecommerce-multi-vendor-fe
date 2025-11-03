@@ -9,6 +9,7 @@ import { ProductInfo } from './features/product-info/product-info';
 import { Cart } from './features/cart/cart/cart';
 import { ProductsByCategory } from './features/products-by-category/products-by-category';
 import { DesignTool } from './features/design-tool/design-tool';
+import { ModelSelectorComponent } from './features/deign-model-selector/deign-model-selector';
 
 const routes: Routes = [
   { path: '', component: Home },

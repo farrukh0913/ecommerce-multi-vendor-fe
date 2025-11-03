@@ -1,0 +1,26 @@
+<div class="model-selector" *ngIf="!showDesign">
+  <h2>Select a Model</h2>
+
+  <div class="thumb-grid">
+    <div
+      *ngFor="let path of modelPathsPNG"
+      class="model-thumb"
+      [class.selected]="path === selectedModelPath"
+      (click)="selectModel(path)"
+    >
+      <div class="thumb-image">
+        <img [src]="path" alt="Model thumbnail" />
+      </div>
+      <p>{{ getModelName(path) }}</p>
+    </div>
+  </div>
+
+  <div class="actions" *ngIf="selectedModelPath">
+    <button class="go-button" (click)="goToDesign()">Go to Design</button>
+  </div>
+</div>
+
+<!-- Design Tool View -->
+<div *ngIf="showDesign" class="design-container">
+  <app-design-tool [modelPath]="modelPaths[selectedModelIndex]"></app-design-tool>
+</div>
