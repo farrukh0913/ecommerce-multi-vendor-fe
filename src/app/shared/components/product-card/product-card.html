@@ -56,7 +56,7 @@
       }
 
       <!-- show sizes if available in product -->
-      @if(product?.attributes?.sizes.length > 0){
+      @if(product?.attributes?.sizes?.length > 0){
       <!-- loop for sizes to display all sizes -->
       <div class="sizes">
         @for (size of product?.attributes?.sizes; track $index) {

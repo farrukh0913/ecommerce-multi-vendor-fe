@@ -1,5 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { ResponsiveService } from '../../../shared/services/responsive.service';
+import { Subject, takeUntil } from 'rxjs';
+import { CategoryService } from '../../../shared/services/category.service';
 
 @Component({
   selector: 'app-header',
@@ -23,8 +25,17 @@ export class Header {
   isMobile = inject(ResponsiveService).isMobile;
   categoryMenuOpen: boolean = false;
   showSearchModal: boolean = false;
-  categories = ['New Arrivals', 'Men', 'Women', 'Kids', 'Sport', 'Sportswear'];
+  categories: any = [];
+  private destroy$ = new Subject<void>();
 
+  constructor(private categoryService: CategoryService) {}
+  ngOnInit(): void {
+    // Subscribe to shared categories observable
+    this.categoryService.categories$.pipe(takeUntil(this.destroy$)).subscribe((cats) => {
+      this.categories = cats;
+      console.log('this.categories: ', this.categories);
+    });
+  }
   /**
    * toggle side menu
    */
@@ -43,5 +54,10 @@ export class Header {
     console.log('Selected:', category);
     this.categoryMenuOpen = false; // close menu after selecting
     // navigate or filter products as needed
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

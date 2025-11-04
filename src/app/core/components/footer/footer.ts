@@ -11,12 +11,12 @@ import { ResponsiveService } from '../../../shared/services/responsive.service';
 })
 export class Footer implements OnInit, OnDestroy {
   currentYear = new Date().getFullYear();
- visible: { [key: string]: boolean } = {
-  '1': false,
-  '2': false,
-  '3': false,
-  '4': false,
-};
+  visible: { [key: string]: boolean } = {
+    '1': false,
+    '2': false,
+    '3': false,
+    '4': false,
+  };
   brands: string[] = [
     'Adidas',
     'American Apparel',
@@ -27,7 +27,7 @@ export class Footer implements OnInit, OnDestroy {
     'Beanies',
   ];
   categories: any = [];
-   isMobile = inject(ResponsiveService).isMobile;
+  isMobile = inject(ResponsiveService).isMobile;
   private destroy$ = new Subject<void>();
 
   constructor(private categoryService: CategoryService) {}
@@ -39,10 +39,9 @@ export class Footer implements OnInit, OnDestroy {
     });
   }
 
-
-setVisible(itemNo: string) {
-  this.visible[itemNo] = !this.visible[itemNo];
-}
+  setVisible(itemNo: string) {
+    this.visible[itemNo] = !this.visible[itemNo];
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

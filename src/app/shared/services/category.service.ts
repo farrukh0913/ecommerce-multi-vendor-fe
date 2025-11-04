@@ -25,10 +25,10 @@ export class CategoryService {
           params = params.append(key, filters[key]);
       });
     }
-
+    const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];
     return this.http
       .get<any[]>(this.endpoint, { params })
-      .pipe(tap((categories) => this.categoriesSubject.next(categories)));
+      .pipe(tap((categories) => this.categoriesSubject.next(categories.filter((category) => !blogWhoWearWhatId.includes(category.id)))));
   }
 
   /** Get single category */

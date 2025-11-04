@@ -1,80 +1,164 @@
-
-
+<div class="editor-container">
+  <!-- ===== Toolbar Section ===== -->
   <div class="toolbar">
-    <label>
-      <input
-        type="radio"
-        name="decalMode"
-        [checked]="decalMode === 'image'"
-        (change)="toggleMode('image')"
-      />
-      Image Decal
-    </label>
-  
-    <label>
-      <input
-        type="radio"
-        name="decalMode"
-        [checked]="decalMode === 'text'"
-        (change)="toggleMode('text')"
-      />
-      Text Decal
-    </label>
-  
-    <input
-      *ngIf="decalMode === 'text'"
-      type="text"
-      placeholder="Enter text for decal"
-      [(ngModel)]="userText"
-    />
-  <div class="model-selector">
-    <select name="models" id="models" (change)="selectModel($event)">
-      <option *ngFor="let path of modelPaths" [value]="path" >
-        {{ getModelName(path) }}
-      </option>
-    </select>
-  </div>
-    <!-- Place decal button -->
-    <!-- <button (click)="addTextDecal($event)" *ngIf="decalMode === 'text'">
-      Place Text Decal
-    </button> -->
-  </div>
-  <div id="colorButtons" style="margin: 10px; display: flex; gap: 8px;">
-    <button (click)="applySolidColor('#ff0000')" style="background-color: #ff0000; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
-    <button (click)="applySolidColor('#00ff00')" style="background-color: #00ff00; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
-    <button (click)="applySolidColor('#0000ff')" style="background-color: #0000ff; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
-    <button (click)="applySolidColor('#ffff00')" style="background-color: #ffff00; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
-    <button (click)="applySolidColor('#ffffff')" style="background-color: #ffffff; width: 30px; height: 30px; border: 1px solid #ccc; cursor: pointer;"></button>
-    <button (click)="applySolidColor('#000000')" style="background-color: #000000; width: 30px; height: 30px; border: none; cursor: pointer;"></button>
-    <input type="color" id="colorPicker" (input)="applySolidColor($event.target.value)" style="margin-left: 10px;">
-  </div>
-  
-  <div id="decalList" style="margin-top: 10px;">
-    <h4>Decals</h4>
-    <ul>
-      @for(decal of decals;track $index){
-  
-        <li 
-          
-            style="display: flex; align-items: center; margin-bottom: 4px; padding: 2px 4px; border-radius: 4px;">
-          
-          <!-- Select decal -->
-          <span style="flex: 1; cursor: pointer;" >
-            {{ decal}}
-          </span>
-    
-          <!-- Delete decal -->
-          <!-- <button (click)="removeSelectedDecal(); $event.stopPropagation()" 
-                  style="margin-left: 8px; cursor: pointer;">
-            Delete
-          </button> -->
-        </li>
-      }
-    </ul>
-  </div>
-  
-  
-  
-  
-  <div #canvasContainer class="canvas-container"></div>
+    <!-- === Mode Toggle === -->
+    <div class="mode-toggle">
+      <label
+        class="mode-option"
+        [class.active]="decalMode === 'image'"
+        (click)="toggleMode('image')"
+      >
+        <span>Image</span>
+      </label>
 
+      <label class="mode-option" [class.active]="decalMode === 'text'" (click)="toggleMode('text')">
+        <span>Text</span>
+      </label>
+    </div>
+
+    <!-- === Model Selector === -->
+    <div class="model-selector">
+      <label for="models">Select Models:</label>
+      <select id="models" (change)="selectModel($event)">
+        @for (path of modelPaths; track $index) {
+        <option [value]="path">
+          {{ getModelName(path) }}
+        </option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- ===== Text Controls ===== -->
+  <div class="text-style-toolbar">
+    @if (decalMode === 'text') {
+    <h4>Text Tools</h4>
+    <div class="text-controls">
+      <input
+        type="text"
+        placeholder="Enter text decal"
+        [(ngModel)]="userText"
+        (input)="isEditingText ? this.refreshDecal() : undefined"
+      />
+
+      <select [(ngModel)]="textConfig.fontFamily" (change)="updateTextConfig('fontFamily', $event)">
+        <option value="Arial">Arial</option>
+        <option value="Poppins">Poppins</option>
+        <option value="Roboto">Roboto</option>
+        <option value="Montserrat">Montserrat</option>
+        <option value="Times New Roman">Times New Roman</option>
+      </select>
+
+      <select [(ngModel)]="textConfig.fontSize" (change)="updateTextConfig('fontSize', $event)">
+        @for (size of [12, 14, 16, 18, 20, 24, 36, 44, 50]; track $index) {
+        <option [value]="size">{{ size }}px</option>
+        }
+      </select>
+
+      <div class="text-style-buttons">
+        <button
+          (click)="updateTextConfig('bold', !textConfig.bold)"
+          [class.active]="textConfig.bold"
+        >
+          <b>B</b>
+        </button>
+        <button
+          (click)="updateTextConfig('italic', !textConfig.italic)"
+          [class.active]="textConfig.italic"
+        >
+          <i>I</i>
+        </button>
+        <input
+          type="color"
+          [(ngModel)]="textConfig.color"
+          (input)="updateTextConfig('fontColor', $event.target.value)"
+          title="Font Color"
+        />
+      </div>
+
+      @if (!isEditingText) {
+      <button class="primary-btn" [disabled]="!userText" (click)="addText()">Add Text</button>
+      } @else {
+      <button class="primary-btn" (click)="updateTextDecal()" [disabled]="!userText">
+        Update Text
+      </button>
+      <button class="secondary-btn" (click)="cancelEdit()">Cancel</button>
+      }
+    </div>
+    }
+    <!-- === Image Mode Controls === -->
+    @else if (decalMode === 'image') {
+    <div class="action-group">
+      <input
+        type="file"
+        id="imageUpload"
+        accept="image/*"
+        (change)="onImageUpload($event)"
+        hidden
+      />
+      <button class="primary-btn" (click)="openImageUpload()">Upload Image</button>
+      @if (selectedDecal && selectedDecal!.userData['type'] === 'image') {
+      <div class="decal-slider-container">
+        <label for="decalScaleSlider">Decal Scale:</label>
+        <input
+          type="range"
+          id="decalScaleSlider"
+          min="0.5"
+          max="1.25"
+          step="0.01"
+          [value]="decalScale"
+          (input)="onDecalScaleChange($event)"
+        />
+        <span>{{ decalScale | number : '1.2-2' }}</span>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- ===== Color Controls ===== -->
+  <div class="color-toolbar">
+    <h4>Model Colors</h4>
+    <div class="color-buttons">
+      @for (color of ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ffffff', '#000000']; track
+      $index) {
+      <button (click)="applySolidColor(color)" [style.backgroundColor]="color"></button>
+      }
+      <input type="color" id="colorPicker" (input)="applySolidColor($event.target.value)" />
+    </div>
+  </div>
+  <!-- ===== Main Editor Layout ===== -->
+  <div class="editor-layout">
+    <div #canvasContainer class="canvas-container"></div>
+
+    <!-- ===== Decal List ===== -->
+    <div class="decalList">
+      <h4>Elements</h4>
+      <ul>
+        @for (decal of decals; track $index) {
+        <li class="decal-list-item" [class.selected]="decal.uuid === editDecal?.uuid">
+          @if (decal.userData['type'] === 'text') {
+          <span>{{ decal.userData['text'] }}</span>
+          <div class="icons">
+            <ion-icon name="create-outline" (click)="editTextDecal(decal)"></ion-icon>
+            <ion-icon name="close-circle-outline" (click)="removeSelectedDecal(decal)"></ion-icon>
+          </div>
+          } @else if (decal.userData['type'] === 'image') {
+          <img [src]="decal.userData['image']" />
+          <div class="icons">
+            <ion-icon
+              name="create-outline"
+              (click)="this.editDecal = decal; this.selectedDecal = decal; openImageUpload()"
+            ></ion-icon>
+            <ion-icon name="close-circle-outline" (click)="removeSelectedDecal(decal)"></ion-icon>
+          </div>
+
+          }
+        </li>
+        } @empty {
+        <span>No elements to display.</span>
+        }
+      </ul>
+    </div>
+  </div>
+</div>

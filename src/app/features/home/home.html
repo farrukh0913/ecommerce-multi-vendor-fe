@@ -127,16 +127,16 @@
   pagination="false"
   navigation="false"
 >
-  @for (item of [].constructor(30); track $index) {
+  @for (blog of blogs; track $index) {
   <swiper-slide class="blog-slider">
     <div class="blogs">
       <div class="img-wrapper">
-        <img [src]="r2BaseUrl + '/uploads/fashion-blog.png'" alt="Blog Image" height="200px" />
+        <img [src]="r2BaseUrl + '/' + blog.thumbnail_url" alt="Blog Image" height="200px" />
       </div>
       <div class="content">
-        <h4>06 May 2025 09:40:AM</h4>
-        <p>Vintage Vibes: Channeling Old-World Glamour in Modern Fashion</p>
-        <h6>By: admin</h6>
+        <h4>{{ blog.attributes.date | date:'dd MMM yyyy hh:mm a' }}</h4>
+        <p>{{ blog.attributes.title }}</p>
+        <h6>By: {{ blog.attributes.blog_by }}</h6>
       </div>
     </div>
   </swiper-slide>
@@ -155,7 +155,7 @@
     navigation="false"
     autoplay="false"
   >
-    @for (item of [].constructor(30); track $index) {
+    @for (item of whoWearWhat.constructor(30); track $index) {
     <swiper-slide class="category-slide">
       <div class="image-wrapper">
         <img

@@ -115,7 +115,7 @@
   <div class="category-list">
     @for (category of categories; track $index) {
     <div class="category-item" (click)="onCategorySelect(category)">
-      <span>{{ category }}</span>
+      <span>{{ category.name }}</span>
       <ion-icon name="chevron-forward-outline"></ion-icon>
     </div>
     }
