@@ -33,7 +33,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPkNnMdPMYL0wJTAweRejy-TK0WslkwCikVg&s';
   userText: string = '';
   decalMode: 'image' | 'text' = 'image';
-  addDecalToggle: boolean = false;
   decals: THREE.Mesh[] = [];
   selectedDecal: THREE.Mesh | null = null;
   editDecal: THREE.Mesh | null = null;
@@ -45,7 +44,8 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     italic: false,
     underline: false,
   };
-  selectedModelPath = '';
+  selectedModelPath = 'assets/models/uploads_files_3704025_High+Neck+T-shirt (1).gltf';
+  isShowLoad: boolean = false;
   modelPaths = [
     'assets/models/uploads_files_3704025_High+Neck+T-shirt (1).gltf',
     'assets/models/uploads_files_3704025_High+Neck+T-shirt (2).glb',
@@ -53,7 +53,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     'assets/models/crop_top.glb',
     'assets/models/t_shirt.glb',
     'assets/models/uploads_files_5600042_Top.glb',
-    'assets/models/standard_t_shirt.glb'
+    'assets/models/standard_t_shirt.glb',
   ];
 
   ngAfterViewInit(): void {
@@ -68,11 +68,15 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    */
   initState() {
     this.initScene();
-    this.loadModel(
-      this.selectedModelPath || 'assets/models/uploads_files_3704025_High+Neck+T-shirt (1).gltf'
-    );
+    this.loadModel(this.selectedModelPath);
+    const savedModalData = JSON.parse(localStorage.getItem('savedModalInfo') || 'null');
+    if (savedModalData) {
+      setTimeout(() => {
+        this.isShowLoad = savedModalData.modelPath === this.selectedModelPath;
+      }, 0);
+    }
+
     this.animate();
-   
 
     window.addEventListener('resize', () => this.onWindowResize());
     this.renderer.domElement.addEventListener('mousedown', (e) => this.onMouseDown(e));
@@ -100,6 +104,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     const container = this.canvasContainer.nativeElement;
     // --- Scene setup ---
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0xffffff);
     // --- Camera setup ---
     const width = container.clientWidth;
     const height = container.clientHeight;
@@ -238,17 +243,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    * @param mode
    */
   toggleMode(mode: 'image' | 'text') {
-    if (this.decalMesh != undefined) {
-      if (this.decals.length > 0) {
-        if (this.decals[this.decals.length - 1].uuid != this.decalMesh.uuid) {
-          this.decals.push(this.decalMesh);
-          this.addDecalToggle = true;
-        }
-      } else {
-        this.decals.push(this.decalMesh);
-        this.addDecalToggle = true;
-      }
-    }
     this.decalMode = mode;
   }
 
@@ -281,6 +275,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     }
     if (hitDecal) {
       this.selectedDecal = hitDecal;
+      console.log('this.selectedDecal: ', this.selectedDecal);
       this.isDraggingDecal = true;
       this.renderer.domElement.style.cursor = 'grabbing';
     }
@@ -525,6 +520,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     };
     this.scene.add(newDecal);
     this.decals.push(newDecal);
+    console.log('this.decals: ', this.decals);
 
     this.userText = '';
     this.selectedDecal = null;
@@ -867,6 +863,19 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   }
 
   /**
+   *
+   */
+  editImage(decal: any) {
+    this.editDecal = decal;
+    this.selectedDecal = decal;
+    this.decalMode = 'image';
+    this.userText = '';
+    setTimeout(() => {
+      this.openImageUpload();
+    }, 500);
+  }
+
+  /**
    * create fake event and upload it to center on modal
    * @returns
    */
@@ -1046,6 +1055,168 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   };
+
+  /**
+   * save all design modal updated design in local storage for now
+   * @returns
+   */
+  saveDesign(): void {
+    if (!this.model) return;
+
+    // Extract material data
+    const modelMaterialData: any[] = [];
+    this.model.traverse((child: any) => {
+      if (child.isMesh && child.material) {
+        const mat = child.material;
+        modelMaterialData.push({
+          name: child.name,
+          color: mat.color?.getHex(),
+          roughness: mat.roughness,
+          metalness: mat.metalness,
+        });
+      }
+    });
+
+    // Save all decal userData directly
+    const decalsData = this.decals.map((decal) => {
+      // clone userData to avoid circular refs or live object mutations
+      const userData = { ...decal.userData };
+
+      // ensure vectors/eulers are serializable
+      if (userData['position']?.toArray) userData['position'] = userData['position'].toArray();
+      if (userData['orientation']?.toArray)
+        userData['orientation'] = userData['orientation'].toArray();
+      if (userData['originalSize']?.toArray)
+        userData['originalSize'] = userData['originalSize'].toArray();
+
+      return userData;
+    });
+
+    const saveDesignData = {
+      modelPath: this.selectedModelPath,
+      materials: modelMaterialData,
+      decals: decalsData,
+    };
+
+    localStorage.setItem('savedModalInfo', JSON.stringify(saveDesignData));
+    console.log('saveDesignData: ', saveDesignData);
+  }
+
+  /**
+   *  load modal design
+   * @returns
+   */
+  async loadDesign(): Promise<void> {
+    if (!this.model) {
+      console.warn('⚠️ No model loaded; cannot apply decals.');
+      return;
+    }
+    const savedDesign = JSON.parse(localStorage.getItem('savedModalInfo') || '{}');
+
+    // Collect model meshes
+    this.modelMeshes = [];
+    this.model.traverse((child: any) => {
+      if (child.isMesh) this.modelMeshes.push(child);
+    });
+
+    // Restore materials
+    savedDesign.materials?.forEach((matData: any) => {
+      const target = this.model!.getObjectByName(matData.name) as THREE.Mesh;
+      if (target && target.material) {
+        const mat = target.material as THREE.MeshStandardMaterial;
+        mat.color = new THREE.Color(matData.color);
+        mat.roughness = matData.roughness ?? 0.8;
+        mat.metalness = matData.metalness ?? 0.0;
+        mat.needsUpdate = true;
+      }
+    });
+
+    // Remove previous decals
+    this.decals.forEach((d) => this.scene.remove(d));
+    this.decals = [];
+
+    // Rebuild decals using stored userData directly
+    for (const d of savedDesign.decals) {
+      const position = new THREE.Vector3().fromArray(d.position);
+      const rotation = new THREE.Euler().fromArray(d.orientation);
+      const size = new THREE.Vector3().fromArray(d.originalSize);
+      const baseMesh = this.modelMeshes[0];
+      const decalGeom = new DecalGeometry(baseMesh, position, rotation, size);
+
+      let decalMat: THREE.MeshPhongMaterial;
+
+      if (d.type === 'image') {
+        const texture = await new Promise<THREE.Texture>((resolve, reject) => {
+          if (d.image?.startsWith?.('data:image')) {
+            const img = new Image();
+            img.onload = () => {
+              const tex = new THREE.Texture(img);
+              tex.needsUpdate = true;
+              resolve(tex);
+            };
+            img.onerror = reject;
+            img.src = d.image;
+          } else if (d.imageUrl) {
+            new THREE.TextureLoader().load(d.imageUrl, resolve, undefined, reject);
+          } else {
+            reject('No valid image found for decal');
+          }
+        });
+
+        decalMat = new THREE.MeshPhongMaterial({
+          map: texture,
+          transparent: true,
+          depthWrite: false,
+          polygonOffset: true,
+          polygonOffsetFactor: -1, // negative pushes decal in front
+          polygonOffsetUnits: -1,
+        });
+      } else if (d.type === 'text') {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d')!;
+        const s = d.textSettings || {};
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = s.fontColor || '#000';
+        ctx.font = `${s.bold ? 'bold ' : ''}${s.italic ? 'italic ' : ''}${
+          Number(s.fontSize) + 80
+        }px ${s.fontFamily || 'Arial'}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(d.text, canvas.width / 2, canvas.height / 2);
+        const textTexture = new THREE.CanvasTexture(canvas);
+        decalMat = new THREE.MeshPhongMaterial({
+          map: textTexture,
+          transparent: true,
+          depthWrite: false,
+          polygonOffset: true,
+          polygonOffsetFactor: -1,
+          polygonOffsetUnits: -1,
+        });
+      } else {
+        continue;
+      }
+
+      const decalMesh = new THREE.Mesh(decalGeom, decalMat);
+
+      decalMesh.userData = {
+        ...d,
+        position,
+        orientation: rotation,
+        originalSize: size,
+      };
+
+      this.scene.add(decalMesh);
+      this.decals.push(decalMesh);
+    }
+
+    this.decals = this.decals.filter((d) => d?.userData?.['type']);
+    // this.cdRef.detectChanges?.();
+
+    console.log('✅ Decals fully restored with userData:', this.decals.length);
+    this.fitCameraToObject();
+  }
 
   ngOnDestroy(): void {
     cancelAnimationFrame(this.animationFrameId);

@@ -4,9 +4,9 @@
       class="main-img"
       [src]="
         selectedColor?.thumbnail_url
-          ? imageBaseUrl + selectedColor?.thumbnail_url
-          : product?.thumbnail_url
-          ? imageBaseUrl + product?.thumbnail_url
+          ? imageBaseUrl + '/' + selectedColor?.thumbnail_url
+          : imageBaseUrl + '/' + product?.thumbnail_url
+          ? imageBaseUrl + '/' +product?.thumbnail_url
           : imageBaseUrl + 'public/amd-ryzen-5-7600.jpg'
       "
       alt="Product Image"
@@ -47,8 +47,8 @@
         @for (color of product?.attributes?.colors; track $index) {
         <div
           class="color-icon"
-          [style.background-color]="color"
-          (click)="updateValue($event, color, 'selectedColor')"
+          [style.background-color]="color.hex"
+          (mouseenter)="updateValue($event, color, 'selectedColor')"
           [ngClass]="{ 'selected-attribute': selectedColor.hex == color.hex }"
         ></div>
         }

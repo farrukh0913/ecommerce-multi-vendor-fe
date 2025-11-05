@@ -27,6 +27,13 @@
         }
       </select>
     </div>
+    <!-- === Save / Load Buttons === -->
+    <div class="save-load-buttons">
+      <button class="primary-btn" (click)="saveDesign()">Save</button>
+      @if (isShowLoad) {
+      <button class="secondary-btn" (click)="loadDesign()">Load</button>
+      }
+    </div>
   </div>
 
   <!-- ===== Text Controls ===== -->
@@ -97,7 +104,7 @@
         hidden
       />
       <button class="primary-btn" (click)="openImageUpload()">Upload Image</button>
-      @if (selectedDecal && selectedDecal!.userData['type'] === 'image') {
+      @if (selectedDecal && selectedDecal.userData['type'] === 'image') {
       <div class="decal-slider-container">
         <label for="decalScaleSlider">Decal Scale:</label>
         <input
@@ -106,7 +113,7 @@
           min="0.5"
           max="1.25"
           step="0.01"
-          [value]="decalScale"
+          [value]="selectedDecal?.userData?.['currentScale']  ?? selectedDecal?.userData?.['scaleFactor'] ?? decalScale"
           (input)="onDecalScaleChange($event)"
         />
         <span>{{ decalScale | number : '1.2-2' }}</span>
@@ -148,7 +155,9 @@
           <div class="icons">
             <ion-icon
               name="create-outline"
-              (click)="this.editDecal = decal; this.selectedDecal = decal; openImageUpload()"
+              (click)="
+              editImage(decal)
+              "
             ></ion-icon>
             <ion-icon name="close-circle-outline" (click)="removeSelectedDecal(decal)"></ion-icon>
           </div>

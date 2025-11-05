@@ -14,7 +14,7 @@ export class ProductCard {
   @Output() detailViewClicked = new EventEmitter<any>();
   @Input() viewMode: 'grid' | 'list' = 'grid';
   @Input() product: any = null;
-  imageBaseUrl: string = environment.s3BaseUrl;
+  imageBaseUrl: string = environment.r2BaseUrl;
   getCurrencySymbol = getCurrencySymbol;
   selectedColor: any = null;
   selectedSize: any = null;
