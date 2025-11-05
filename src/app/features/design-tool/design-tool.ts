@@ -1,3 +1,4 @@
+//@collapse
 import { Component, OnDestroy, AfterViewInit, ElementRef, ViewChild, Input } from '@angular/core';
 import * as THREE from 'three';
 import { GLTFLoader, DecalGeometry } from 'three-stdlib';
@@ -46,12 +47,13 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   };
   selectedModelPath = '';
   modelPaths = [
-    'assets/models/Drop_Shoulder_Sweatshirt/Drop_Shoulder_Sweatshirt_OBJ.gltf',
-    'assets/models/Long_Sleeve_Shirt_OBJ/Long_Sleeve_Shirt_OBJ.gltf',
-    'assets/models/Raglan_Sleeve_Hoodie_OBJ/Raglan_Sleeve_Hoodie_OBJ.gltf',
-    'assets/models/Tank_Top_OBJ/Tank_Top_OBJ.gltf',
-    'assets/models/V_Neck_T_Shirt_OBJ/V_Neck_T_Shirt_OBJ.gltf',
-    'assets/models/Polo_Shirt_OBJ/Polo_Shirt_OBJ.gltf',
+    'assets/models/uploads_files_3704025_High+Neck+T-shirt (1).gltf',
+    'assets/models/uploads_files_3704025_High+Neck+T-shirt (2).glb',
+    'assets/models/oversized_hoodie.glb',
+    'assets/models/crop_top.glb',
+    'assets/models/t_shirt.glb',
+    'assets/models/uploads_files_5600042_Top.glb',
+    'assets/models/standard_t_shirt.glb'
   ];
 
   ngAfterViewInit(): void {
@@ -70,6 +72,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       this.selectedModelPath || 'assets/models/uploads_files_3704025_High+Neck+T-shirt (1).gltf'
     );
     this.animate();
+   
 
     window.addEventListener('resize', () => this.onWindowResize());
     this.renderer.domElement.addEventListener('mousedown', (e) => this.onMouseDown(e));
@@ -86,6 +89,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   selectModel(path: any): void {
     this.selectedModelPath = path.target.value;
     this.destroyScene();
+    this.decals = [];
     this.initState();
   }
 
@@ -225,7 +229,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         .split('/')
         .pop()
         ?.replace(/_/g, ' ')
-        .replace(/\.gltf$/, '') || ''
+        .replace(/\.glb$/, '') || ''
     );
   }
 
