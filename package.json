@@ -1,12 +1,14 @@
 {
   "name": "ecommerce-multi-vendor-fe",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "postinstall": "npm rebuild esbuild"
   },
   "prettier": {
     "printWidth": 100,
@@ -20,7 +22,6 @@
       }
     ]
   },
-  "private": true,
   "dependencies": {
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
@@ -52,5 +53,9 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.9.2"
+  },
+  "engines": {
+    "node": "22.x",
+    "npm": "10.x"
   }
 }
