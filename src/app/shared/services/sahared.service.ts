@@ -27,7 +27,7 @@ export class SharedService {
       toast: true,
       position: 'top-end',
       showConfirmButton: false,
-      timer: 1500,
+      timer: 2000,
       timerProgressBar: false,
       customClass: {
         popup: 'slide-in-right',
@@ -38,6 +38,11 @@ export class SharedService {
       },
       hideClass: {
         popup: 'slide-out-right',
+      },
+      didOpen: (toast) => {
+        toast.addEventListener('click', () => {
+          Swal.close();
+        });
       },
     });
   }

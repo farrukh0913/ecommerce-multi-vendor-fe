@@ -1145,10 +1145,8 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       if (userData['position']?.toArray) userData['position'] = userData['position'].toArray();
       if (userData['orientation']?.toArray)
         userData['orientation'] = userData['orientation'].toArray();
-      if (userData['originalSize']?.toArray)
-        userData['originalSize'] = [1,1,1];
-      if (userData['baseSize']?.toArray)
-        userData['baseSize'] = [1,1,1];
+      if (userData['originalSize']?.toArray) userData['originalSize'] = [1, 1, 1];
+      if (userData['baseSize']?.toArray) userData['baseSize'] = [1, 1, 1];
       if (userData['type'] === 'image')
         userData['image'] =
           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPkNnMdPMYL0wJTAweRejy-TK0WslkwCikVg&s';
@@ -1187,7 +1185,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       console.warn('⚠️ No model loaded; cannot apply decals.');
       return;
     }
-    this.selectedDecal = null
+    this.selectedDecal = null;
     const storedKey = this.extractModelKey(this.selectedModelPath);
     const savedDesign = JSON.parse(localStorage.getItem(storedKey) || '{}');
     console.log('savedDesign: ', savedDesign);
@@ -1212,8 +1210,8 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     for (const d of savedDesign.decals) {
       const position = new THREE.Vector3().fromArray(d.position);
       const rotation = new THREE.Euler().fromArray(d.orientation);
-      const size = new THREE.Vector3().fromArray(d.baseSize).multiplyScalar(d.scaleFactor || 1)
-       
+      const size = new THREE.Vector3().fromArray(d.baseSize).multiplyScalar(d.scaleFactor || 1);
+
       console.log('size: ', size);
       const baseMesh = this.modelMeshes[0];
       const decalGeom = new DecalGeometry(baseMesh, position, rotation, size);
@@ -1268,7 +1266,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         orientation: rotation,
         originalSize: size,
         mesh: baseMesh,
-        baseSize:new THREE.Vector3().fromArray(d.baseSize)
+        baseSize: new THREE.Vector3().fromArray(d.baseSize),
       };
 
       this.scene.add(decalMesh);
