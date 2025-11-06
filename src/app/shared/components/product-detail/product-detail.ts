@@ -16,7 +16,7 @@ export class ProductDetail {
   @Output() productLoaded = new EventEmitter<any>();
   count = 1
   product:any=null
-  imageBaseUrl: string = environment.s3BaseUrl;
+  imageBaseUrl: string = environment.r2BaseUrl + '/';
   getCurrencySymbol = getCurrencySymbol;
   productImages = [
     'https://laravel.pixelstrap.net/multikart/storage/51/fashion_171.jpg',

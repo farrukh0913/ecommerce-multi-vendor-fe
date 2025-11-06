@@ -7,7 +7,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, SPINNER } from 'ngx-ui-loader';
-
 import { App } from './app';
 import { Home } from './features/home/home';
 import { Faq } from './features/faq/faq';
@@ -56,7 +55,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     Checkout,
     OrderComplete,
     DesignTool,
-    ModelSelectorComponent
+    ModelSelectorComponent,
   ],
   imports: [
     BrowserModule,

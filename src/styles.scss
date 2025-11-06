@@ -21,7 +21,7 @@ body {
 :focus-visible {
   outline: none !important;
 }
-.go1097019230{
+.go1097019230 {
   width: 100% !important;
 }
 button[aria-label='Add page'],
@@ -118,5 +118,49 @@ ion-icon {
 @media (max-width: 700px) {
   .go1693966287 {
     width: 100% !important;
+  }
+}
+.slide-in-right {
+  animation: slideInRight 0.4s ease forwards;
+}
+.swal2-html-container {
+  margin: 0px !important;
+  margin-top: 5px !important;
+}
+.swal2-title {
+  margin: 0px !important;
+}
+
+.slide-out-right {
+  animation: slideOutRight 0.3s ease forwards;
+}
+
+/* 🔧 Disable tick animation (make it smooth) */
+.no-tick-anim .swal2-success-line-tip,
+.no-tick-anim .swal2-success-line-long,
+.no-tick-anim .swal2-success-ring {
+  animation: none !important;
+}
+/* Slide in from right */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide out to right */
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
   }
 }

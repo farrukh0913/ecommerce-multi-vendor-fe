@@ -1,4 +1,8 @@
 <div class="editor-container">
+  <div class="back-model" routerLink="/design-model">
+    <ion-icon name="chevron-back-outline"></ion-icon>
+    <span>Models</span>
+  </div>
   <!-- ===== Toolbar Section ===== -->
   <div class="toolbar">
     <!-- === Mode Toggle === -->
@@ -16,23 +20,13 @@
       </label>
     </div>
 
-    <!-- === Model Selector === -->
-    <div class="model-selector">
-      <label for="models">Select Models:</label>
-      <select id="models" (change)="selectModel($event)">
-        @for (path of modelPaths; track $index) {
-        <option [value]="path">
-          {{ getModelName(path) }}
-        </option>
-        }
-      </select>
-    </div>
     <!-- === Save / Load Buttons === -->
     <div class="save-load-buttons">
-      <button class="primary-btn" (click)="saveDesign()">Save</button>
       @if (isShowLoad) {
-      <button class="secondary-btn" (click)="loadDesign()">Load</button>
+      <button class="secondary-btn" (click)="loadDesign()">Load Design</button>
       }
+      <button class="primary-btn" (click)="saveDesign()">Save</button>
+      <button class="primary-btn" (click)="addToCart()">Add To Cart</button>
     </div>
   </div>
 
@@ -153,12 +147,7 @@
           } @else if (decal.userData['type'] === 'image') {
           <img [src]="decal.userData['image']" />
           <div class="icons">
-            <ion-icon
-              name="create-outline"
-              (click)="
-              editImage(decal)
-              "
-            ></ion-icon>
+            <ion-icon name="create-outline" (click)="editImage(decal)"></ion-icon>
             <ion-icon name="close-circle-outline" (click)="removeSelectedDecal(decal)"></ion-icon>
           </div>
 

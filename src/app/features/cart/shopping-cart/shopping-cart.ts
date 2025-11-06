@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { SharedService } from '../../../shared/services/sahared.service';
+import { Subject, takeUntil } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -7,10 +11,12 @@ import { Component } from '@angular/core';
   styleUrl: './shopping-cart.scss',
 })
 export class ShoppingCart {
+  @Output() close = new EventEmitter<void>();
   couponCode = '';
   discount = 0;
+  private destroy$ = new Subject<void>();
 
-  cartItems = [
+  cartItems: any = [
     {
       name: 'Sample Item',
       price: 50,
@@ -24,22 +30,28 @@ export class ShoppingCart {
       image: 'https://myimprint.ca/wp-content/uploads/2024/11/33504_b_fm.jpg.webp',
     },
   ];
+  r2BaseUrl: string = environment.r2BaseUrl + '/';
 
+  constructor(private sharedService: SharedService, private router: Router) {}
+  ngOnInit(): void {
+    this.sharedService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
+      this.cartItems = items;
+      console.log('🛒 Cart updated:', items);
+    });
+  }
   /**
    * Removing item from Cart
    */
-  removeFromCart(index:number){
-    console.log('index: ', index);
-    this.cartItems.splice(index,1)
+  removeFromCart(item: any) {
+    this.sharedService.removeFromCart(item.id);
   }
-
 
   /**
    * Calculates the total cost of all items in the cart
    * by summing up (price × quantity) for each item.
    */
   get totalCost(): number {
-    return this.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    return this.cartItems.reduce((acc: any, item: any) => acc + item.price * item.quantity, 0);
   }
 
   /**
@@ -87,5 +99,16 @@ export class ShoppingCart {
       this.discount = 0;
       alert('Invalid coupon code.');
     }
+  }
+  moveToCustomDesign(customDesignPath: string) {
+    this.router.navigate(['/design-tool'], {
+      queryParams: { model: customDesignPath, isEdit: true },
+    });
+    this.close.emit();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { getCurrencySymbol } from '../../utils/currency.utils';
+import { SharedService } from '../../services/sahared.service';
 
 @Component({
   selector: 'app-product-card',
@@ -19,7 +20,7 @@ export class ProductCard {
   selectedColor: any = null;
   selectedSize: any = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sharedService: SharedService) {}
 
   /**
    * Detect input changes
@@ -59,6 +60,14 @@ export class ProductCard {
       window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll to top after navigation
     });
     this.detailViewClicked.emit(this.product);
+  }
+
+  /**
+   * add item to cart
+   * @param item
+   */
+  addToCart(item: any) {
+    this.sharedService.addToCart(item);
   }
 
   /**

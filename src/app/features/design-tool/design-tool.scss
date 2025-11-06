@@ -15,12 +15,6 @@
   display: flex;
   gap: 10px;
 }
-.model-selector {
-  label {
-    margin-right: 10px;
-  }
-}
-
 .mode-option {
   padding: 6px 12px;
   border-radius: 6px;
@@ -126,11 +120,20 @@ select {
 .primary-btn:hover {
   background-color: #d5733c;
 }
-
+.back-model {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  ion-icon {
+    color: var(--app-primary);
+  }
+}
 /* ===== Canvas ===== */
 .canvas-container {
   flex: 1;
-  height: 70vh;
+  height: 50vh;
   max-width: 1400px;
   background: #f9fafc;
   border: 1px solid var(--app-border-color);

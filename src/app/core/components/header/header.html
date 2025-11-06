@@ -32,11 +32,8 @@
   <header class="app-header">
     <div class="container">
       <div class="logo">
-        <ion-icon
-          name="menu-outline"
-          (click)="categoryMenuOpen = true"
-        ></ion-icon>
-        <span class="text" routerLink="/" >Shop<span class="highlight">finity</span></span>
+        <ion-icon name="menu-outline" (click)="categoryMenuOpen = true"></ion-icon>
+        <span class="text" routerLink="/">Shop<span class="highlight">finity</span></span>
       </div>
 
       <nav class="nav" [class.open]="menuOpen">
@@ -68,7 +65,7 @@
         }
         <a (click)="toggleMenu()" class="cart-btn search-ba">
           <ion-icon name="cart-outline"></ion-icon>
-          <span class="cart-count">3</span>
+          <span class="cart-count">{{ cartItems.length }}</span>
         </a>
 
         <!-- <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle menu">
@@ -86,9 +83,10 @@
           <ion-icon name="close-outline"></ion-icon>
         </button>
       </div>
-      <app-shopping-cart class="cart-content"></app-shopping-cart>
+      <app-shopping-cart class="cart-content" (close)="closeMenu()"></app-shopping-cart>
 
       <!-- Footer with “View Cart” button -->
+      @if (cartItems.length){
       <div class="cart-footer">
         <button class="view-btn" routerLink="/cart" routerLinkActive="active" (click)="closeMenu()">
           View Cart
@@ -97,6 +95,7 @@
           Checkout
         </button>
       </div>
+      }
     </div>
 
     <div class="backdrop" (click)="closeMenu()"></div>

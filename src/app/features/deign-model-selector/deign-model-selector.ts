@@ -1,47 +1,51 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-model-selector',
-  standalone:false,
-  templateUrl:'./deign-model-selector.html',
-  styleUrl:'./deign-model-selector.scss' 
+  standalone: false,
+  templateUrl: './deign-model-selector.html',
+  styleUrl: './deign-model-selector.scss',
 })
 export class ModelSelectorComponent {
-  @Output() modelSelected = new EventEmitter<string>();
-   modelPathsPNG = [
-    // 'assets/model_thumbs/Drop_Shoulder_Sweatshirt_OBJ.png',
-    'assets/model_thumbs/Long_Sleeve_Shirt_OBJ.png',
-    'assets/model_thumbs/Raglan_Sleeve_Hoodie_OBJ.png',
-    'assets/model_thumbs/Tank_Top_OBJ.png',
-    'assets/model_thumbs/V_Neck_T_Shirt_OBJ.png',
-    'assets/model_thumbs/Polo_Shirt_OBJ.png'
-   ];
   modelPaths = [
-    // 'assets/Drop_Shoulder_Sweatshirt/Drop_Shoulder_Sweatshirt_OBJ.gltf',
-    'assets/Long_Sleeve_Shirt_OBJ/Long_Sleeve_Shirt_OBJ.gltf',
-    'assets/Raglan_Sleeve_Hoodie_OBJ/Raglan_Sleeve_Hoodie_OBJ.gltf',
-    'assets/Tank_Top_OBJ/Tank_Top_OBJ.gltf',
-    'assets/V_Neck_T_Shirt_OBJ/V_Neck_T_Shirt_OBJ.gltf',
-    'assets/Polo_Shirt_OBJ/Polo_Shirt_OBJ.gltf'
+    'e96b1de9-b290-4673-82c8-f98c3b0de781_sleeveless_shirt.gltf',
+    'b3708f64-2642-447d-8c15-f0415630fd9a_t_shirt_1.glb',
+    '582f947c-ee6b-43fc-9fbe-bdc3994bf802_hoodie.glb',
+    'b3d93852-4084-4cf1-a467-9ee993d08c44_crop_top.glb',
+    // '72fe7d94-d897-4bec-be55-d0731316c626_t_shirt_2.glb',
+    '0abf9d0c-a8d4-486f-9177-e52c48bb0599_top.glb',
+    // '7fa4da3f-7d5d-460f-b71a-467729cf427c_t_shirt.glb',
+  ];
+  r2BaseUrl: string = environment.r2BaseUrl + '/models/';
+  breadcrumb = [
+    {
+      name: 'Home',
+      path: '/',
+    },
+    {
+      name: 'Design Tool',
+      path: null,
+    },
   ];
 
-  selectedModelPath: string | null = null;
-  selectedModelIndex: number = 0;
-  showDesign = false;
-
-  selectModel(path: string): void {
-    this.selectedModelPath = path;
-    this.selectedModelIndex = this.modelPathsPNG.indexOf(path);
-    console.log('this.selectedModelIndex: ', this.selectedModelIndex);
-  }
+  constructor(private router: Router) {}
 
   getModelName(path: string): string {
-    return path.split('/').pop()?.replace(/_/g, ' ').replace(/\.gltf$/, '') || '';
+    if (!path) return '';
+
+    const fileName = path.split('/').pop() || '';
+    return fileName
+      .replace(/\.gltf|\.glb$/i, '')
+      .replace(/^[^_]+_/, '')
+      .replace(/_/g, ' ')
+      .toUpperCase();
   }
 
-  goToDesign(): void {
-    if (this.selectedModelPath) {
-      this.showDesign = true;
-    }
+  goToDesign(modelPath: string): void {
+    this.router.navigate(['/design-tool'], {
+      queryParams: { model: modelPath },
+    });
   }
 }

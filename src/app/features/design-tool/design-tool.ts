@@ -1,10 +1,12 @@
-//@collapse
 import { Component, OnDestroy, AfterViewInit, ElementRef, ViewChild, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as THREE from 'three';
 import { GLTFLoader, DecalGeometry } from 'three-stdlib';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
-
+import { environment } from '../../../environments/environment';
+import { SharedService } from '../../shared/services/sahared.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 @Component({
   selector: 'app-design-tool',
   standalone: false,
@@ -44,8 +46,9 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     italic: false,
     underline: false,
   };
-  selectedModelPath = 'assets/models/uploads_files_3704025_High+Neck+T-shirt (1).gltf';
+  selectedModelPath = '';
   isShowLoad: boolean = false;
+  r2BaseUrl: string = environment.r2BaseUrl + '/models/';
   modelPaths = [
     'assets/models/uploads_files_3704025_High+Neck+T-shirt (1).gltf',
     'assets/models/uploads_files_3704025_High+Neck+T-shirt (2).glb',
@@ -53,9 +56,30 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     'assets/models/crop_top.glb',
     'assets/models/t_shirt.glb',
     'assets/models/uploads_files_5600042_Top.glb',
-    'assets/models/standard_t_shirt.glb',
+    'https://pub-9b4cc8555df8437bacf8d3a7a25c1ab2.r2.dev/models/7fa4da3f-7d5d-460f-b71a-467729cf427c_t_shirt.glb',
   ];
-
+  modelPath: string = '';
+  isEdit: boolean = false;
+  constructor(
+    private route: ActivatedRoute,
+    private sharedService: SharedService,
+    private spinner: NgxUiLoaderService
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      const modelPath = params['model'];
+      const isEdit = params['isEdit'];
+      if (this.modelPath && this.modelPath != modelPath) {
+        this.selectModel(modelPath);
+      }
+      if (modelPath) {
+        this.modelPath = modelPath;
+        this.selectedModelPath = this.r2BaseUrl + modelPath;
+      }
+      if (isEdit) {
+        this.isEdit = isEdit;
+      }
+    });
+  }
   ngAfterViewInit(): void {
     /**
      * init modal display
@@ -69,21 +93,25 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   initState() {
     this.initScene();
     this.loadModel(this.selectedModelPath);
-    const savedModalData = JSON.parse(localStorage.getItem('savedModalInfo') || 'null');
-    if (savedModalData) {
-      setTimeout(() => {
-        this.isShowLoad = savedModalData.modelPath === this.selectedModelPath;
-      }, 0);
-    }
-
+    this.isSavedDesign();
     this.animate();
-
     window.addEventListener('resize', () => this.onWindowResize());
     this.renderer.domElement.addEventListener('mousedown', (e) => this.onMouseDown(e));
     this.renderer.domElement.addEventListener('mousemove', (e) => this.onMouseMove(e));
     this.renderer.domElement.addEventListener('mouseup', (e) => this.onMouseUp(e));
+  }
 
-    // this.renderer.domElement.addEventListener('click', (e) => this.onCanvasClick(e));
+  /**
+   * check if saved design is available against this model in local storage
+   */
+  isSavedDesign() {
+    const storedKey = this.extractModelKey(this.selectedModelPath);
+    const savedModalData = JSON.parse(localStorage.getItem(storedKey) || 'null');
+    if (savedModalData) {
+      setTimeout(() => {
+        this.isShowLoad = true;
+      }, 0);
+    }
   }
 
   /**
@@ -91,7 +119,8 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    * @param path
    */
   selectModel(path: any): void {
-    this.selectedModelPath = path.target.value;
+    this.selectedModelPath = this.r2BaseUrl + path;
+    this.modelPath = path;
     this.destroyScene();
     this.decals = [];
     this.initState();
@@ -139,12 +168,12 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    */
   private addLights() {
     const lights = [
-      new THREE.DirectionalLight(0xffffff, 1.5),
-      new THREE.DirectionalLight(0xffffff, 1.5),
-      new THREE.DirectionalLight(0xffffff, 1.5),
-      new THREE.DirectionalLight(0xffffff, 1.5),
-      new THREE.DirectionalLight(0xffffff, 1.5),
-      new THREE.DirectionalLight(0xffffff, 1.5),
+      new THREE.DirectionalLight(0xffffff, 2),
+      new THREE.DirectionalLight(0xffffff, 2),
+      new THREE.DirectionalLight(0xffffff, 2),
+      new THREE.DirectionalLight(0xffffff, 2),
+      new THREE.DirectionalLight(0xffffff, 2),
+      new THREE.DirectionalLight(0xffffff, 2),
     ];
     const positions: [number, number, number][] = [
       [2, 3, 4],
@@ -164,42 +193,72 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    * load selected modal to display using its path
    * @param path
    */
-  private loadModel(path: string) {
-    console.log('path: ', path);
+  private async loadModel(path: string) {
     const loader = new GLTFLoader();
+    this.spinner.start();
+
     loader.load(
       path,
-      (gltf) => {
-        this.model = gltf.scene;
-        this.scene.add(this.model);
-        this.modelMeshes = [];
-        const box = new THREE.Box3().setFromObject(this.model);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        this.modelCenter.copy(center);
+      async (gltf) => {
+        try {
+          this.model = gltf.scene;
+          this.scene.add(this.model);
+          this.modelMeshes = [];
 
-        this.model.position.sub(center);
+          // Collect all meshes & disable shadows
+          this.model.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              this.modelMeshes.push(child);
+              child.castShadow = false;
+              child.receiveShadow = false;
+            }
+          });
 
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scaleFactor = 3 / maxDim;
-        this.model.scale.setScalar(scaleFactor);
-        this.model.traverse((child) => {
-          if (child instanceof THREE.Mesh) {
-            this.modelMeshes.push(child);
-            // Optional: disable shadows for performance
-            child.castShadow = false;
-            child.receiveShadow = false;
+          // Compute bounding box and center model
+          const box = new THREE.Box3().setFromObject(this.model);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          this.modelCenter.copy(center);
+          this.model.position.sub(center);
+
+          // Scale model
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const scaleFactor = 3 / maxDim;
+          this.model.scale.setScalar(scaleFactor);
+
+          // Adjust camera to fit
+          await new Promise((resolve) => {
+            requestAnimationFrame(() => {
+              this.fitCameraToObject();
+              resolve(true);
+            });
+          });
+
+          if (this.renderer.compileAsync) {
+            await this.renderer.compileAsync(this.scene, this.camera);
           }
-        });
-        requestAnimationFrame(() => {
-          this.fitCameraToObject();
-        });
 
-        // 🆕 Preload decal texture after model
-        this.loadDecalTexture(this.decalImageUrl);
+          this.loadDecalTexture(this.decalImageUrl);
+
+          if (this.isEdit) {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            this.loadDesign();
+          }
+
+          this.spinner.stop();
+        } catch (err) {
+          console.error('Error during model setup:', err);
+          this.spinner.stop();
+        }
       },
-      undefined,
-      (error) => console.error('Error loading model:', error)
+      (xhr) => {
+        const progress = (xhr.loaded / xhr.total) * 100;
+        // console.log(`Model loading: ${progress.toFixed(2)}%`);
+      },
+      (error) => {
+        console.error('Error loading model:', error);
+        this.spinner.stop();
+      }
     );
   }
 
@@ -219,7 +278,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         polygonOffset: true,
         polygonOffsetFactor: -4,
       });
-      console.log('✅ Decal ready: click on model to place it.');
     });
   }
 
@@ -275,7 +333,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     }
     if (hitDecal) {
       this.selectedDecal = hitDecal;
-      console.log('this.selectedDecal: ', this.selectedDecal);
       this.isDraggingDecal = true;
       this.renderer.domElement.style.cursor = 'grabbing';
     }
@@ -369,30 +426,47 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   /**
    * make modal correct display on load
    */
-  private fitCameraToObject() {
-    if (!this.model) {
-      console.warn('⛔ Model not loaded yet, skipping fitCameraToObject()');
+  private fitCameraToObject(padding = 1.5) {
+    if (!this.model || !this.camera || !this.controls) {
+      console.warn('⚠️ Model, camera, or controls missing in fitCameraToObject()');
       return;
     }
-    /** Position camera nicely around the model dynamically */
-    const box = new THREE.Box3().setFromObject(this.model!);
+
+    // Compute bounding box and get its size + center
+    const box = new THREE.Box3().setFromObject(this.model);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
 
-    // Find the largest dimension
+    // Handle empty or invalid bounding box
+    if (size.length() === 0 || !isFinite(size.x)) {
+      console.warn('⚠️ Invalid bounding box for model');
+      return;
+    }
+
+    // Re-center the model around origin
+    this.model.position.sub(center);
+    this.controls.target.set(0, 0, 0);
+
+    // Compute distance based on largest dimension and camera FOV
     const maxDim = Math.max(size.x, size.y, size.z);
+    const fov = THREE.MathUtils.degToRad(this.camera.fov);
+    const cameraZ = maxDim / 2 / Math.tan(fov / 2);
 
-    // Calculate an ideal distance from the object
-    const fov = this.camera.fov * (Math.PI / 180);
-    const cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+    // Add padding (e.g., zoom out slightly)
+    const adjustedDistance = cameraZ * padding;
 
-    // Add some padding so the model isn't cut off
-    const zoomOutFactor = 1.4;
-    this.camera.position.set(center.x, center.y + maxDim * 0.1, cameraZ * zoomOutFactor);
-    this.camera.lookAt(center);
+    // Compute bounding sphere radius for stable positioning
+    const sphere = box.getBoundingSphere(new THREE.Sphere());
+    const direction = new THREE.Vector3(0, 0, 1); // camera looks down Z-axis
+    const newPos = direction.multiplyScalar(adjustedDistance);
 
-    // Update controls
-    this.controls.target.copy(center);
+    // Position and update camera
+    this.camera.position.copy(newPos);
+    this.camera.lookAt(0, 0, 0);
+    this.camera.updateProjectionMatrix();
+
+    // Update orbit controls target and re-render
+    this.controls.target.set(0, 0, 0);
     this.controls.update();
   }
 
@@ -402,9 +476,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   private onWindowResize() {
     const container = this.canvasContainer.nativeElement;
     const width = container.clientWidth;
-    console.log('width: ', width);
     const height = container.clientHeight;
-    console.log('height: ', height);
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -469,8 +541,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     const font = `${this.textConfig.bold ? 'bold ' : ''}${this.textConfig.italic ? 'italic ' : ''}${
       Number(this.textConfig.fontSize) + 80
     }px ${this.textConfig.fontFamily || 'Arial'}`;
-
-    console.log('color: ', color);
     ctx.fillStyle = color;
     ctx.font = font;
     ctx.textAlign = 'center';
@@ -520,7 +590,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     };
     this.scene.add(newDecal);
     this.decals.push(newDecal);
-    console.log('this.decals: ', this.decals);
 
     this.userText = '';
     this.selectedDecal = null;
@@ -628,7 +697,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       type: 'image',
       image: this.decalImageUrl,
     };
-    console.log('this.decalImageUrl: ', this.decalImageUrl);
     this.decals.push(newDecal);
     this.selectedDecal = newDecal;
   }
@@ -688,7 +756,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    * @returns
    */
   editTextDecal(decal: THREE.Mesh) {
-    console.log('decal: ', decal);
     if (decal.userData['type'] !== 'text') return;
     this.editDecal = decal;
     this.selectedDecal = decal;
@@ -721,7 +788,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       Number(fontSize) + 80
     }px ${fontFamily}`;
     ctx.font = font;
-    console.log('fontColor: ', fontColor);
     ctx.fillStyle = fontColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -794,8 +860,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
 
             // Update reference in userData
             decal.userData['image'] = imageUrl;
-
-            console.log('✅ Existing image decal updated successfully');
           },
           undefined,
           (error) => console.error('❌ Failed to load new decal texture:', error)
@@ -806,7 +870,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         this.loadDecalTexture(imageUrl);
         setTimeout(() => {
           this.placeImage();
-          console.log('✅ New image placed on model');
         }, 500);
       }
     };
@@ -825,8 +888,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    * reset edit state
    */
   cancelEdit() {
-    console.log(' this.selectedDecal: ', this.selectedDecal);
-    console.log(' this.editDecal: ', this.editDecal);
     this.textConfig = this.selectedDecal?.userData['textSettings'];
     this.userText = this.selectedDecal?.userData['text'];
     this.refreshDecal();
@@ -984,8 +1045,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       font?: string;
     } = {}
   ) {
-    console.log('this.selectedDecal: ', this.selectedDecal);
-    console.log('this.decals: ', this.decals);
     const decal = this.selectedDecal;
     console.log('decal: ', decal);
     if (!decal?.userData?.['mesh'] || !decal.userData['position'] || !decal.userData['orientation'])
@@ -1006,6 +1065,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         baseSize.z * scaleFactor
       );
       decal.userData['currentScale'] = scaleFactor;
+      decal.userData['scaleFactor'] = scaleFactor;
 
       // --- Geometry ---
       const newGeom = new DecalGeometry(mesh, position, orientation, size);
@@ -1022,7 +1082,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       canvas.height = 512;
       const ctx = canvas.getContext('2d')!;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      console.log(' this.textConfig: ', this.textConfig);
       ctx.fillStyle = this.textConfig.fontColor || '#000000';
       ctx.font = `${this.textConfig.bold ? 'bold ' : ''}${this.textConfig.italic ? 'italic ' : ''}${
         Number(this.textConfig.fontSize) + 80
@@ -1060,9 +1119,9 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    * save all design modal updated design in local storage for now
    * @returns
    */
-  saveDesign(): void {
+  saveDesign(showToast: boolean = true): void {
     if (!this.model) return;
-
+    const storageKey = this.extractModelKey(this.selectedModelPath);
     // Extract material data
     const modelMaterialData: any[] = [];
     this.model.traverse((child: any) => {
@@ -1087,19 +1146,36 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       if (userData['orientation']?.toArray)
         userData['orientation'] = userData['orientation'].toArray();
       if (userData['originalSize']?.toArray)
-        userData['originalSize'] = userData['originalSize'].toArray();
-
+        userData['originalSize'] = [1,1,1];
+      if (userData['baseSize']?.toArray)
+        userData['baseSize'] = [1,1,1];
+      if (userData['type'] === 'image')
+        userData['image'] =
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPkNnMdPMYL0wJTAweRejy-TK0WslkwCikVg&s';
       return userData;
     });
-
+    const cleanedDecals = decalsData.map(({ mesh, ...rest }) => rest);
     const saveDesignData = {
       modelPath: this.selectedModelPath,
       materials: modelMaterialData,
-      decals: decalsData,
+      decals: cleanedDecals,
     };
 
-    localStorage.setItem('savedModalInfo', JSON.stringify(saveDesignData));
-    console.log('saveDesignData: ', saveDesignData);
+    localStorage.setItem(storageKey, JSON.stringify(saveDesignData));
+    if (showToast) {
+      this.sharedService.showToast('Saved!', 'Your design has been saved successfully.');
+    }
+    this.isSavedDesign();
+  }
+
+  /**
+   * extract model key on base of its path
+   * @param modelPath
+   * @returns
+   */
+  private extractModelKey(modelPath: string) {
+    const fileName = modelPath.split('/').pop()?.replace('.glb', '') || 'unknown_model';
+    return `design_model/${fileName}`;
   }
 
   /**
@@ -1111,13 +1187,10 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       console.warn('⚠️ No model loaded; cannot apply decals.');
       return;
     }
-    const savedDesign = JSON.parse(localStorage.getItem('savedModalInfo') || '{}');
-
-    // Collect model meshes
-    this.modelMeshes = [];
-    this.model.traverse((child: any) => {
-      if (child.isMesh) this.modelMeshes.push(child);
-    });
+    this.selectedDecal = null
+    const storedKey = this.extractModelKey(this.selectedModelPath);
+    const savedDesign = JSON.parse(localStorage.getItem(storedKey) || '{}');
+    console.log('savedDesign: ', savedDesign);
 
     // Restore materials
     savedDesign.materials?.forEach((matData: any) => {
@@ -1139,7 +1212,9 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     for (const d of savedDesign.decals) {
       const position = new THREE.Vector3().fromArray(d.position);
       const rotation = new THREE.Euler().fromArray(d.orientation);
-      const size = new THREE.Vector3().fromArray(d.originalSize);
+      const size = new THREE.Vector3().fromArray(d.baseSize).multiplyScalar(d.scaleFactor || 1)
+       
+      console.log('size: ', size);
       const baseMesh = this.modelMeshes[0];
       const decalGeom = new DecalGeometry(baseMesh, position, rotation, size);
 
@@ -1147,20 +1222,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
 
       if (d.type === 'image') {
         const texture = await new Promise<THREE.Texture>((resolve, reject) => {
-          if (d.image?.startsWith?.('data:image')) {
-            const img = new Image();
-            img.onload = () => {
-              const tex = new THREE.Texture(img);
-              tex.needsUpdate = true;
-              resolve(tex);
-            };
-            img.onerror = reject;
-            img.src = d.image;
-          } else if (d.imageUrl) {
-            new THREE.TextureLoader().load(d.imageUrl, resolve, undefined, reject);
-          } else {
-            reject('No valid image found for decal');
-          }
+          new THREE.TextureLoader().load(d.image, resolve, undefined, reject);
         });
 
         decalMat = new THREE.MeshPhongMaterial({
@@ -1205,6 +1267,8 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         position,
         orientation: rotation,
         originalSize: size,
+        mesh: baseMesh,
+        baseSize:new THREE.Vector3().fromArray(d.baseSize)
       };
 
       this.scene.add(decalMesh);
@@ -1214,10 +1278,39 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     this.decals = this.decals.filter((d) => d?.userData?.['type']);
     // this.cdRef.detectChanges?.();
 
-    console.log('✅ Decals fully restored with userData:', this.decals.length);
     this.fitCameraToObject();
   }
-
+  addToCart() {
+    this.saveDesign(false);
+    const cartObj = {
+      barcode: null,
+      category: 'Custom Design',
+      category_id: 'Custom_categroy_id',
+      condition: 'new',
+      created_at: '2025-11-06T14:17:40.52268Z',
+      created_by: null,
+      description: 'Custom Description',
+      dimensions: null,
+      id: 'custom_id' + this.modelPath,
+      is_variant: false,
+      manufacturer: null,
+      metadata: {},
+      mpn: null,
+      name: 'Custom Design',
+      parent_id: null,
+      price: null,
+      sku: '',
+      slug: '',
+      status: 'active',
+      tags: [],
+      customeDesign: this.modelPath,
+      thumbnail_url: 'products/f5677192-e994-49e6-8cfa-ff5dbea4e02d_mahroon_color.png',
+      updated_at: '2025-11-06T14:17:40.52268Z',
+      updated_by: null,
+      weight: 1,
+    };
+    this.sharedService.addToCart(cartObj);
+  }
   ngOnDestroy(): void {
     cancelAnimationFrame(this.animationFrameId);
     this.renderer.dispose();
