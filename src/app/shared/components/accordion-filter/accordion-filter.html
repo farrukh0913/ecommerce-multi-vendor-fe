@@ -8,72 +8,77 @@
   }
 
   <!-- Dynamic List (Categories / Brands / Colors / etc.) -->
-  @if (!isRatingFilter) {
-    <div class="selection-list">
-      <ul class="category-list">
-        @for (category of categories; track category.name; let i = $index) {
-          <li>
-            <div class="category-item">
-              <input
-                type="checkbox"
-                [id]="'cat-' + i"
-                [(ngModel)]="category.selected"
-              />
-              <label [for]="'cat-' + i">{{ category.name }}</label>
-            </div>
+ <!-- Non-rating filters -->
+@if (!isRatingFilter) {
+  <div class="selection-list">
+    <ul class="category-list">
+      @for (category of categories; track category.name; let i = $index) {
+        <li>
+          <div class="category-item">
+            <input
+              type="checkbox"
+              [id]="'cat-' + category.name"
+              [checked]="category.selected"
+              (change)="toggleSelection(category)"
+            />
+            <label [for]="'cat-' + category.name">{{ category.name }}</label>
+          </div>
 
-            @if (category.subcategories?.length > 0) {
-              <ul class="subcategory-list">
-                @for (sub of category.subcategories; track sub.name; let j = $index) {
-                  <li>
-                    <div class="category-item">
-                      <input
-                        type="checkbox"
-                        [id]="'sub-' + i + '-' + j"
-                        [(ngModel)]="sub.selected"
-                      />
-                      <label [for]="'sub-' + i + '-' + j">{{ sub.name }}</label>
-                    </div>
-                  </li>
-                }
-              </ul>
-            }
-          </li>
-        }
-      </ul>
-    </div>
-  }
+          @if (category.subcategories?.length > 0) {
+            <ul class="subcategory-list">
+              @for (sub of category.subcategories; track sub.name; let j = $index) {
+                <li>
+                  <div class="category-item">
+                    <input
+                      type="checkbox"
+                      [id]="'sub-' + i + '-' + j"
+                      [checked]="sub.selected"
+                      (change)="toggleSelection(sub)"
+                    />
+                    <label [for]="'sub-' + i + '-' + j">{{ sub.name }}</label>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </li>
+      }
+    </ul>
+  </div>
+}
 
-  <!-- ⭐ Rating Filter -->
-  @if (isRatingFilter) {
-    <div class="selection-list">
-      <ul class="category-list">
-        @for (rating of categories; track rating.stars; let r = $index) {
-          <li>
-            <div class="category-item" >
-              <input
-                type="checkbox"
-                [id]="'rating-' + r"
-                [(ngModel)]="rating.selected"
-              />
-              <label [for]="'rating-' + r">
-                @for (star of [].constructor(rating.stars); track $index) {
-                  <ion-icon
-                    name="star"
-                    style="color: var(--app-primary, #0078ff); font-size: 16px;"
-                  ></ion-icon>
-                }
-                @for (star of [].constructor(5 - rating.stars); track $index) {
-                  <ion-icon
-                    name="star-outline"
-                    style="color: #bbb; font-size: 16px;"
-                  ></ion-icon>
-                }
-              </label>
-            </div>
-          </li>
-        }
-      </ul>
-    </div>
-  }
+<!-- Rating filter -->
+@if (isRatingFilter) {
+  <div class="selection-list">
+    <ul class="category-list">
+      @for (rating of categories; track rating.stars; let r = $index) {
+        <li>
+          <div class="category-item">
+            <input
+              type="checkbox"
+              [id]="'rating-' + r"
+              [checked]="rating.selected"
+              (change)="toggleSelection(rating)"
+            />
+            <label [for]="'rating-' + r">
+              @for (star of [].constructor(rating.stars); track $index) {
+                <ion-icon
+                  name="star"
+                  style="color: var(--app-primary, #0078ff); font-size: 16px;"
+                ></ion-icon>
+              }
+              @for (star of [].constructor(5 - rating.stars); track $index) {
+                <ion-icon
+                  name="star-outline"
+                  style="color: #bbb; font-size: 16px;"
+                ></ion-icon>
+              }
+            </label>
+          </div>
+        </li>
+      }
+    </ul>
+  </div>
+}
+
 </div>

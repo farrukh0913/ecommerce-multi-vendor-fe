@@ -60,8 +60,10 @@ export class SearchProduct {
     this.productService.productFilters.name = filterValue;
     this.productService.getFiltered(this.productService.productFilters).subscribe({
       next: (data) => {
-        this.products = data;
-        console.log('data:product ', data);
+          const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];
+        this.products = data?.filter(
+          (item: any) => !blogWhoWearWhatId.includes(item.category_id)
+        );;
       },
       error: (err) => {},
       complete: () => {

@@ -1,0 +1,24 @@
+<app-content-header pageName="Select Model" [routePath]="breadcrumb"></app-content-header>
+
+<section class="model-container">
+  <div class="model-grid">
+    @for (model of modelPaths; track $index) {
+    <div class="model-card" (click)="goToDesign(model)">
+      <div class="model-holder">
+        @if (model) {
+        <model-viewer [src]="r2BaseUrl + model" alt="3D Model" camera-orbit="0deg"> </model-viewer>
+        }
+        <div class="overlay">
+          <button class="view-btn">Design Now</button>
+        </div>
+      </div>
+
+      <div class="model-info">
+        <p class="product-count">
+          {{ getModelName(model) }}
+        </p>
+      </div>
+    </div>
+    }
+  </div>
+</section>

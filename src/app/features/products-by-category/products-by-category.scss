@@ -1,3 +1,6 @@
+
+
+
 :host ::ng-deep {
   .products {
     grid-template-columns: unset;
@@ -33,6 +36,12 @@
     gap: 1rem;
 
     .products-container {
+
+
+
+
+
+
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -140,30 +149,58 @@
   }
 }
 .filter-container {
-  padding: 20px;
-  width: 100%;
-  max-width: 350px;
-  background-color: #f9f9f9;
-  border: 1px solid var(--app-border-color);
-
-  .accordion-button {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    font-weight: 600;
-    font-size: 18px;
-    color: #212529;
-    background-color: transparent;
-    border: none;
-    padding-bottom: 1rem;
-    cursor: pointer;
-
-    &:not(:first-child) {
-      border-top: 1px solid var(--app-border-color);
-      padding-top: 1rem;
-    }
-  }
+      padding: 20px;
+      width: 100%;
+      max-width: 350px;
+      background-color: #f8f8f8;
+      border: 1px solid var(--app-border-color);
+.selected-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
 }
+
+.pill {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 5px;
+  color: black;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: #212529;
+  font-size: 16px;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+      .accordion-button {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        font-weight: 600;
+        font-size: 18px;
+        color: #212529;
+        background-color: transparent;
+        border: none;
+        padding-bottom: 1rem;
+        cursor: pointer;
+
+        &:not(:first-child) {
+          border-top: 1px solid var(--app-border-color);
+          padding-top: 1rem;
+        }
+      }
+
+      
+    }
 .filter-btn-mob {
   background-color: var(--app-primary);
   padding: 10px 18px;
@@ -181,7 +218,46 @@
   justify-items: center;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (max-width: 700px) {
+
+
+
   :host ::ng-deep {
     .products {
       .product-loop {

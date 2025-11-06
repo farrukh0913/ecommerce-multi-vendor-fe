@@ -13,7 +13,8 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+     "jsx": "react-jsx",
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -22,6 +23,7 @@
     "typeCheckHostBindings": true,
     "strictTemplates": true
   },
+  
   "files": [],
   "references": [
     {
@@ -30,5 +32,6 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ]
+  ],
+  
 }

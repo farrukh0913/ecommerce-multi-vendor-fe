@@ -1,8 +1,8 @@
 <div class="cart-layout">
+  @if (cartItems?.length) {
   <div class="left-section">
     <div class="free-shipping">
       @if(totalCost < 300){
-
       <p>
         <i class="fa-solid fa-box"></i>
         Add <strong>{{ 300 - totalCost }}$</strong> to your cart for free shipping!
@@ -29,24 +29,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of cartItems;let index=index">
+          <tr *ngFor="let item of cartItems; let index = index">
             <td class="item">
-              
-              <img [src]="item.image" alt="{{ item.name }}" />
-              <span>{{ item.name }}</span>
+              <img [src]="r2BaseUrl + item.thumbnail_url" alt="{{ item.name }}" />
+              <span
+                [class.custom-design]="item?.customeDesign"
+                (click)="item?.customeDesign && moveToCustomDesign(item?.customeDesign)"
+                >{{ item?.customeDesign ? 'Custom Design' : item.name }}</span
+              >
             </td>
-            <td>${{ item.price }}</td>
+            <td>$ {{ item.price || 10 }}</td>
             <td>
               <div class="quantity">
                 <button (click)="decreaseQty(item)">−</button>
-                <span>{{ item.quantity }}</span>
+                <span>{{ item.quantity || 1 }}</span>
                 <button (click)="increaseQty(item)">+</button>
               </div>
             </td>
-            <td>${{ item.price * item.quantity }}</td>
+            <td>$ {{ item.price * item.quantity || 10 }}</td>
             <td>
-
-              <i class="fa fa-close delete-icon" (click)="removeFromCart(index)"></i>
+              <i class="fa fa-close delete-icon" (click)="removeFromCart(item)"></i>
             </td>
           </tr>
         </tbody>
@@ -56,29 +58,30 @@
       <h3>Order Summary</h3>
 
       <!-- <div class="coupon">
-        <input type="text" placeholder="Enter coupon code" [(ngModel)]="couponCode" />
-        <button (click)="applyCoupon()">Apply</button>
-      </div> -->
+          <input type="text" placeholder="Enter coupon code" [(ngModel)]="couponCode" />
+          <button (click)="applyCoupon()">Apply</button>
+        </div> -->
 
       <div class="summary-line">
         <span>Subtotal</span>
-        <span>${{ totalCost.toFixed(2) }}</span>
+        <span>$ {{ totalCost ? totalCost.toFixed(2) : 10 }}</span>
       </div>
 
       <div class="summary-line">
         <span>GST (5%)</span>
-        <span>${{ gstAmount.toFixed(2) }}</span>
+        <span>$ {{ gstAmount ? gstAmount.toFixed(2) : 10 }}</span>
       </div>
 
       <div class="summary-line total">
         <span>Total</span>
-        <span>${{ grandTotal.toFixed(2) }}</span>
+        <span>$ {{ grandTotal ? grandTotal.toFixed(2) : 10 }}</span>
       </div>
 
       <button class="checkout-btn">Proceed to Checkout</button>
     </div>
   </div>
-  <div class="right-section">
-    
-  </div>
+  }@else {
+  <span>No items available in cart.</span>
+  }
+  <div class="right-section"></div>
 </div>

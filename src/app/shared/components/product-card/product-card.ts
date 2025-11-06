@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { getCurrencySymbol } from '../../utils/currency.utils';
+import { SharedService } from '../../services/sahared.service';
 
 @Component({
   selector: 'app-product-card',
@@ -14,12 +15,12 @@ export class ProductCard {
   @Output() detailViewClicked = new EventEmitter<any>();
   @Input() viewMode: 'grid' | 'list' = 'grid';
   @Input() product: any = null;
-  imageBaseUrl: string = environment.s3BaseUrl;
+  imageBaseUrl: string = environment.r2BaseUrl;
   getCurrencySymbol = getCurrencySymbol;
   selectedColor: any = null;
   selectedSize: any = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sharedService: SharedService) {}
 
   /**
    * Detect input changes
@@ -33,6 +34,7 @@ export class ProductCard {
         (data: any) => data.is_default === true
       );
       this.selectedColor = defaultColor ? defaultColor : this.product?.attributes?.colors?.[0];
+      console.log('this.selectedColor: ', this.selectedColor);
       // set default size
       const defaultSize = this.product?.attributes?.sizes?.find(
         (data: any) => data.is_default === true
@@ -60,8 +62,26 @@ export class ProductCard {
     this.detailViewClicked.emit(this.product);
   }
 
+  /**
+   * add item to cart
+   * @param item
+   */
+  addToCart(item: any) {
+    this.sharedService.addToCart(item);
+  }
+
+  /**
+   * update variable on selection of color and sizes
+   * @param event
+   * @param value
+   * @param attr
+   */
   updateValue(event: MouseEvent, value: any, attr: 'selectedColor' | 'selectedSize') {
     event.stopPropagation();
     this[attr] = value;
+  }
+
+  handleMouseEvent(event: MouseEvent) {
+    event.stopPropagation();
   }
 }

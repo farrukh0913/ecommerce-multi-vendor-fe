@@ -9,28 +9,17 @@
 >
   @for (item of heroImages; track $index) {
   <swiper-slide>
-    <img
-      [src]="item"
-      alt="Slide"
-      style="width: 100%"
-      (click)="moveToCategoryPage()"
-    />
+    <img [src]="item" alt="Slide" style="width: 100%" (click)="moveToCategoryPage()" />
   </swiper-slide>
   }
 </swiper-container>
 
 <div class="section-two section-b-p">
   <div class="img-wrapper">
-    <img
-      src="https://laravel.pixelstrap.net/multikart/storage/1300/fashion_one_8.png"
-      (click)="moveToCategoryPage()"
-    />
+    <img [src]="r2BaseUrl + '/uploads/women-collection.png'" (click)="moveToCategoryPage()" />
   </div>
   <div class="img-wrapper">
-    <img
-      src="https://laravel.pixelstrap.net/multikart/storage/1299/fashion_one_7.png"
-      (click)="moveToCategoryPage()"
-    />
+    <img [src]="r2BaseUrl + '/uploads/men-collection.png'" (click)="moveToCategoryPage()" />
   </div>
 </div>
 
@@ -64,10 +53,7 @@
 </swiper-container>
 
 <div class="img-new-arrivals section-b-p">
-  <img
-    src="https://laravel.pixelstrap.net/multikart/storage/149/fashion_one_5.png"
-    (click)="moveToCategoryPage()"
-  />
+  <img [src]="r2BaseUrl + '/uploads/new-arrival.png'" (click)="moveToCategoryPage()" />
 </div>
 
 <div class="title-conatiner">
@@ -141,20 +127,16 @@
   pagination="false"
   navigation="false"
 >
-  @for (item of [].constructor(30); track $index) {
+  @for (blog of blogs; track $index) {
   <swiper-slide class="blog-slider">
     <div class="blogs">
       <div class="img-wrapper">
-        <img
-          src="https://laravel.pixelstrap.net/multikart/storage/126/fashion_one_blog_3.png"
-          alt="Category Image"
-          height="200px"
-        />
+        <img [src]="r2BaseUrl + '/' + blog.thumbnail_url" alt="Blog Image" height="200px" />
       </div>
       <div class="content">
-        <h4>06 May 2025 09:40:AM</h4>
-        <p>Vintage Vibes: Channeling Old-World Glamour in Modern Fashion</p>
-        <h6>By: admin</h6>
+        <h4>{{ blog.attributes.date | date:'dd MMM yyyy hh:mm a' }}</h4>
+        <p>{{ blog.attributes.title }}</p>
+        <h6>By: {{ blog.attributes.blog_by }}</h6>
       </div>
     </div>
   </swiper-slide>
@@ -173,12 +155,12 @@
     navigation="false"
     autoplay="false"
   >
-    @for (item of [].constructor(30); track $index) {
+    @for (item of whoWearWhat.constructor(30); track $index) {
     <swiper-slide class="category-slide">
       <div class="image-wrapper">
         <img
-          src="https://laravel.pixelstrap.net/multikart/storage/3221/fashion_one_insta_3.png"
-          alt="Category Image"
+          [src]="r2BaseUrl + '/uploads/fashion-insta.png'"
+          alt="Fashion Insta Image"
           height="200px"
         />
         <div class="animated-overlay">

@@ -3,8 +3,10 @@
     <img
       class="main-img"
       [src]="
-        product?.thumbnail_url
-          ? imageBaseUrl + product?.thumbnail_url
+        selectedColor?.thumbnail_url
+          ? imageBaseUrl + '/' + selectedColor?.thumbnail_url
+          : imageBaseUrl + '/' + product?.thumbnail_url
+          ? imageBaseUrl + '/' +product?.thumbnail_url
           : imageBaseUrl + 'public/amd-ryzen-5-7600.jpg'
       "
       alt="Product Image"
@@ -15,7 +17,7 @@
     </div>
     <div class="bucket-icons">
       <div class="bucket-icon"><ion-icon name="heart-outline"></ion-icon></div>
-      <div class="bucket-icon"><ion-icon name="cart-outline"></ion-icon></div>
+      <div class="bucket-icon" (click)="addToCart(product)"><ion-icon name="cart-outline"></ion-icon></div>
       <div class="bucket-icon"><ion-icon name="search-outline"></ion-icon></div>
       <div class="bucket-icon"><ion-icon name="refresh-outline"></ion-icon></div>
     </div>
@@ -37,7 +39,7 @@
       <span class="discout"> 12%</span>
     </span>
     <!-- <button class="design-button">Design Now</button> -->
-    <div class="attributes">
+    <div class="attributes" (click)="handleMouseEvent($event)">
       <!-- show colors if available in product -->
       @if(product?.attributes?.colors?.length > 0){
       <!-- loop for color to display all colors -->
@@ -45,8 +47,8 @@
         @for (color of product?.attributes?.colors; track $index) {
         <div
           class="color-icon"
-          [style.background-color]="color"
-          (click)="updateValue($event, color, 'selectedColor')"
+          [style.background-color]="color.hex"
+          (mouseenter)="updateValue($event, color, 'selectedColor')"
           [ngClass]="{ 'selected-attribute': selectedColor.hex == color.hex }"
         ></div>
         }
@@ -54,7 +56,7 @@
       }
 
       <!-- show sizes if available in product -->
-      @if(product?.attributes?.sizes.length > 0){
+      @if(product?.attributes?.sizes?.length > 0){
       <!-- loop for sizes to display all sizes -->
       <div class="sizes">
         @for (size of product?.attributes?.sizes; track $index) {
