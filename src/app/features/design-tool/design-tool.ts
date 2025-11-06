@@ -1210,7 +1210,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     for (const d of savedDesign.decals) {
       const position = new THREE.Vector3().fromArray(d.position);
       const rotation = new THREE.Euler().fromArray(d.orientation);
-      const size = new THREE.Vector3().fromArray(d.baseSize).multiplyScalar(d.scaleFactor || 1);
+      const size = d.type === 'image' ? new THREE.Vector3().fromArray(d.baseSize).multiplyScalar(d.scaleFactor || 1): new THREE.Vector3(new THREE.Vector3().fromArray(d.originalSize).x, new THREE.Vector3().fromArray(d.originalSize).y/2, new THREE.Vector3().fromArray(d.originalSize).z);;
 
       console.log('size: ', size);
       const baseMesh = this.modelMeshes[0];
@@ -1266,7 +1266,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         orientation: rotation,
         originalSize: size,
         mesh: baseMesh,
-        baseSize: new THREE.Vector3().fromArray(d.baseSize),
+        baseSize: d.type === 'image' ? new THREE.Vector3().fromArray(d.baseSize): null,
       };
 
       this.scene.add(decalMesh);
