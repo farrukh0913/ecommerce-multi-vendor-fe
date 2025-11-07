@@ -230,3 +230,25 @@
     }
   }
 }
+
+.custom-preview-full {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--app-primary);
+  color: var(--app-light);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: -20px;
+  i {
+    margin-right: 6px;
+  }
+}
+.no-border {
+  border-bottom: none !important;
+}

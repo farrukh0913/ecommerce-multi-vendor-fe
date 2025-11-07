@@ -29,28 +29,54 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of cartItems; let index = index">
-            <td class="item">
-              <img [src]="r2BaseUrl + item.thumbnail_url" alt="{{ item.name }}" />
-              <span
-                [class.custom-design]="item?.customeDesign"
-                (click)="item?.customeDesign && moveToCustomDesign(item?.customeDesign)"
-                >{{ item?.customeDesign ? 'Custom Design' : item.name }}</span
-              >
-            </td>
-            <td>$ {{ item.price || 10 }}</td>
-            <td>
-              <div class="quantity">
-                <button (click)="decreaseQty(item)">−</button>
-                <span>{{ item.quantity || 1 }}</span>
-                <button (click)="increaseQty(item)">+</button>
-              </div>
-            </td>
-            <td>$ {{ item.price * item.quantity || 10 }}</td>
-            <td>
-              <i class="fa fa-close delete-icon" (click)="removeFromCart(item)"></i>
-            </td>
-          </tr>
+          <ng-container *ngFor="let item of cartItems; let index = index">
+            <!-- Main Product Row -->
+            <tr [class.no-border]="item?.variants?.hasCustom">
+              <td class="item">
+                <div class="item-info">
+                  <div class="item-details">
+                    <img
+                      [src]="r2BaseUrl + item?.variants?.thumbnail_url"
+                      alt="{{ item.name }}"
+                      class="item-image"
+                    />
+                    <span class="item-name">{{ item.name ?? 'Men T-shirt' }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>$ {{ item.price || 10 }}</td>
+              <td>
+                <div class="quantity">
+                  <button (click)="decreaseQty(item)">−</button>
+                  <span>{{ item.quantity || 1 }}</span>
+                  <button (click)="increaseQty(item)">+</button>
+                </div>
+              </td>
+
+              <td>$ {{ item.price * item.quantity || 10 }}</td>
+
+              <td>
+                <i class="fa fa-close delete-icon" (click)="removeFromCart(item)"></i>
+              </td>
+            </tr>
+            @if (item?.variants?.hasCustom) {
+            <tr>
+              <td colspan="5">
+                <div class="custom-preview-full">
+                  <div
+                    (click)="
+                      moveToCustomDesign(item.product_id, item?.variants?.model?.modelPath, item.id)
+                    "
+                  >
+                    <i class="fa fa-paint-brush"></i>
+                    <span>Custom Design</span>
+                  </div>
+                  <i class="fa fa-close delete-icon" (click)="removeCustomDesign(item)"></i>
+                </div>
+              </td>
+            </tr>
+            }
+          </ng-container>
         </tbody>
       </table>
     </div>

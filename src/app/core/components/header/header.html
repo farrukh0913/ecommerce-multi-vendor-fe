@@ -39,7 +39,9 @@
       <nav class="nav" [class.open]="menuOpen">
         @for (link of mainNavLinks; track $index) {
         <a
-          [routerLink]="link.path"
+          [routerLink]="
+            link.path === '/design-model' ? ['/design-model', '93ac57689e3e'] : link.path
+          "
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
           (click)="closeMenu()"

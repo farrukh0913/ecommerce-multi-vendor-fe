@@ -18,6 +18,8 @@
   cursor: pointer;
   width: 100%;
   max-width: 280px;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     transform: translateY(-8px);
@@ -74,7 +76,11 @@
   .category-info {
     padding: 1rem;
     text-align: center;
-
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     .category-title {
       font-size: 1.2rem;
       font-weight: 700;

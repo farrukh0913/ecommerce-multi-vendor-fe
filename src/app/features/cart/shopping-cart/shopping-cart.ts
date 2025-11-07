@@ -4,6 +4,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { CartService } from '../../../shared/services/cart.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -33,19 +34,32 @@ export class ShoppingCart {
   ];
   r2BaseUrl: string = environment.r2BaseUrl + '/';
 
-  constructor(private sharedService: SharedService, private router: Router,private cartService: CartService) {}
+  constructor(
+    private router: Router,
+    private cartService: CartService,
+    private spinner: NgxUiLoaderService
+  ) {}
   ngOnInit(): void {
-    this.sharedService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
+    this.cartService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
       this.cartItems = items;
       console.log('🛒 Cart updated:', items);
     });
-    this.getCartItem()
   }
   /**
    * Removing item from Cart
    */
   removeFromCart(item: any) {
-    this.sharedService.removeFromCart(item.id);
+    this.spinner.start();
+    this.cartService.deleteCartItem(item.id).subscribe({
+      next: (data: any) => {
+        // console.log('data: ', data);
+        this.spinner.stop();
+      },
+      error: (err: any) => {
+        // console.log('err: ', err);
+        this.spinner.stop();
+      },
+    });
   }
 
   /**
@@ -102,20 +116,43 @@ export class ShoppingCart {
       alert('Invalid coupon code.');
     }
   }
-  moveToCustomDesign(customDesignPath: string) {
+  /**
+   * route to design editor to view user added design
+   * @param productId
+   * @param customDesignPath
+   * @param cartId
+   */
+  moveToCustomDesign(productId: string, customDesignPath: string, cartId: string) {
     this.router.navigate(['/design-tool'], {
-      queryParams: { model: customDesignPath, isEdit: true },
+      queryParams: {
+        productId: productId,
+        model: customDesignPath.split('/').pop(),
+        isEdit: true,
+        cartId: cartId,
+      },
     });
     this.close.emit();
   }
-  getCartItem(){
-    this.cartService.getCartItems({ user_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr' }).subscribe({
-      next: (res) => {
-        console.log('Cart items fetched successfully:', res);
+
+  /**
+   * remove custom design from user product
+   * @param item
+   */
+  removeCustomDesign(item: any) {
+    this.spinner.start();
+    const cartItem = JSON.parse(JSON.stringify(item));
+    delete cartItem.variants.hasCustom;
+    delete cartItem.variants.model;
+    delete cartItem.id;
+    this.cartService.updateCartItem(item.id, cartItem).subscribe({
+      next: (data: any) => {
+        // console.log('data: ', data);
+        this.spinner.stop();
       },
-      error: (err) => {
-        console.error('Error fetching cart items:', err);
-      }
+      error: (err: any) => {
+        // console.log('err: ', err);
+        this.spinner.stop();
+      },
     });
   }
 

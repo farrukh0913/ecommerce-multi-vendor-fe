@@ -5,6 +5,26 @@
   <div class="inner-container">
     @if (!isMobile()) {
     <div class="filter-container">
+      <!-- Header section -->
+      <div class="filter-header">
+        <h3>Filters</h3>
+        @if (appliedFilters && appliedFilters.length > 0) {
+        <button class="clear-all" (click)="clearAllFilters()">Clear All</button>
+        }
+      </div>
+
+      <!-- Pills for selected categories -->
+      @if (appliedFilters && appliedFilters.length > 0) {
+      <div class="selected-pills">
+        @for (item of appliedFilters; track item.id) {
+        <div class="pill">
+          {{ item.name }}
+          <ion-icon name="close-outline" (click)="removeappliedFilter(item.type, item)"></ion-icon>
+        </div>
+        }
+      </div>
+      }
+      <!-- list all filters -->
       @for (filter of filters; track filter.id) {
       <button class="accordion-button" (click)="toggleVisibleFilter(filter.id)">
         {{ filter.title }}
@@ -16,21 +36,33 @@
         <!-- Reuse same accordion filter component -->
         <app-accordion-filter
           [categories]="filter.data"
+          [selectedItems]="filter.selectedItems"
           [isRatingFilter]="filter.type === 'rating'"
           (selectionChange)="updateSelectedItems(filter.id, $event)"
-        ></app-accordion-filter>
+        >
+        </app-accordion-filter>
       </div>
       } }
     </div>
 
     }
+
     <div class="products-container">
       <div class="img-wrapper">
         <img [src]="r2BaseUrl + '/uploads/fashion-style.png'" />
       </div>
       @if (isMobile()) {
       <button class="filter-btn-mob" (click)="categoryMenuOpen = true">Filters</button>
-      }
+      @if (appliedFilters && appliedFilters.length > 0) {
+      <div class="selected-pills">
+        @for (item of appliedFilters; track item.id) {
+        <div class="pill">
+          {{ item.name }}
+          <ion-icon name="close-outline" (click)="removeappliedFilter(item.type, item)"></ion-icon>
+        </div>
+        }
+      </div>
+      } }
       <div class="product-top-filter">
         <div class="filters">
           <div class="filter-item">
@@ -58,7 +90,7 @@
             </div>
           </div>
         </div>
-        @if (!isMobile()) {
+        <!-- @if (!isMobile()) {
         <div class="grid-layouts">
           <div (click)="gridLayout = 'grid-2'" [ngClass]="{ active: gridLayout === 'grid-2' }">
             ||
@@ -71,7 +103,7 @@
           </div>
           <div (click)="gridLayout = 'list'" [ngClass]="{ active: gridLayout === 'list' }">──</div>
         </div>
-        }
+        } -->
       </div>
       <section class="products" [ngClass]="viewMode" [ngClass]="gridLayout">
         @for (product of productsByCategory; track $index) {
@@ -122,8 +154,11 @@
       <!-- Reuse same accordion filter component -->
       <app-accordion-filter
         [categories]="filter.data"
+        [selectedItems]="filter.selectedItems"
         [isRatingFilter]="filter.type === 'rating'"
-      ></app-accordion-filter>
+        (selectionChange)="updateSelectedItems(filter.id, $event)"
+      >
+      </app-accordion-filter>
     </div>
     } }
   </div>
