@@ -1,5 +1,5 @@
 <div class="editor-container">
-  <div class="back-model" routerLink="/design-model">
+  <div class="back-model" [routerLink]="['/design-model', '93ac57689e3e']">
     <ion-icon name="chevron-back-outline"></ion-icon>
     <span>Models</span>
   </div>
@@ -22,11 +22,13 @@
 
     <!-- === Save / Load Buttons === -->
     <div class="save-load-buttons">
-      @if (isShowLoad) {
+      @if (isShowLoad && !isEdit) {
       <button class="secondary-btn" (click)="loadDesign()">Load Design</button>
       }
       <button class="primary-btn" (click)="saveDesign()">Save</button>
-      <button class="primary-btn" (click)="addToCart()">Add To Cart</button>
+      <button class="primary-btn" (click)="addToCart()">
+        {{ isEdit ? 'Update design to cart' : 'Add design to cart' }}
+      </button>
     </div>
   </div>
 

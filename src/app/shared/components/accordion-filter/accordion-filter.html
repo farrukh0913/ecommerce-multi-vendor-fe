@@ -2,7 +2,7 @@
   <!-- Sticky Search Bar -->
   @if (!isRatingFilter) {
     <div class="search-wrapper">
-      <input type="text" placeholder="Search" class="accordion-search" />
+      <input type="text" placeholder="Search" class="accordion-search" (input)="onSearch($event)"/>
       <ion-icon name="search-outline" class="search-icon"></ion-icon>
     </div>
   }

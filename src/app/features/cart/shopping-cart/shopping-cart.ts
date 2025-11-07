@@ -3,6 +3,8 @@ import { SharedService } from '../../../shared/services/sahared.service';
 import { Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
+import { CartService } from '../../../shared/services/cart.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -32,9 +34,13 @@ export class ShoppingCart {
   ];
   r2BaseUrl: string = environment.r2BaseUrl + '/';
 
-  constructor(private sharedService: SharedService, private router: Router) {}
+  constructor(
+    private router: Router,
+    private cartService: CartService,
+    private spinner: NgxUiLoaderService
+  ) {}
   ngOnInit(): void {
-    this.sharedService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
+    this.cartService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
       this.cartItems = items;
       console.log('🛒 Cart updated:', items);
     });
@@ -43,7 +49,17 @@ export class ShoppingCart {
    * Removing item from Cart
    */
   removeFromCart(item: any) {
-    this.sharedService.removeFromCart(item.id);
+    this.spinner.start();
+    this.cartService.deleteCartItem(item.id).subscribe({
+      next: (data: any) => {
+        // console.log('data: ', data);
+        this.spinner.stop();
+      },
+      error: (err: any) => {
+        // console.log('err: ', err);
+        this.spinner.stop();
+      },
+    });
   }
 
   /**
@@ -100,11 +116,44 @@ export class ShoppingCart {
       alert('Invalid coupon code.');
     }
   }
-  moveToCustomDesign(customDesignPath: string) {
+  /**
+   * route to design editor to view user added design
+   * @param productId
+   * @param customDesignPath
+   * @param cartId
+   */
+  moveToCustomDesign(productId: string, customDesignPath: string, cartId: string) {
     this.router.navigate(['/design-tool'], {
-      queryParams: { model: customDesignPath, isEdit: true },
+      queryParams: {
+        productId: productId,
+        model: customDesignPath.split('/').pop(),
+        isEdit: true,
+        cartId: cartId,
+      },
     });
     this.close.emit();
+  }
+
+  /**
+   * remove custom design from user product
+   * @param item
+   */
+  removeCustomDesign(item: any) {
+    this.spinner.start();
+    const cartItem = JSON.parse(JSON.stringify(item));
+    delete cartItem.variants.hasCustom;
+    delete cartItem.variants.model;
+    delete cartItem.id;
+    this.cartService.updateCartItem(item.id, cartItem).subscribe({
+      next: (data: any) => {
+        // console.log('data: ', data);
+        this.spinner.stop();
+      },
+      error: (err: any) => {
+        // console.log('err: ', err);
+        this.spinner.stop();
+      },
+    });
   }
 
   ngOnDestroy() {

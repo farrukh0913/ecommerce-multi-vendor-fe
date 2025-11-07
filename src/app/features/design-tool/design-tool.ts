@@ -7,6 +7,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/sahared.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { CartService } from '../../shared/services/cart.service';
 @Component({
   selector: 'app-design-tool',
   standalone: false,
@@ -38,6 +39,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   decals: THREE.Mesh[] = [];
   selectedDecal: THREE.Mesh | null = null;
   editDecal: THREE.Mesh | null = null;
+  saveDesignData: any = null;
   textConfig: any = {
     fontFamily: 'Poppins',
     fontSize: 20,
@@ -60,15 +62,22 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   ];
   modelPath: string = '';
   isEdit: boolean = false;
+  productId: string = '';
+  cartItemId: string = '';
+  userSavedDesign = null;
   constructor(
     private route: ActivatedRoute,
     private sharedService: SharedService,
-    private spinner: NgxUiLoaderService
+    private spinner: NgxUiLoaderService,
+    private cartService: CartService
   ) {
     this.route.queryParams.subscribe((params) => {
       const modelPath = params['model'];
       const isEdit = params['isEdit'];
-      if (this.modelPath && this.modelPath != modelPath) {
+      const productId = params['productId'];
+      const cartId = params['cartId'];
+      console.log('productId: ', productId);
+      if (this.modelPath && isEdit) {
         this.selectModel(modelPath);
       }
       if (modelPath) {
@@ -77,6 +86,15 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       }
       if (isEdit) {
         this.isEdit = isEdit;
+        this.cartItemId = cartId;
+        this.cartService.getCartItemById(cartId).subscribe((data) => {
+          if (data.length) {
+            this.userSavedDesign = data?.[0]?.variants?.model;
+          }
+        });
+      }
+      if (productId) {
+        this.productId = productId || '93ac57689e3e';
       }
     });
   }
@@ -1153,14 +1171,14 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       return userData;
     });
     const cleanedDecals = decalsData.map(({ mesh, ...rest }) => rest);
-    const saveDesignData = {
+    this.saveDesignData = {
       modelPath: this.selectedModelPath,
       materials: modelMaterialData,
       decals: cleanedDecals,
     };
 
-    localStorage.setItem(storageKey, JSON.stringify(saveDesignData));
     if (showToast) {
+      localStorage.setItem(storageKey, JSON.stringify(this.saveDesignData));
       this.sharedService.showToast('Saved!', 'Your design has been saved successfully.');
     }
     this.isSavedDesign();
@@ -1187,8 +1205,9 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     }
     this.selectedDecal = null;
     const storedKey = this.extractModelKey(this.selectedModelPath);
-    const savedDesign = JSON.parse(localStorage.getItem(storedKey) || '{}');
-    console.log('savedDesign: ', savedDesign);
+    const savedDesign: any = this.isEdit
+      ? this.userSavedDesign
+      : JSON.parse(localStorage.getItem(storedKey) || '{}');
 
     // Restore materials
     savedDesign.materials?.forEach((matData: any) => {
@@ -1210,9 +1229,15 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     for (const d of savedDesign.decals) {
       const position = new THREE.Vector3().fromArray(d.position);
       const rotation = new THREE.Euler().fromArray(d.orientation);
-      const size = d.type === 'image' ? new THREE.Vector3().fromArray(d.baseSize).multiplyScalar(d.scaleFactor || 1): new THREE.Vector3(new THREE.Vector3().fromArray(d.originalSize).x, new THREE.Vector3().fromArray(d.originalSize).y/2, new THREE.Vector3().fromArray(d.originalSize).z);;
+      const size =
+        d.type === 'image'
+          ? new THREE.Vector3().fromArray(d.baseSize).multiplyScalar(d.scaleFactor || 1)
+          : new THREE.Vector3(
+              new THREE.Vector3().fromArray(d.originalSize).x,
+              new THREE.Vector3().fromArray(d.originalSize).y / 2,
+              new THREE.Vector3().fromArray(d.originalSize).z
+            );
 
-      console.log('size: ', size);
       const baseMesh = this.modelMeshes[0];
       const decalGeom = new DecalGeometry(baseMesh, position, rotation, size);
 
@@ -1266,7 +1291,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         orientation: rotation,
         originalSize: size,
         mesh: baseMesh,
-        baseSize: d.type === 'image' ? new THREE.Vector3().fromArray(d.baseSize): null,
+        baseSize: d.type === 'image' ? new THREE.Vector3().fromArray(d.baseSize) : null,
       };
 
       this.scene.add(decalMesh);
@@ -1278,37 +1303,50 @@ export class DesignTool implements AfterViewInit, OnDestroy {
 
     this.fitCameraToObject();
   }
+
+  /**
+   * add to cart item with custom design
+   */
   addToCart() {
     this.saveDesign(false);
-    const cartObj = {
-      barcode: null,
-      category: 'Custom Design',
-      category_id: 'Custom_categroy_id',
-      condition: 'new',
-      created_at: '2025-11-06T14:17:40.52268Z',
-      created_by: null,
-      description: 'Custom Description',
-      dimensions: null,
-      id: 'custom_id' + this.modelPath,
-      is_variant: false,
-      manufacturer: null,
-      metadata: {},
-      mpn: null,
-      name: 'Custom Design',
-      parent_id: null,
-      price: null,
-      sku: '',
-      slug: '',
-      status: 'active',
-      tags: [],
-      customeDesign: this.modelPath,
-      thumbnail_url: 'products/f5677192-e994-49e6-8cfa-ff5dbea4e02d_mahroon_color.png',
-      updated_at: '2025-11-06T14:17:40.52268Z',
-      updated_by: null,
-      weight: 1,
+
+    const payload = {
+      components: '{}',
+      pricelist_id: null,
+      product_id: this.productId,
+      quantity: 1,
+      saved_for_later: true,
+      user_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr',
+      variants: {
+        thumbnail_url: 'products/f5677192-e994-49e6-8cfa-ff5dbea4e02d_mahroon_color.png',
+        hasCustom: true,
+        model: this.saveDesignData,
+      },
     };
-    this.sharedService.addToCart(cartObj);
+
+    const action$ =
+      this.isEdit && this.cartItemId
+        ? this.cartService.updateCartItem(this.cartItemId, payload)
+        : this.cartService.addCartItem(payload);
+
+    action$.subscribe({
+      next: (res) => {
+        console.log(this.isEdit ? '📝 Updated:' : '🛒 Added:', res);
+        this.sharedService.showToast(
+          this.isEdit ? 'Design updated successfully' : 'Item added to cart successfully',
+          'success'
+        );
+      },
+      error: (err) => {
+        console.error('❌ Error:', err);
+        this.sharedService.showToast(
+          this.isEdit ? 'Error updating cart item' : 'Error adding item to cart',
+          'error'
+        );
+      },
+    });
   }
+
   ngOnDestroy(): void {
     cancelAnimationFrame(this.animationFrameId);
     this.renderer.dispose();

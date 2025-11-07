@@ -6,7 +6,7 @@
         selectedColor?.thumbnail_url
           ? imageBaseUrl + '/' + selectedColor?.thumbnail_url
           : imageBaseUrl + '/' + product?.thumbnail_url
-          ? imageBaseUrl + '/' +product?.thumbnail_url
+          ? imageBaseUrl + '/' + product?.thumbnail_url
           : imageBaseUrl + 'public/amd-ryzen-5-7600.jpg'
       "
       alt="Product Image"
@@ -17,7 +17,9 @@
     </div>
     <div class="bucket-icons">
       <div class="bucket-icon"><ion-icon name="heart-outline"></ion-icon></div>
-      <div class="bucket-icon" (click)="addToCart(product)"><ion-icon name="cart-outline"></ion-icon></div>
+      <div class="bucket-icon" (click)="addToCart($event, product)">
+        <ion-icon name="cart-outline"></ion-icon>
+      </div>
       <div class="bucket-icon"><ion-icon name="search-outline"></ion-icon></div>
       <div class="bucket-icon"><ion-icon name="refresh-outline"></ion-icon></div>
     </div>

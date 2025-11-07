@@ -3,6 +3,7 @@ import { ResponsiveService } from '../../../shared/services/responsive.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CategoryService } from '../../../shared/services/category.service';
 import { SharedService } from '../../../shared/services/sahared.service';
+import { CartService } from '../../../shared/services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -29,14 +30,14 @@ export class Header {
   categories: any = [];
   private destroy$ = new Subject<void>();
   cartItems: any = [];
-  constructor(private categoryService: CategoryService, private sharedService: SharedService) {}
+  constructor(private categoryService: CategoryService, private cartService: CartService) {}
   ngOnInit(): void {
     // Subscribe to shared categories observable
     this.categoryService.categories$.pipe(takeUntil(this.destroy$)).subscribe((cats) => {
       this.categories = cats;
       console.log('this.categories: ', this.categories);
     });
-    this.sharedService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
+    this.cartService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
       this.cartItems = items;
       console.log('🛒 Cart updated:', items);
     });

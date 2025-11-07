@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -29,8 +29,17 @@ export class ModelSelectorComponent {
       path: null,
     },
   ];
+  productId: string | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute,) {}
+
+ ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+     this.productId = params.get('productId');
+
+      console.log('🧩 Received productId from route:', this.productId);
+    });
+  }
 
   getModelName(path: string): string {
     if (!path) return '';
@@ -44,8 +53,9 @@ export class ModelSelectorComponent {
   }
 
   goToDesign(modelPath: string): void {
+    console.log('this.productId,: ', this.productId,);
     this.router.navigate(['/design-tool'], {
-      queryParams: { model: modelPath },
+      queryParams: { productId: this.productId, model: modelPath  },
     });
   }
 }
