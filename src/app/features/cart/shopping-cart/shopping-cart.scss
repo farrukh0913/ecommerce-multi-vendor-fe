@@ -242,9 +242,12 @@
   font-size: 14px;
   padding: 10px 8px;
   border-radius: 8px;
-  cursor: pointer;
   transition: all 0.2s ease;
   margin-top: -20px;
+  div {
+    cursor: pointer;
+    text-decoration: underline;
+  }
   i {
     margin-right: 6px;
   }
