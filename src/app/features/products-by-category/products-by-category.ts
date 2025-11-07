@@ -53,11 +53,11 @@ export class ProductsByCategory {
     { name: 'Above $200', min: 200, max: 1000 },
   ];
   ratings = [
-    { stars: 5, selected: false },
-    { stars: 4, selected: false },
-    { stars: 3, selected: false },
-    { stars: 2, selected: false },
-    { stars: 1, selected: false },
+    { stars: 5, name: '5 ⭐', selected: false },
+    { stars: 4, name: '4 ⭐', selected: false },
+    { stars: 3, name: '3 ⭐', selected: false },
+    { stars: 2, name: '2 ⭐', selected: false },
+    { stars: 1, name: '1 ⭐', selected: false },
   ];
   filters: any[] = [];
   breadcrumb = [
@@ -245,10 +245,11 @@ export class ProductsByCategory {
 
     if (removedItems.length > 0) {
       removedItems.forEach((item: any) => this.removeappliedFilter(filter.type, item));
+    } else {
+      this.getProductsByFilters();
     }
 
     this.getAppliedFilters();
-    this.getProductsByFilters();
   }
 
   /**
