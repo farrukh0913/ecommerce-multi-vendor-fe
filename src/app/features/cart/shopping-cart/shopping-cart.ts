@@ -3,6 +3,7 @@ import { SharedService } from '../../../shared/services/sahared.service';
 import { Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
+import { CartService } from '../../../shared/services/cart.service';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -32,12 +33,13 @@ export class ShoppingCart {
   ];
   r2BaseUrl: string = environment.r2BaseUrl + '/';
 
-  constructor(private sharedService: SharedService, private router: Router) {}
+  constructor(private sharedService: SharedService, private router: Router,private cartService: CartService) {}
   ngOnInit(): void {
     this.sharedService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
       this.cartItems = items;
       console.log('🛒 Cart updated:', items);
     });
+    this.getCartItem()
   }
   /**
    * Removing item from Cart
@@ -105,6 +107,16 @@ export class ShoppingCart {
       queryParams: { model: customDesignPath, isEdit: true },
     });
     this.close.emit();
+  }
+  getCartItem(){
+    this.cartService.getCartItems({ user_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr' }).subscribe({
+      next: (res) => {
+        console.log('Cart items fetched successfully:', res);
+      },
+      error: (err) => {
+        console.error('Error fetching cart items:', err);
+      }
+    });
   }
 
   ngOnDestroy() {

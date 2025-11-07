@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { getCurrencySymbol } from '../../utils/currency.utils';
 import { SharedService } from '../../services/sahared.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-card',
@@ -20,7 +21,7 @@ export class ProductCard {
   selectedColor: any = null;
   selectedSize: any = null;
 
-  constructor(private router: Router, private sharedService: SharedService) {}
+  constructor(private router: Router, private sharedService: SharedService,private cartService: CartService) {}
 
   /**
    * Detect input changes
@@ -67,7 +68,41 @@ export class ProductCard {
    * @param item
    */
   addToCart(item: any) {
-    this.sharedService.addToCart(item);
+    const payload={
+      components:"{}",
+        pricelist_id: null,
+        product_id: item.id,
+        quantity: 1,
+        saved_for_later: true,
+        user_id: "Cg0wLTM4NS0yODA4OS0wEgRtb2Nr",
+        variants: {
+          selectedColor: this.selectedColor,
+          selectedSize: this.selectedSize,
+          thumbnail_url: item.attributes.thumbnail_url,
+          
+        },
+    }
+    this.cartService.addCartItem(payload).subscribe({
+      next: (res) => {
+        console.log('Item added to cart successfully:', res);
+        this.sharedService.showToast('Item added to cart successfully', 'success');
+       this.getCartItems();
+      },
+      error: (err) => {
+        console.error('Error adding item to cart:', err);
+        this.sharedService.showToast('Error adding item to cart', 'error');
+      }
+    });
+  }
+  getCartItems(){
+     this.cartService.getCartItems({ user_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr' }).subscribe({
+          next: (res) => {
+            console.log('Cart items fetched successfully:', res);
+          },
+          error: (err) => {
+            console.error('Error fetching cart items:', err);
+          }
+        });
   }
 
   /**
