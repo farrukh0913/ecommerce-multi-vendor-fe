@@ -10,6 +10,7 @@ export class AccordionFilter {
   @Input() categories: any[] = [];
   @Input() selectedItems: any[] = [];
   @Input() isRatingFilter = false;
+   @Input() isSingleSelect = false; 
   @Output() selectionChange = new EventEmitter<any[]>();
   baseCategories: any[] = [];
 
@@ -36,7 +37,15 @@ export class AccordionFilter {
   }
 
   toggleSelection(item: any) {
-    item.selected = !item.selected;
+    // ✅ For single-select (like price)
+    if (this.isSingleSelect) {
+      this.categories.forEach((cat) => (cat.selected = false));
+      item.selected = true;
+    } else {
+      // ✅ For multi-select
+      item.selected = !item.selected;
+    }
+
     this.emitSelected();
   }
 

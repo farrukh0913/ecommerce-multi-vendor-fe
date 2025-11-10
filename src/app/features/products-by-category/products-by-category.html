@@ -38,6 +38,7 @@
           [categories]="filter.data"
           [selectedItems]="filter.selectedItems"
           [isRatingFilter]="filter.type === 'rating'"
+          [isSingleSelect]="filter.type === 'price'"
           (selectionChange)="updateSelectedItems(filter.id, $event)"
         >
         </app-accordion-filter>

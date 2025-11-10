@@ -113,6 +113,27 @@ tbody {
       padding: 10px 16px;
       border-bottom: 1px solid #e9ecef;
       vertical-align: top;
+      .nested-object {
+  border-left: 2px solid #f0f0f0;
+  padding-left: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.nested-field {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.nested-key {
+  font-weight: 500;
+  color: #555;
+  min-width: 120px;
+}
+
+.nested-value {
+  color: #333;
+}
 
       &.attr-key {
         font-weight: 500;

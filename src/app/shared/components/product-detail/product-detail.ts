@@ -4,6 +4,8 @@ import { getCurrencySymbol } from '../../utils/currency.utils';
 import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ProductService } from '../../services/product.service';
+import { CartService } from '../../services/cart.service';
+import { SharedService } from '../../services/sahared.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -23,22 +25,25 @@ export class ProductDetail {
     'https://laravel.pixelstrap.net/multikart/storage/52/fashion_172.jpg',
   ];
   selectedImage = ""
+    selectedColor: any = null;
+  selectedSize: any = null;
 
-constructor(
-    private router: Router,
-    private spinner: NgxUiLoaderService,
-    private productService: ProductService
+constructor(    
+  private spinner: NgxUiLoaderService,
+    private productService: ProductService,
+    private cartService: CartService,
+    private sharedService: SharedService
   ) {}
 
-  ngOnInit(){
-    // this.getProductDetail(this.productId)
-  }
+   /**
+   * Detect input changes
+   */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['productId']) {
+      if (changes['productId']) {
       console.log('productId changed to:', this.productId);
       this.getProductDetail(this.productId)
     }
-  }
+  } 
 
   onSelectImage(image: string) {
     this.selectedImage = image;
@@ -67,12 +72,10 @@ constructor(
    * @returns {void}
    */
   getProductDetail(productId:string): void {
-    console.log('productId: ', productId);
     this.spinner.start();
     this.productService.getProductDetails(productId).subscribe({
       next: (data) => {
         this.product = data;
-        console.log('this.selectedItem: ', this.product);
         // console.log('Categories data:', data);
       },
       error: (err) => {console.log(err) },
@@ -80,7 +83,52 @@ constructor(
         this.spinner.stop();
         this.productLoaded.emit(this.product);
        this.selectedImage=this.imageBaseUrl + this.product?.thumbnail_url;
+       const defaultColor = this.product?.attributes?.colors?.find(
+        (data: any) => data.is_default === true
+      );
+      this.selectedColor = defaultColor ? defaultColor : this.product?.attributes?.colors?.[0];
+      // set default size
+      const defaultSize = this.product?.attributes?.sizes?.find(
+        (data: any) => data.is_default === true
+      );
+      this.selectedSize = defaultSize ? defaultSize : this.product?.attributes?.sizes?.[0];
+      console.log(this.product?.attributes?.colors?.length)
       },
     });
+  }
+   /**
+   * add item to cart
+   * @param item
+   */
+  addToCart(event: MouseEvent, item: any) {
+    event.stopPropagation();
+    const payload = {
+      components: '{}',
+      pricelist_id: null,
+      product_id: item.id,
+      quantity: 1,
+      saved_for_later: true,
+      user_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr',
+      variants: {
+        // selectedColor: this.selectedColor,
+        // selectedSize: this.selectedSize,
+        thumbnail_url: item.attributes.thumbnail_url,
+      },
+    };
+    this.cartService.addCartItem(payload).subscribe({
+      next: (res) => {
+        console.log('Item added to cart successfully:', res);
+        this.sharedService.showToast('Item added to cart successfully', 'success');
+      },
+      error: (err) => {
+        console.error('Error adding item to cart:', err);
+        this.sharedService.showToast('Error adding item to cart', 'error');
+      },
+    });
+  }
+
+  updateValue(event: MouseEvent, value: any, attr: 'selectedColor' | 'selectedSize') {
+    event.stopPropagation();
+    this[attr] = value;
   }
 }

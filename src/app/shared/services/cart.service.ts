@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 export interface CartVariants {
@@ -27,7 +27,7 @@ export class CartService {
   private baseUrl = `${environment.apiBaseUrl}/shop`;
   private authToken = {
     Authorization:
-      'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjBjYTVhMWNmOTMwNGU2MzRiMTNmMjE0NTU3MWQyOTI4ZDVjZjdlZGYifQ.eyJhdF9oYXNoIjoianZrc2g2dkNoV09JSlBvZG81QkoyZyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYyNTk1NDEyLCJpYXQiOjE3NjI1MDkwMTIsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.rAVVH6Mq-zZOGVxpEBITs0OYzbw1RfU34jLjPEAArXVCGqgKCi-VKH2_jmK_NmJMUo3zayrO38MEaW9nqjVOC8IQE1FlitaIkDFGS_GlJnhLhUI03ujZHL36VbyUpOYvvFj1BQ_w5AvM5DxyheIxOSrQEl3wtrxXSGxqPbI3VfbEAOiOALm6RgV6eFT2nIJ3wgNuv0YCekRu-BM1kYbOAO9jhfzhOCuW7zrXFVFARhseGGD8QQOytHcOlGE2IjCx8oenK2hMuN6yKa_rS1tHHs6PTE2o89agGcfIR-OT-8INXgaI7gVaDKB4UuhULT9J8m5y1thWyXNwJ5oWVs7amg',
+      'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImEwZWU3M2MzMDk4MzBlZmViMzIzMjI4NmJmZWMxMDYyMjc3MzFkNDkifQ.eyJhdF9oYXNoIjoidzdrQnROeV9HMUh2Q21vUFRoN3pxdyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYyODUxMzMyLCJpYXQiOjE3NjI3NjQ5MzIsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.eRFo-1HetlCDNYISVuqxduV0M-7ipcnfw8V_WIE_mYHNN6L1jkBspiKF39mYwePCsAzQlQ9aSU1qgLMHB9A6UQ8IO35Ew1bFhiHKdAsEEpqMLQzEg6WMoKCbxa0XMuiV_uBBCkaJi20al9MjmmUiJsUxIVnRO0BJWvDRKZSQhTU6sfCzt0zzIxcJ7o1lSF7AOECna7VZ4toO4H-gSKcFKfva143UaHxQ3xC1ndUIYHxMlEiUATiovv3QCd_cKWlZP3lpCj5S1cviBZZQl2kDrEpI9TAAqZBApPTXM7AUjVVYc_3Q15x6iSURj6DsF2O_b3BoJRZCpoXvhntoSlpTyg',
   };
   private cartItemsSubject = new BehaviorSubject<any[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
@@ -59,7 +59,7 @@ export class CartService {
    * @param id Cart item ID
    */
   getCartItemById(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/cart_items/?id=eq.${id}`);
+    return this.http.get(`${this.baseUrl}/cart_items?id=eq.${id}`);
   }
 
   /**
@@ -81,24 +81,30 @@ export class CartService {
    * @param data Updated cart item data
    */
   updateCartItem(id: string, data: CartItem): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/cart_items/?id=eq.${id}`, data).pipe(
-      tap(() => {
-        this.updateCartObservable();
-      })
-    );
-  }
+  const headers = new HttpHeaders({
+    Authorization: this.authToken.Authorization,
+  });
+
+  return this.http
+    .patch(`${this.baseUrl}/cart_items?id=eq.${id}`, data, { headers })
+    .pipe(tap(() => this.updateCartObservable()));
+}
+
 
   /**
    * Delete a cart item by ID
    * @param id Cart item ID
    */
   deleteCartItem(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/cart_items/?id=eq.${id}`).pipe(
-      tap(() => {
-        this.updateCartObservable();
-      })
-    );
-  }
+   const headers = new HttpHeaders({
+    Authorization: this.authToken.Authorization
+  });
+
+  return this.http
+    .delete(`${this.baseUrl}/cart_items?id=eq.${id}`, { headers })
+    .pipe(tap(() => this.updateCartObservable()));
+}
+
 
   /**
    * Fetch all carts view (aggregated cart data)

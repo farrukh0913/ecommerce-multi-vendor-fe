@@ -120,6 +120,39 @@
       font-size: 0.8rem;
       color: #6b7280;
     }
+   .attributes{
+  padding-bottom: 10px;
+  flex-direction: column;
+}
+.attributes , .sizes , .colors{
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  z-index: 100;
+}
+.color-icon {
+width: 20px;
+height: 20px;
+border-radius: 10000px;
+cursor: pointer;
+border: 1px solid #ccc;
+}
+.size-icon{
+  width: 2rem;
+  cursor: pointer;
+  background-color: #ededed;
+  display: flex;
+  padding: 5px;
+
+  justify-content: center;
+}
+
+
+.selected-attribute{
+  outline: 2px solid var(--app-primary);
+  outline-offset: 3px;
+}
+
   }
 
   

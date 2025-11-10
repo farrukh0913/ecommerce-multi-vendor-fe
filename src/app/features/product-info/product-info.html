@@ -1,17 +1,10 @@
 <app-content-header pageName="Shop" [routePath]="breadcrumb"></app-content-header>
 <div class="detail-container">
-  <app-product-detail
-    [productId]="productId"
-    (productLoaded)="onProductReceived($event)"
-  ></app-product-detail>
+  <app-product-detail [productId]="productId" (productLoaded)="onProductReceived($event)"></app-product-detail>
 </div>
 <div class="description-section">
   <div class="tab-bar">
-    <div
-      class="tab"
-      [class.active]="activeTab === 'Specification'"
-      (click)="setActiveTab('Specification')"
-    >
+    <div class="tab" [class.active]="activeTab === 'Specification'" (click)="setActiveTab('Specification')">
       Specification
     </div>
 
@@ -32,25 +25,38 @@
           <td class="attr-key">{{ key | titlecase }}</td>
           <td class="attr-value">
             @if (Array.isArray(product.attributes[key])) {
-            <ul>
-              @for (item of product.attributes[key]; track item) {
-              <li>{{ item }}</li>
+            @for (item of product.attributes[key]; track item) {
+            @if (typeof item === 'object' && item !== null) {
+            <div class="nested-object">
+              @for (innerKey of Object.keys(item); track innerKey) {
+              @if (innerKey !== 'is_default' && innerKey !== 'thumbnail_url') {
+              <div class="nested-field">
+                <span class="nested-key">{{ innerKey | titlecase }}:</span>
+                <span class="nested-value">{{ item[innerKey] }}</span>
+              </div>
               }
-            </ul>
-            } @else if (typeof product.attributes[key] === 'object' && product.attributes[key] !==
-            null) {
-            <table class="nested-table">
-              <tbody>
-                @for (innerKey of Object.keys(product.attributes[key]); track innerKey) {
-                <tr>
-                  <td class="nested-key">{{ innerKey | titlecase }}</td>
-                  <td class="nested-value">
-                    {{ product.attributes[key][innerKey] }}
-                  </td>
-                </tr>
-                }
-              </tbody>
-            </table>
+              }
+            </div>
+            } @else {
+            <span>{{ item }}</span>
+            }
+            }
+            } @else if (typeof product.attributes[key] === 'object' && product.attributes[key] !== null) {
+            <div class="nested-object">
+              @for (innerKey of Object.keys(product.attributes[key]); track innerKey) {
+              <div class="nested-field">
+                <span class="nested-key">{{ innerKey | titlecase }}:</span>
+                <span class="nested-value">
+                  @if (innerKey === 'price_adjustment') {
+                  {{ product.attributes[key][innerKey] }} {{ getCurrencySymbol(product.priceList[0].currency_code) }}
+                  } @else {
+                  {{ product.attributes[key][innerKey] }}
+                  }
+                </span>
+              </div>
+              }
+
+            </div>
             } @else {
             {{ product.attributes[key] }}
             }
@@ -60,6 +66,7 @@
       </tbody>
     </table>
   </div>
+
   } @if (activeTab === 'review') {
   <div class="empty-content">
     <h1>No Review Yet</h1>
@@ -91,15 +98,12 @@
         </tr>
         <tr>
           <td class="attr-key">Stock</td>
-          <td
-            class="attr-value"
-            [ngClass]="{
+          <td class="attr-value" [ngClass]="{
               'in-stock': product.priceList[0].stock_quantity > 0,
               'out-of-stock': product.priceList[0].stock_quantity === 0
-            }"
-          >
+            }">
             @if (product.priceList[0].stock_quantity > 0) { In Stock ({{
-              product.priceList[0].stock_quantity
+            product.priceList[0].stock_quantity
             }}
             available) } @else { Out of Stock }
           </td>
