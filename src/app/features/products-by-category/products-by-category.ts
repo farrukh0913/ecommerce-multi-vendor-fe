@@ -166,23 +166,39 @@ export class ProductsByCategory {
    * @returns {void}
    */
   getProductsByFilters(): void {
-    let productFilters: any = JSON.parse(JSON.stringify(this.productService.productFilters));
-    productFilters.limit = this.showCount;
-    productFilters.category_id = this.filters.length
-      ? this.filters
-          .find((data) => data.type === 'category')
-          .selectedItems.map((data: any) => data.id)
-          .join(',')
-      : this.categoryId;
-    productFilters.order = this.sortOrder;
-    productFilters.minPrice =
-      this.filters.find((data) => data.type === 'price')?.selectedItems?.[0]?.min || 1;
-    productFilters.maxPrice = this.filters.find(
-      (data) => data.type === 'price'
-    )?.selectedItems?.[0]?.max;
-    console.log(' this.filters: ', this.filters);
+    const selectedColors =
+      this.filters
+        .find((f) => f.type === 'color')
+        ?.selectedItems.map((c: { name: any }) => c.name) || [];
+    const selectedSizes =
+      this.filters
+        .find((f) => f.type === 'size')
+        ?.selectedItems.map((s: { name: any }) => s.name) || [];
+    const selectedBrands =
+      this.filters
+        .find((f) => f.type === 'brand')
+        ?.selectedItems.map((b: { name: any }) => b.name) || [];
+
+    const categoryFilter = this.filters
+      .find((f) => f.type === 'category')
+      ?.selectedItems.map((c: { id: any }) => c.id) || [this.categoryId];
+    const priceFilter = this.filters.find((f) => f.type === 'price')?.selectedItems?.[0];
+
+    const productFilters: any = {
+      limit: this.showCount,
+      order: this.sortOrder,
+      category_id: categoryFilter.join(','),
+      minPrice: priceFilter?.min || 1,
+      maxPrice: priceFilter?.max,
+      attributes: {
+        colors: selectedColors,
+        sizes: selectedSizes,
+        brand: selectedBrands,
+      },
+    };
+
     this.spinner.start();
-    console.log('productFilters: ', productFilters);
+
     this.productService.getFiltered(productFilters).subscribe({
       next: (data) => {
         const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];
@@ -190,9 +206,9 @@ export class ProductsByCategory {
           (item: any) => !blogWhoWearWhatId.includes(item.category_id)
         );
         this.spinner.stop();
-        // console.log('Categories data:', data);
       },
       error: (err) => {
+        console.error(err);
         this.spinner.stop();
       },
     });
@@ -236,12 +252,15 @@ export class ProductsByCategory {
     const filter = this.filters.find((f) => f.id === filterId);
     if (!filter) return;
 
+    console.log('filter: ', filter);
     const previousSelected = filter.selectedItems;
     filter.selectedItems = selectedItems;
+    console.log('filter: ', filter);
 
     const removedItems = previousSelected.filter(
       (prevItem: any) => !selectedItems.some((si) => si.name === prevItem.name)
     );
+    console.log('removedItems: ', removedItems);
 
     if (removedItems.length > 0) {
       removedItems.forEach((item: any) => this.removeappliedFilter(filter.type, item));
@@ -280,6 +299,7 @@ export class ProductsByCategory {
       );
       this.appliedFilters = this.appliedFilters.filter((af: any) => af.name !== item.name);
     }
+    console.log(this.filters);
     this.getAppliedFilters();
     this.getProductsByFilters();
   }

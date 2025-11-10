@@ -1179,7 +1179,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
 
     if (showToast) {
       localStorage.setItem(storageKey, JSON.stringify(this.saveDesignData));
-      this.sharedService.showToast('Saved!', 'Your design has been saved successfully.');
+      this.sharedService.showToast('Your design has been saved successfully.');
     }
     this.isSavedDesign();
   }
@@ -1334,7 +1334,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
         console.log(this.isEdit ? '📝 Updated:' : '🛒 Added:', res);
         this.sharedService.showToast(
           this.isEdit ? 'Design updated successfully' : 'Item added to cart successfully',
-          'success'
         );
       },
       error: (err) => {

@@ -10,10 +10,13 @@ export class AccordionFilter {
   @Input() categories: any[] = [];
   @Input() selectedItems: any[] = [];
   @Input() isRatingFilter = false;
-   @Input() isSingleSelect = false; 
+  @Input() isSingleSelect = false;
   @Output() selectionChange = new EventEmitter<any[]>();
   baseCategories: any[] = [];
-
+  /**
+   * changes detect
+   * @param changes
+   */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedItems'] && this.categories?.length) {
       this.syncSelections();
@@ -23,11 +26,19 @@ export class AccordionFilter {
     }
   }
 
+  /**
+   * sync the changes with parent
+   */
   private syncSelections() {
     this.categories.forEach((cat) => {
       cat.selected = this.selectedItems.some((si) => si.name === cat.name);
     });
   }
+
+  /**
+   * search the items from list
+   * @param event
+   */
   onSearch(event: any) {
     this.categories = this.baseCategories;
     const value = event.target.value.trim();
@@ -36,21 +47,27 @@ export class AccordionFilter {
     });
   }
 
+  /**
+   * change selected items
+   * @param item
+   */
   toggleSelection(item: any) {
-    // ✅ For single-select (like price)
     if (this.isSingleSelect) {
-      this.categories.forEach((cat) => (cat.selected = false));
-      item.selected = true;
+      this.categories.forEach((cat) => cat.selected = false);
+      item.selected = !item.selected;
     } else {
-      // ✅ For multi-select
       item.selected = !item.selected;
     }
 
     this.emitSelected();
   }
 
+  /**
+   * emit changes to parent
+   */
   emitSelected() {
     const selected = this.categories.filter((c) => c.selected).map((c) => ({ ...c }));
+    console.log('selected: ', selected);
     this.selectionChange.emit(selected);
   }
 }

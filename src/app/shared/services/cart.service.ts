@@ -81,30 +81,28 @@ export class CartService {
    * @param data Updated cart item data
    */
   updateCartItem(id: string, data: CartItem): Observable<any> {
-  const headers = new HttpHeaders({
-    Authorization: this.authToken.Authorization,
-  });
+    const headers = new HttpHeaders({
+      Authorization: this.authToken.Authorization,
+    });
 
-  return this.http
-    .patch(`${this.baseUrl}/cart_items?id=eq.${id}`, data, { headers })
-    .pipe(tap(() => this.updateCartObservable()));
-}
-
+    return this.http
+      .patch(`${this.baseUrl}/cart_items?id=eq.${id}`, data, { headers })
+      .pipe(tap(() => this.updateCartObservable()));
+  }
 
   /**
    * Delete a cart item by ID
    * @param id Cart item ID
    */
   deleteCartItem(id: string): Observable<any> {
-   const headers = new HttpHeaders({
-    Authorization: this.authToken.Authorization
-  });
+    const headers = new HttpHeaders({
+      Authorization: this.authToken.Authorization,
+    });
 
-  return this.http
-    .delete(`${this.baseUrl}/cart_items?id=eq.${id}`, { headers })
-    .pipe(tap(() => this.updateCartObservable()));
-}
-
+    return this.http
+      .delete(`${this.baseUrl}/cart_items?id=eq.${id}`, { headers })
+      .pipe(tap(() => this.updateCartObservable()));
+  }
 
   /**
    * Fetch all carts view (aggregated cart data)

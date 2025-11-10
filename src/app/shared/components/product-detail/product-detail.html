@@ -4,21 +4,40 @@
   <!-- Product Images -->
   <div class="product-images">
     <div class="main-image-wrapper">
-      <img [src]="imageBaseUrl + product?.thumbnail_url" alt="Product" class="main-image" />
+      <img
+        [src]="
+          selectedColor
+            ? imageBaseUrl + selectedColor?.thumbnail_url
+            : imageBaseUrl + product?.thumbnail_url
+        "
+        alt="Product"
+        class="main-image"
+      />
     </div>
 
     <div class="thumbnail-list">
       <!-- @if(product.thu) -->
       @if (typeof product.thumbnail_url === 'string' && product.thumbnail_url) {
 
-      <img [src]="
-          product?.thumbnail_url
+      <img
+        [src]="
+          selectedColor
+            ? imageBaseUrl + selectedColor?.thumbnail_url
+            : product?.thumbnail_url
             ? imageBaseUrl + product?.thumbnail_url
             : 'https://laravel.pixelstrap.net/multikart/storage/49/fashion_173.jpg'
-        " alt="Thumbnail" [class.active]="imageBaseUrl + product?.thumbnail_url === selectedImage"
-        (click)="onSelectImage(imageBaseUrl + product?.thumbnail_url)" />
+        "
+        alt="Thumbnail"
+        [class.active]="imageBaseUrl + product?.thumbnail_url === selectedImage"
+        (click)="onSelectImage(imageBaseUrl + product?.thumbnail_url)"
+      />
       } @else { @for (img of product.thumbnail_url; track $index) {
-      <img [src]="img" alt="Thumbnail" [class.active]="img === selectedImage" (click)="onSelectImage(img)" />
+      <img
+        [src]="img"
+        alt="Thumbnail"
+        [class.active]="img === selectedImage"
+        (click)="onSelectImage(img)"
+      />
       } }
     </div>
   </div>
@@ -29,15 +48,19 @@
       <h2 class="product-title">
         {{ product.name }}
       </h2>
-      <p class="category"><strong>Category:</strong> Athlete</p>
+      <p class="category"><strong>Category:</strong> {{ product?.category.toUpperCase() }}</p>
       <p class="price-tag">
         MRP:
-        <span class="price">{{ product?.priceList[0]?.price_amount - product.priceList?.[0]?.discount_amount }}
-          {{ getCurrencySymbol(product.priceList?.[0]?.currency_code) }}</span>
+        <span class="price"
+          >{{ product?.priceList[0]?.price_amount - product.priceList?.[0]?.discount_amount }}
+          {{ getCurrencySymbol(product.priceList?.[0]?.currency_code) }}</span
+        >
         @if(product.priceList?.[0]?.discount_percentage!==0){
-        <span class="old-price">{{ product.priceList?.[0]?.price_amount }}
-          {{ getCurrencySymbol(product.priceList?.[0]?.currency_code) }}</span>
-        <span class="discount">{{ product.priceList?.[0]?.discount_percentage }}%</span>
+        <span class="old-price"
+          >{{ product.priceList?.[0]?.price_amount }}
+          {{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) }}</span
+        >
+        <span class="discount">{{ product?.priceList?.[0]?.discount_percentage }}%</span>
         }
       </p>
       <p class="tax-desc">Inclusive of all taxes</p>
@@ -69,8 +92,11 @@
       </div>
       <div class="delivery-detail">
         <i class="fa fa-money-bill"></i>
-        <p>Shipping Cost: {{ product.priceList?.[0]?.shipping_cost }} {{
-          getCurrencySymbol(product.priceList?.[0]?.currency_code) }}</p>
+        <p>
+          Shipping Cost: {{ product?.priceList?.[0]?.shipping_cost }}
+          {{
+          getCurrencySymbol(product?.priceList?.[0]?.currency_code) }}
+        </p>
       </div>
     </div>
     <!-- <div class="safe-checkout">
@@ -82,15 +108,16 @@
       <h4>Secure Checkout</h4>
       <img src="https://laravel.pixelstrap.net/multikart/storage/3836/secure_payments.png" alt="" />
     </div> -->
-   <div class="attributes" >
+    <div class="attributes">
       <!-- show colors if available in product -->
       @if(product?.attributes?.colors?.length > 0){
       <!-- loop for color to display all colors -->
       <div class="colors">
         @for (color of product?.attributes?.colors; track $index) {
         <div
+          style="width: 20px; height: 20px; border-radius: 50%"
           class="color-icon"
-          [style.background-color]="color.hex"
+          [style.background]="color.hex"
           (mouseenter)="updateValue($event, color, 'selectedColor')"
           [ngClass]="{ 'selected-attribute': selectedColor.hex == color.hex }"
         ></div>
@@ -114,7 +141,7 @@
       </div>
       }
     </div>
-    </div>
+  </div>
 
   <!-- Actions -->
   <div class="actions-section">
@@ -124,16 +151,23 @@
           −
         </button>
         <span class="quantity">{{ count }}</span>
-        <button class="counter-btn" [ngClass]="{ disable: count === product?.priceList[0]?.stock_quantity }"
-          (click)="onIncrement()">
+        <button
+          class="counter-btn"
+          [ngClass]="{ disable: count === product?.priceList[0]?.stock_quantity }"
+          (click)="onIncrement()"
+        >
           +
         </button>
       </div>
 
-      <button class="design-now" [routerLink]="['/design-model', productId]">Customize Design</button>
+      <button class="design-now" [routerLink]="['/design-model', productId]">
+        Customize Design
+      </button>
 
       <div class="shop-actions">
-        <button class="add-to-cart"><i class="fa fa-shopping-basket"></i> Add to Cart</button>
+        <button class="add-to-cart" (click)="addProductToCart()">
+          <i class="fa fa-shopping-basket"></i> Add to Cart
+        </button>
         <button class="add-to-cart">Buy Now</button>
       </div>
     </div>

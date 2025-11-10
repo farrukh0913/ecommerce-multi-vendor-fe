@@ -230,26 +230,28 @@
     }
   }
 }
-
+.icon-td {
+  padding-right: 14px !important;
+  text-align: end;
+}
 .custom-preview-full {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--app-primary);
-  color: var(--app-light);
   font-weight: 500;
   font-size: 14px;
-  padding: 10px 8px;
+  padding: 10px;
   border-radius: 8px;
   transition: all 0.2s ease;
-  margin-top: -20px;
+  border: 1px solid var(--app-primary);
   div {
     cursor: pointer;
     text-decoration: underline;
-  }
-  i {
-    margin-right: 6px;
+    color: var(--app-primary);
+    i {
+      margin-right: 6px;
+    }
   }
 }
 .no-border {

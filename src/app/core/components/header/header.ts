@@ -4,6 +4,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { CategoryService } from '../../../shared/services/category.service';
 import { SharedService } from '../../../shared/services/sahared.service';
 import { CartService } from '../../../shared/services/cart.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -30,7 +31,11 @@ export class Header {
   categories: any = [];
   private destroy$ = new Subject<void>();
   cartItems: any = [];
-  constructor(private categoryService: CategoryService, private cartService: CartService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private cartService: CartService,
+    public router: Router
+  ) {}
   ngOnInit(): void {
     // Subscribe to shared categories observable
     this.categoryService.categories$.pipe(takeUntil(this.destroy$)).subscribe((cats) => {
@@ -56,10 +61,10 @@ export class Header {
     this.menuOpen = false;
   }
 
-  onCategorySelect(category: string) {
+  onCategorySelect(category: any) {
     console.log('Selected:', category);
-    this.categoryMenuOpen = false; // close menu after selecting
-    // navigate or filter products as needed
+    this.categoryMenuOpen = false;
+    this.router.navigate(['/products-by-category', category.id, category.name]);
   }
 
   ngOnDestroy(): void {

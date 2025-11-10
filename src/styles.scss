@@ -21,12 +21,9 @@ body {
 :focus-visible {
   outline: none !important;
 }
-.go1097019230 {
-  width: 100% !important;
-}
-button[aria-label='Add page'],
-button[aria-label='Duplicate page'] {
-  display: none !important;
+.swal2-popup {
+  display: flex !important;
+  align-items: center;
 }
 ion-icon {
   cursor: pointer;

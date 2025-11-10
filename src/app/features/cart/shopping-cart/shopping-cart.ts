@@ -37,7 +37,8 @@ export class ShoppingCart {
   constructor(
     private router: Router,
     private cartService: CartService,
-    private spinner: NgxUiLoaderService
+    private spinner: NgxUiLoaderService,
+    private sharedService: SharedService
   ) {}
   ngOnInit(): void {
     this.cartService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe((items) => {
@@ -53,11 +54,13 @@ export class ShoppingCart {
     this.cartService.deleteCartItem(item.id).subscribe({
       next: (data: any) => {
         // console.log('data: ', data);
+        this.sharedService.showToast('Item removed from cart.');
         this.spinner.stop();
       },
       error: (err: any) => {
         // console.log('err: ', err);
         this.spinner.stop();
+        this.sharedService.showToast('Failed to remove item.', 'error');
       },
     });
   }
@@ -91,6 +94,7 @@ export class ShoppingCart {
    */
   increaseQty(item: any) {
     item.quantity++;
+    this.updateProductQuantity(item);
   }
 
   /**
@@ -99,7 +103,10 @@ export class ShoppingCart {
    * @param item - The cart item whose quantity will be decreased.
    */
   decreaseQty(item: any) {
-    if (item.quantity > 1) item.quantity--;
+    if (item.quantity > 1) {
+      item.quantity--;
+      this.updateProductQuantity(item);
+    }
   }
 
   /**
@@ -148,10 +155,32 @@ export class ShoppingCart {
       next: (data: any) => {
         // console.log('data: ', data);
         this.spinner.stop();
+        this.sharedService.showToast('Custom design removed from item.');
       },
       error: (err: any) => {
         // console.log('err: ', err);
         this.spinner.stop();
+        this.sharedService.showToast('Failed to remove custom design.', 'error');
+      },
+    });
+  }
+
+  /**
+   * update product quantity in the cart
+   * @param item
+   */
+  updateProductQuantity(item: any) {
+    let payload = JSON.parse(JSON.stringify(item));
+    console.log('payload: ', payload);
+    delete payload.id;
+    this.cartService.updateCartItem(item.id, payload).subscribe({
+      next: (data: any) => {
+        // console.log('data: ', data);
+        this.sharedService.showToast('Product quantity updated successfully.');
+      },
+      error: (err: any) => {
+        // console.log('err: ', err);
+        this.sharedService.showToast('Failed to update product quantity.', 'error');
       },
     });
   }

@@ -38,7 +38,9 @@
           [categories]="filter.data"
           [selectedItems]="filter.selectedItems"
           [isRatingFilter]="filter.type === 'rating'"
-          [isSingleSelect]="filter.type === 'price'"
+          [isSingleSelect]="
+            filter.type === 'price' || filter.type === 'rating' || filter.type === 'brand'
+          "
           (selectionChange)="updateSelectedItems(filter.id, $event)"
         >
         </app-accordion-filter>
@@ -157,6 +159,9 @@
         [categories]="filter.data"
         [selectedItems]="filter.selectedItems"
         [isRatingFilter]="filter.type === 'rating'"
+        [isSingleSelect]="
+          filter.type === 'price' || filter.type === 'rating' || filter.type === 'brand'
+        "
         (selectionChange)="updateSelectedItems(filter.id, $event)"
       >
       </app-accordion-filter>

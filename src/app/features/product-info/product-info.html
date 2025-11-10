@@ -1,10 +1,17 @@
 <app-content-header pageName="Shop" [routePath]="breadcrumb"></app-content-header>
 <div class="detail-container">
-  <app-product-detail [productId]="productId" (productLoaded)="onProductReceived($event)"></app-product-detail>
+  <app-product-detail
+    [productId]="productId"
+    (productLoaded)="onProductReceived($event)"
+  ></app-product-detail>
 </div>
 <div class="description-section">
   <div class="tab-bar">
-    <div class="tab" [class.active]="activeTab === 'Specification'" (click)="setActiveTab('Specification')">
+    <div
+      class="tab"
+      [class.active]="activeTab === 'Specification'"
+      (click)="setActiveTab('Specification')"
+    >
       Specification
     </div>
 
@@ -21,48 +28,46 @@
     <table class="product-table">
       <tbody>
         @for (key of Object.keys(product?.attributes || {}); track key) {
+        <!-- hide model key from display -->
+        @if (key !== 'model') {
         <tr>
           <td class="attr-key">{{ key | titlecase }}</td>
           <td class="attr-value">
-            @if (Array.isArray(product.attributes[key])) {
-            @for (item of product.attributes[key]; track item) {
-            @if (typeof item === 'object' && item !== null) {
+            @if (Array.isArray(product.attributes[key])) { @for (item of product.attributes[key];
+            track item) { @if (typeof item === 'object' && item !== null) {
             <div class="nested-object">
-              @for (innerKey of Object.keys(item); track innerKey) {
-              @if (innerKey !== 'is_default' && innerKey !== 'thumbnail_url') {
+              @for (innerKey of Object.keys(item); track innerKey) { @if (innerKey !== 'is_default'
+              && innerKey !== 'thumbnail_url') {
               <div class="nested-field">
                 <span class="nested-key">{{ innerKey | titlecase }}:</span>
-                <span class="nested-value">{{ item[innerKey] }}</span>
+                <!-- to display cuurency code -->
+                @if (innerKey === 'price_adjustment') {
+                <span class="nested-value"
+                  >{{ item[innerKey] }}
+                  {{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) }}</span
+                >
+                } @else {
+                <span class="nested-value">
+                  @if(innerKey === 'hex'){
+                  <span
+                    [style.backgroundColor]="item[innerKey]"
+                    style="width: 20px; height: 20px; border-radius: 50%; border: 1px solid gray"
+                  ></span>
+                  }
+                  {{ item[innerKey] }}</span
+                >
+                }
               </div>
-              }
-              }
+              } }
             </div>
             } @else {
             <span>{{ item }}</span>
-            }
-            }
-            } @else if (typeof product.attributes[key] === 'object' && product.attributes[key] !== null) {
-            <div class="nested-object">
-              @for (innerKey of Object.keys(product.attributes[key]); track innerKey) {
-              <div class="nested-field">
-                <span class="nested-key">{{ innerKey | titlecase }}:</span>
-                <span class="nested-value">
-                  @if (innerKey === 'price_adjustment') {
-                  {{ product.attributes[key][innerKey] }} {{ getCurrencySymbol(product.priceList[0].currency_code) }}
-                  } @else {
-                  {{ product.attributes[key][innerKey] }}
-                  }
-                </span>
-              </div>
-              }
-
-            </div>
-            } @else {
+            } } } @else {
             {{ product.attributes[key] }}
             }
           </td>
         </tr>
-        }
+        } }
       </tbody>
     </table>
   </div>
@@ -79,46 +84,45 @@
         <tr>
           <td class="attr-key">Price</td>
           <td class="attr-value accent">
-            {{ getCurrencySymbol(product.priceList[0].currency_code) }} {{ product?.price }}
+            {{ getCurrencySymbol(product.priceList?.[0]?.currency_code) }}
+            {{ product?.price || 'N/A' }}
           </td>
         </tr>
         <tr>
           <td class="attr-key">Shipping</td>
           <td class="attr-value">
-            {{ getCurrencySymbol(product.priceList[0].currency_code) }}
-            {{ product.priceList[0].shipping_cost }}
+            {{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) }}
+            {{ product.priceList?.[0]?.shipping_cost || 'N/A'}}
           </td>
         </tr>
         <tr>
           <td class="attr-key">Delivery</td>
           <td class="attr-value">
-            {{ product.priceList[0].estimated_delivery_days_range.Lower }} -
-            {{ product.priceList[0].estimated_delivery_days_range.Upper }} days.
+            {{ product.priceList?.[0]?.estimated_delivery_days_range?.Lower || 'N/A' }} -
+            {{ product.priceList?.[0]?.estimated_delivery_days_range?.Upper || 'N/A' }} days.
           </td>
         </tr>
         <tr>
           <td class="attr-key">Stock</td>
-          <td class="attr-value" [ngClass]="{
-              'in-stock': product.priceList[0].stock_quantity > 0,
-              'out-of-stock': product.priceList[0].stock_quantity === 0
-            }">
-            @if (product.priceList[0].stock_quantity > 0) { In Stock ({{
-            product.priceList[0].stock_quantity
+          <td
+            class="attr-value"
+            [ngClass]="{
+              'in-stock': product.priceList?.[0]?.stock_quantity > 0,
+              'out-of-stock': product.priceList?.[0]?.stock_quantity === 0
+            }"
+          >
+            @if (product.priceList?.[0]?.stock_quantity) { In Stock ({{
+              product.priceList[0]?.stock_quantity || 'N/A'
             }}
             available) } @else { Out of Stock }
           </td>
         </tr>
         <tr>
           <td class="attr-key">Seller</td>
-          <td class="attr-value code"></td>
+          <td class="attr-value code">{{ product.priceList?.[0]?.seller_id || 'N/A' }}</td>
         </tr>
       </tbody>
     </table>
-  </div>
-
-  <div class="empty-content">
-    <h1>No Question Posted Yet</h1>
-    <p>There are currently no question for this product</p>
   </div>
   }
 </div>

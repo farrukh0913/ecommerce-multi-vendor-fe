@@ -50,7 +50,11 @@
           <span>{{ link.label }}</span>
         </a>
         }
-        <a (click)="toggleMenu()" class="cart-mobile-menu">
+        <a
+          (click)="toggleMenu()"
+          class="cart-mobile-menu active"
+          [class.active]="router.url === '/cart'"
+        >
           <ion-icon name="cart-outline"></ion-icon>
           <span>Cart</span>
         </a>

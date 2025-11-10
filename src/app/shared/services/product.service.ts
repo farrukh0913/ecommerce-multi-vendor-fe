@@ -27,7 +27,11 @@ export class ProductService {
     status: '',
     condition: '',
     manufacturer_id: '',
-    attributes: '',
+    attributes: {
+      colors: [],
+      sizes: [],
+      brand: [],
+    },
     metadata: '',
     created_at: '',
     updated_at: '',
@@ -93,14 +97,45 @@ export class ProductService {
   }
 
   /** Get featured or filtered products */
+  /** Get featured or filtered products with attributes like color, size, brand */
   getFiltered(options: any): Observable<any> {
     let params = new HttpParams();
+
+    // Loop through normal filters (exclude attributes)
     Object.keys(options).forEach((key) => {
       const value = options[key];
-      if (value) {
+      if (value !== undefined && value !== null && value !== '' && key !== 'attributes') {
         params = params.append(key, value as any);
       }
     });
+
+    // Handle attributes
+    if (options.attributes && Object.keys(options.attributes).length) {
+      const filteredAttributes: any = {};
+
+      if (options.attributes.colors?.length) {
+        filteredAttributes.colors = options.attributes.colors.map((c: any) =>
+          typeof c === 'string' ? { name: c.toLowerCase() } : c
+        );
+      }
+
+      if (options.attributes.sizes?.length) {
+        filteredAttributes.sizes = options.attributes.sizes.map((s: any) =>
+          typeof s === 'string' ? { name: s } : s
+        );
+      }
+
+      if (options.attributes.brand?.length) {
+        filteredAttributes.brand = options.attributes.brand.join(', ');
+      }
+
+      if (Object.keys(filteredAttributes).length) {
+        const attrString = JSON.stringify(filteredAttributes);
+
+        params = params.append('attributes', `cs.${attrString}`);
+      }
+    }
+
     return this.http.get(this.endpoint, { params });
   }
 
