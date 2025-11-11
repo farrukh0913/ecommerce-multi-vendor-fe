@@ -28,7 +28,13 @@ export class CategoryService {
     const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];
     return this.http
       .get<any[]>(this.endpoint, { params })
-      .pipe(tap((categories) => this.categoriesSubject.next(categories.filter((category) => !blogWhoWearWhatId.includes(category.id)))));
+      .pipe(
+        tap((categories) =>
+          this.categoriesSubject.next(
+            categories.filter((category) => !blogWhoWearWhatId.includes(category.id))
+          )
+        )
+      );
   }
 
   /** Get single category */
@@ -60,5 +66,10 @@ export class CategoryService {
   /** Get categories with product count or metadata */
   getWithStats(): Observable<any> {
     return this.http.get(`${this.endpoint}/stats`);
+  }
+
+  getProductVariants(): Observable<any> {
+    const endpoint = `${BASE_URL}/inventory/product_variants`;
+    return this.http.get(`${endpoint}`);
   }
 }

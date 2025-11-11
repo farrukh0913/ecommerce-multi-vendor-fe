@@ -1,8 +1,22 @@
+@use '@angular/material' as mat;
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-
-$app-font: 'Montserrat', sans-serif;
-/* You can add global styles to this file, and also import other style files */
 @import '../node_modules/swiper/swiper.min.css';
+$app-font: 'Montserrat', sans-serif;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: $app-font,
+      density: 0,
+    )
+  );
+}
+
+/* You can add global styles to this file, and also import other style files */
 * {
   box-sizing: border-box;
 }
@@ -17,6 +31,101 @@ body {
   --app-light: #ffffff;
   --app-border-color: #eee;
 }
+
+mat-form-field {
+  // OUTLINED INPUTS
+  @include mat.form-field-overrides(
+    (
+      // Outline (default) border color
+      outlined-outline-color: #999,
+      // Border when input is focused
+      outlined-focus-outline-color: var(--app-primary),
+      outlined-disabled-outline-color: #ccc,
+      // Input text colors
+      outlined-input-text-color: #222,
+      outlined-disabled-input-text-color: #888,
+      outlined-input-text-placeholder-color: #aaa,
+      // Label colors
+      outlined-label-text-color: #666,
+      outlined-focus-label-text-color: var(--app-primary),
+      outlined-disabled-label-text-color: #aaa,
+      // Caret color (cursor)
+      outlined-caret-color: var(--app-primary),
+      // Leading and trailing icons
+      leading-icon-color: #666,
+      trailing-icon-color: #666,
+      disabled-leading-icon-color: #ccc,
+      disabled-trailing-icon-color: #ccc
+    )
+  );
+
+  // FILLED INPUTS
+  @include mat.form-field-overrides(
+    (
+      // Active underline (focus)
+      filled-focus-active-indicator-color: var(--app-primary),
+      filled-disabled-active-indicator-color: #ccc,
+      // Input text colors
+      filled-input-text-color: #222,
+      filled-disabled-input-text-color: #888,
+      filled-input-text-placeholder-color: #aaa,
+      // Label colors
+      filled-label-text-color: #666,
+      filled-focus-label-text-color: var(--app-primary),
+      filled-disabled-label-text-color: #aaa,
+      // Caret (cursor)
+      filled-caret-color: var(--app-primary),
+      // Container / background
+      filled-container-color: #fff,
+      filled-disabled-container-color: #f5f5f5,
+      // Active / hover indicator
+      filled-hover-active-indicator-color: #666,
+      container-height: 40px,
+      // overall container height
+      container-vertical-padding: 10px,
+      // vertical padding inside container
+      filled-with-label-container-padding-top: 0px,
+      filled-with-label-container-padding-bottom: 0px
+    )
+  );
+
+  .mat-input-element {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+@include mat.radio-overrides(
+  (
+    selected-icon-color: var(--app-primary),
+    selected-pressed-icon-color: var(--app-primary),
+    selected-focus-icon-color: var(--app-primary),
+    ripple-color: var(--app-primary),
+    selected-hover-icon-color: var(--app-primary),
+    checked-ripple-color: #ec8a515c,
+  )
+);
+
+@include mat.checkbox-overrides(
+  (
+    selected-focus-icon-color: var(--app-primary),
+    selected-hover-icon-color: var(--app-primary),
+    selected-icon-color: var(--app-primary),
+    selected-focus-state-layer-color: #ec8a515c,
+  )
+);
+@include mat.fab-overrides(
+  (
+    container-color: white,
+    container-elevation-shadow: -4px -4px 5px 0px rgba(0, 0, 0, 0.5),
+  )
+);
+mat-form-field.w-100 {
+  width: 100%;
+}
+mat-form-field.w-auto {
+  width: auto;
+}
+
 :focus,
 :focus-visible {
   outline: none !important;
@@ -160,4 +269,7 @@ ion-icon {
     transform: translateX(100%);
     opacity: 0;
   }
+}
+mat-icon {
+  font-family: 'Material Icons';
 }

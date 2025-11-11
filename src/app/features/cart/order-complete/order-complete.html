@@ -1,23 +1,9 @@
 <div class="order-complete-container">
   <div class="success-animation">
     <div class="checkmark-glow">
-      <svg
-        class="checkmark-svg"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 52 52"
-      >
-        <circle
-          class="checkmark-circle"
-          cx="26"
-          cy="26"
-          r="25"
-          fill="none"
-        />
-        <path
-          class="checkmark-check"
-          fill="none"
-          d="M14 27l7 7 16-16"
-        />
+      <svg class="checkmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16" />
       </svg>
     </div>
   </div>
@@ -29,8 +15,15 @@
 
   <div class="order-summary">
     <p><strong>Order ID:</strong> #ORD-{{ orderId }}</p>
-    <p><strong>Total Amount:</strong> ${{ grandTotal.toFixed(2) }}</p>
-    <p><strong>Estimated Delivery:</strong> 3–5 Business Days</p>
+    <p><strong>Total Amount: </strong> € {{ orderInfo.total }}</p>
+    <p>
+      <strong>Estimated Delivery:</strong>
+      @if(orderInfo.deliveryOption === 'rush'){ 3 to 5 business days }
+      <!--  -->
+      @else if(orderInfo.deliveryOption === 'standard'){ 8 to 12 business days }
+      <!--  -->
+      @else if(orderInfo.deliveryOption === 'flexible'){ 12 to 15 business days }
+    </p>
   </div>
 
   <button class="home-btn" (click)="goHome()">Continue Shopping</button>

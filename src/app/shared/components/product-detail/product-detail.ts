@@ -125,7 +125,7 @@ export class ProductDetail {
   addProductToCart() {
     const payload = {
       components: '{}',
-      pricelist_id: null,
+      pricelist_id: this.product?.priceList?.[0]?.id,
       product_id: this.product.id,
       quantity: this.count,
       saved_for_later: true,

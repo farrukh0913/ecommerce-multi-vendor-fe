@@ -21,7 +21,7 @@ const routes: Routes = [
   // { path: 'news-events', component: NewsEvents },
   // { path: 'faq', component: Faq },
   // { path: 'contact-us', component: ContactUs },
-  // { path: 'cart', component: Cart },
+  { path: 'cart', component: Cart },
   { path: '**', redirectTo: '' },
 ];
 

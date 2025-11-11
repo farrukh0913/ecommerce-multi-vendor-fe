@@ -14,24 +14,11 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 })
 export class ShoppingCart {
   @Output() close = new EventEmitter<void>();
+  @Output() nextStep = new EventEmitter<any[]>();
   couponCode = '';
   discount = 0;
   private destroy$ = new Subject<void>();
-
-  cartItems: any = [
-    {
-      name: 'Sample Item',
-      price: 50,
-      quantity: 1,
-      image: 'https://myimprint.ca/wp-content/uploads/2024/11/33504_b_fm.jpg.webp',
-    },
-    {
-      name: 'Cool Hoodie',
-      price: 80,
-      quantity: 1,
-      image: 'https://myimprint.ca/wp-content/uploads/2024/11/33504_b_fm.jpg.webp',
-    },
-  ];
+  cartItems: any = [];
   r2BaseUrl: string = environment.r2BaseUrl + '/';
 
   constructor(
@@ -70,7 +57,10 @@ export class ShoppingCart {
    * by summing up (price × quantity) for each item.
    */
   get totalCost(): number {
-    return this.cartItems.reduce((acc: any, item: any) => acc + item.price * item.quantity, 0);
+    return this.cartItems.reduce(
+      (acc: any, item: any) => acc + item.final_price * item.quantity,
+      0
+    );
   }
 
   /**
@@ -183,6 +173,13 @@ export class ShoppingCart {
         this.sharedService.showToast('Failed to update product quantity.', 'error');
       },
     });
+  }
+
+  /**
+   * emit changes to parent
+   */
+  emitStep() {
+    this.nextStep.emit();
   }
 
   ngOnDestroy() {

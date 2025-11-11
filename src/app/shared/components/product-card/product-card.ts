@@ -4,6 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { getCurrencySymbol } from '../../utils/currency.utils';
 import { SharedService } from '../../services/sahared.service';
 import { CartService } from '../../services/cart.service';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-product-card',
@@ -24,7 +25,8 @@ export class ProductCard {
   constructor(
     private router: Router,
     private sharedService: SharedService,
-    private cartService: CartService
+    private cartService: CartService,
+    private productService: ProductService
   ) {}
 
   /**
@@ -42,6 +44,10 @@ export class ProductCard {
         (data: any) => data.is_default === true
       );
       this.selectedSize = defaultSize ? defaultSize : this.product?.attributes?.sizes?.[0];
+
+      this.productService.getProductPriceInfo(this.product.id).subscribe((data) => {
+        this.product.priceList = data;
+      });
     }
   }
 
@@ -69,10 +75,11 @@ export class ProductCard {
    * @param item
    */
   addToCart(event: MouseEvent, item: any) {
+    console.log('item: ', item);
     event.stopPropagation();
     const payload = {
       components: '{}',
-      pricelist_id: null,
+      pricelist_id: item?.priceList?.[0]?.id ?? '69eef3650d31',
       product_id: item.id,
       quantity: 1,
       saved_for_later: true,
@@ -80,7 +87,7 @@ export class ProductCard {
       variants: {
         selectedColor: this.selectedColor,
         selectedSize: this.selectedSize,
-        thumbnail_url: item.attributes.thumbnail_url,
+        thumbnail_url: this.selectedColor?.thumbnail_url || item?.thumbnail_url,
       },
     };
     this.cartService.addCartItem(payload).subscribe({

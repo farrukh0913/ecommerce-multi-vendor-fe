@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SharedService {
+  private scrollTopSource = new Subject<void>();
+  scrollTop$ = this.scrollTopSource.asObservable();
   constructor() {}
 
   /**
@@ -45,5 +47,11 @@ export class SharedService {
         });
       },
     });
+  }
+  /**
+   * set scroll bar to top
+   */
+  triggerScrollTop() {
+    this.scrollTopSource.next();
   }
 }

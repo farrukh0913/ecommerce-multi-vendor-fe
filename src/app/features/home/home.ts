@@ -6,6 +6,7 @@ import { ProductService } from '../../shared/services/product.service';
 import { OrganizationService } from '../../shared/services/organization.service';
 import { Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { BlogArticlesService } from '../../shared/services/blog-articles.service';
 
 @Component({
   selector: 'app-home',
@@ -35,7 +36,8 @@ export class Home {
     private spinner: NgxUiLoaderService,
     private categoryService: CategoryService,
     private productService: ProductService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private blogArticlesService:BlogArticlesService
   ) {}
 
   /**
@@ -53,7 +55,7 @@ export class Home {
     });
     this.getProductNewArrival();
     this.getShopOrganizations();
-    this.getBlogsByCategory();
+    this.getBlogs();
     this.getWhoWearByCategory();
   }
 
@@ -91,7 +93,7 @@ export class Home {
    */
   getProductNewArrival(): void {
     this.spinner.start();
-    const filters = { ...this.productService.productFilters, order: 'created_at.desc' };
+    const filters = { ...this.productService.productFilters, order: 'created_at.desc', limit: 20 };
     this.productService.getFiltered(filters).subscribe({
       next: (data) => {
         const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];
@@ -156,9 +158,9 @@ export class Home {
    * Fetches all product by Categories
    * @returns {void}
    */
-  getBlogsByCategory(): void {
+  getBlogs(): void {
     this.spinner.start();
-    this.productService.getByCategory('1e6a5917bbb3').subscribe({
+    this.blogArticlesService.list().subscribe({
       next: (data) => {
         this.blogs = data;
         console.log('this.blogs: ', this.blogs);

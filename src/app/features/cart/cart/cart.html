@@ -10,11 +10,11 @@
 
   <div class="content">
     @if (currentStep === 1) {
-    <app-shopping-cart></app-shopping-cart>
+    <app-shopping-cart (nextStep)="updateSteps($event, 2)"></app-shopping-cart>
     }@else if(currentStep === 2){
-    <app-checkout></app-checkout>
+    <app-checkout (nextStep)="updateSteps($event, 3)"></app-checkout>
     }@else{
-    <app-order-complete></app-order-complete>
+    <app-order-complete [orderInfo]="orderInfo"></app-order-complete>
     }
   </div>
 </div>

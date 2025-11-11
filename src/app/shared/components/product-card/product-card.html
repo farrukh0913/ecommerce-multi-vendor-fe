@@ -36,9 +36,17 @@
   <div class="product-details">
     <span class="product-title">{{ product.name }}</span>
     <span class="category">Chic Crop Top</span>
-    <span class="price"
-      >{{ product?.price ? product?.price : '10' }} € <span class="old-price">$25</span>
-      <span class="discout"> 12%</span>
+    <span class="price">
+      {{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) || '€' }}
+      {{ product?.price ? product?.price : '10' }}
+      @if(product.priceList?.[0]?.discount_percentage !== 0 ) {
+      <span class="old-price"
+        >{{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) || '€'
+        }}
+        {{ product?.priceList?.[0]?.price_amount ?? 20 }}</span
+      >
+      <span class="discout">{{ product?.priceList?.[0]?.discount_percentage ?? 10}}%</span>
+      }
     </span>
     <!-- <button class="design-button">Design Now</button> -->
     <div class="attributes" (click)="handleMouseEvent($event)">

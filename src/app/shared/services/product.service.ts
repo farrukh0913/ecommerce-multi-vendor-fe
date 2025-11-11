@@ -139,6 +139,31 @@ export class ProductService {
     return this.http.get(this.endpoint, { params });
   }
 
+  /**
+   * fetch product price info
+   * @param productId
+   * @returns
+   */
+  getProductPriceInfo(productId: string) {
+    const priceUrl = `${BASE_URL}/shop/pricelist?product_id=eq.${productId}`;
+    return this.http.get(priceUrl);
+  }
+  
+  /**
+   * fecth product reviews
+   * @param productId
+   * @returns
+   */
+  getProductReviews(productId: String) {
+    const priceUrl = `${BASE_URL}/shop/reviews?product_id=eq.${productId}`;
+    return this.http.get(priceUrl);
+  }
+
+  /**
+   * fetch all product info with apis
+   * @param productId
+   * @returns
+   */
   getProductDetails(productId: string): Observable<any> {
     const productUrl = `${BASE_URL}/shop/products?id=eq.${productId}`;
     const variantsUrl = `${BASE_URL}/shop/product_variants?product_id=eq.${productId}`;

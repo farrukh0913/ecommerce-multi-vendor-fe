@@ -4,7 +4,7 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, SPINNER } from 'ngx-ui-loader';
 import { App } from './app';
@@ -26,6 +26,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { DesignTool } from './features/design-tool/design-tool';
 import { SharedModule } from './shared/shared-module';
 import { ModelSelectorComponent } from './features/deign-model-selector/deign-model-selector';
+import { MaterialModule } from './material.module';
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   pbColor: '#ec8951',
   hasProgressBar: false,
@@ -60,8 +61,10 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   imports: [
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     FormsModule,
     SharedModule,
+    MaterialModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
   ],
   providers: [provideBrowserGlobalErrorListeners(), provideHttpClient(withInterceptorsFromDi())],

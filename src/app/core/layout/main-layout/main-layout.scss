@@ -38,11 +38,16 @@
     }
   }
 }
-.content{
+.content {
   background: white;
   flex: 1 1 auto;
   padding: 1.5rem;
 }
-.no-padding{
+.no-padding {
   padding: 0px;
+}
+@media (max-width: 768px) {
+  .content {
+    padding: 0.5rem;
+  }
 }

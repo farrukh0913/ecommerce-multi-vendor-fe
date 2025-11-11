@@ -119,6 +119,9 @@ export class ProductsByCategory {
 
       // this.applyDefaultCategoryFilter();
     });
+    this.categoryService.getProductVariants().subscribe((data) => {
+      console.log('data:test 123 ', data);
+    });
   }
 
   private buildFilters() {

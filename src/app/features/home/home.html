@@ -131,12 +131,12 @@
   <swiper-slide class="blog-slider">
     <div class="blogs">
       <div class="img-wrapper">
-        <img [src]="r2BaseUrl + '/' + blog.thumbnail_url" alt="Blog Image" height="200px" />
+        <img [src]="r2BaseUrl + '/' + blog?.featured_image_url" alt="Blog Image" height="200px" />
       </div>
       <div class="content">
-        <h4>{{ blog.attributes.date | date:'dd MMM yyyy hh:mm a' }}</h4>
-        <p>{{ blog.attributes.title }}</p>
-        <h6>By: {{ blog.attributes.blog_by }}</h6>
+        <h4>{{ blog?.created_at | date : 'dd MMM yyyy hh:mm a' }}</h4>
+        <p>{{ blog?.title }}</p>
+        <h6>By: {{ blog?.author_name }}</h6>
       </div>
     </div>
   </swiper-slide>

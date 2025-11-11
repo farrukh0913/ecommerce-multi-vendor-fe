@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/sahared.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { CartService } from '../../shared/services/cart.service';
+import { R2UploadService } from '../../shared/services/r2-upload.service';
 @Component({
   selector: 'app-design-tool',
   standalone: false,
@@ -69,7 +70,8 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private sharedService: SharedService,
     private spinner: NgxUiLoaderService,
-    private cartService: CartService
+    private cartService: CartService,
+    private r2UploadService: R2UploadService
   ) {
     this.route.queryParams.subscribe((params) => {
       const modelPath = params['model'];
@@ -857,10 +859,11 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       const imageUrl = reader.result as string;
       this.decalImageUrl = imageUrl;
-
+      // const url = await this.r2UploadService.uploadBase64(imageUrl, file.name, 'images', file.type,12121);
+      // console.log('File uploaded to:', url);
       // If user is editing an existing decal — update it directly
       if (this.editDecal && this.editDecal.userData['type'] === 'image') {
         const decal = this.editDecal;
@@ -1312,7 +1315,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
 
     const payload = {
       components: '{}',
-      pricelist_id: null,
+      pricelist_id: '69eef3650d31',
       product_id: this.productId,
       quantity: 1,
       saved_for_later: true,
@@ -1333,7 +1336,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       next: (res) => {
         console.log(this.isEdit ? '📝 Updated:' : '🛒 Added:', res);
         this.sharedService.showToast(
-          this.isEdit ? 'Design updated successfully' : 'Item added to cart successfully',
+          this.isEdit ? 'Design updated successfully' : 'Item added to cart successfully'
         );
       },
       error: (err) => {

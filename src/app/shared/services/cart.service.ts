@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 export interface CartVariants {
   selectedColor?: any;
   selectedSize?: any;
@@ -27,11 +28,11 @@ export class CartService {
   private baseUrl = `${environment.apiBaseUrl}/shop`;
   private authToken = {
     Authorization:
-      'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImEwZWU3M2MzMDk4MzBlZmViMzIzMjI4NmJmZWMxMDYyMjc3MzFkNDkifQ.eyJhdF9oYXNoIjoidzdrQnROeV9HMUh2Q21vUFRoN3pxdyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYyODUxMzMyLCJpYXQiOjE3NjI3NjQ5MzIsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.eRFo-1HetlCDNYISVuqxduV0M-7ipcnfw8V_WIE_mYHNN6L1jkBspiKF39mYwePCsAzQlQ9aSU1qgLMHB9A6UQ8IO35Ew1bFhiHKdAsEEpqMLQzEg6WMoKCbxa0XMuiV_uBBCkaJi20al9MjmmUiJsUxIVnRO0BJWvDRKZSQhTU6sfCzt0zzIxcJ7o1lSF7AOECna7VZ4toO4H-gSKcFKfva143UaHxQ3xC1ndUIYHxMlEiUATiovv3QCd_cKWlZP3lpCj5S1cviBZZQl2kDrEpI9TAAqZBApPTXM7AUjVVYc_3Q15x6iSURj6DsF2O_b3BoJRZCpoXvhntoSlpTyg',
+      'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjcyNDBjMDRmNjZiOGVkNzBmMWI4YzMwMjA2MGIyMTZiNTI0NGFjZmYifQ.eyJhdF9oYXNoIjoidXBuNUhYNmVrSmVCbGRzTGV3QlMxZyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYyOTM5MDE0LCJpYXQiOjE3NjI4NTI2MTQsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.6JOGVMolEu45z5cQcrZcKJ8BftwlMVRw_YK7mf8ge5esWmpEW1VgvMgibKLQ2n0RQS-P9suvdrYD2iBacrGCquSfV8nJyLgir0QvDYw5T_U3pnb2P4FzZ8CaNgmBW7LOQ29MVNCbEOS3mR1S0pFsS2sO437jyfo8ZX7FfoLxq08hCwLwlb2KMNKu3KNETKVjKh9tNLc1xZ5CFr4phNr-nFSyJZhRHuzteBI3sjIn5tXZ4oEicAhxdXqnV7JnjZSyuID64Ee_-05vUETxOSlmULwC-WNUkppwVs11mPYmNse5hINQ2-E2Ur78ouEt6vdtcPLZvQsN6zh3lsaC_Bv9bw',
   };
   private cartItemsSubject = new BehaviorSubject<any[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private spinner: NgxUiLoaderService) {
     this.updateCartObservable();
   }
 
@@ -40,8 +41,16 @@ export class CartService {
    * @param params Optional query parameters (limit, offset, user_id, etc.)
    */
   getCartItems(params?: Record<string, any>): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: this.authToken.Authorization,
+    });
+
     const httpParams = new HttpParams({ fromObject: this.cleanParams(params) });
-    return this.http.get(`${this.baseUrl}/cart_items`, { params: httpParams });
+
+    return this.http.get(`${this.baseUrl}/cart_items_view`, {
+      headers,
+      params: httpParams,
+    });
   }
 
   /**
@@ -132,8 +141,15 @@ export class CartService {
    * update cart observable items
    */
   updateCartObservable() {
-    this.getCartItems({ user_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr' }).subscribe((data) => {
-      this.cartItemsSubject.next(data);
+    this.spinner.start();
+    this.getCartItems({ user_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr' }).subscribe({
+      next: (data) => {
+        this.spinner.stop();
+        this.cartItemsSubject.next(data);
+      },
+      error: (err) => {
+        this.spinner.stop();
+      },
     });
   }
 }

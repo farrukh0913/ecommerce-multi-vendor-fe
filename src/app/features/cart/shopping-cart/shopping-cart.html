@@ -40,11 +40,11 @@
                       alt="{{ item.name }}"
                       class="item-image"
                     />
-                    <span class="item-name">{{ item.name ?? 'Men T-shirt' }}</span>
+                    <span class="item-name">{{ item?.product_name ?? 'Men T-shirt' }}</span>
                   </div>
                 </div>
               </td>
-              <td>$ {{ item.price || 10 }}</td>
+              <td>€ {{ item?.final_price || 10 }}</td>
               <td>
                 <div class="quantity">
                   <button (click)="decreaseQty(item)">−</button>
@@ -53,14 +53,14 @@
                 </div>
               </td>
 
-              <td>$ {{ item.price * item.quantity || 10 }}</td>
+              <td>€ {{ item?.final_price * item.quantity || 10 }}</td>
 
               <td class="icon-td">
                 <i class="fa fa-close delete-icon" (click)="removeFromCart(item)"></i>
               </td>
             </tr>
             @if (item?.variants?.hasCustom) {
-            <tr >
+            <tr>
               <td colspan="5">
                 <div class="custom-preview-full">
                   <div
@@ -90,20 +90,20 @@
 
       <div class="summary-line">
         <span>Subtotal</span>
-        <span>$ {{ totalCost ? totalCost.toFixed(2) : 10 }}</span>
+        <span>€ {{ totalCost ? totalCost.toFixed(2) : 10 }}</span>
       </div>
 
       <div class="summary-line">
         <span>GST (5%)</span>
-        <span>$ {{ gstAmount ? gstAmount.toFixed(2) : 10 }}</span>
+        <span>€ {{ gstAmount ? gstAmount.toFixed(2) : 10 }}</span>
       </div>
 
       <div class="summary-line total">
         <span>Total</span>
-        <span>$ {{ grandTotal ? grandTotal.toFixed(2) : 10 }}</span>
+        <span>€ {{ grandTotal ? grandTotal.toFixed(2) : 10 }}</span>
       </div>
 
-      <button class="checkout-btn">Proceed to Checkout</button>
+      <button class="checkout-btn" (click)="emitStep()">Proceed to Checkout</button>
     </div>
   </div>
   }@else {
