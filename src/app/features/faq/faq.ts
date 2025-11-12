@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { FaqService } from '../../shared/services/faq.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-faq',
@@ -7,42 +9,42 @@ import { Component } from '@angular/core';
   styleUrl: './faq.scss',
 })
 export class Faq {
-   breadcrumb=[
-      {
-      name:'Home',
-      path:'/'
+  breadcrumb = [
+    {
+      name: 'Home',
+      path: '/',
     },
     {
-      name:'FAQs',
-      path:null
-    },
-  ]
-  faqs = [
-    {
-      question: 'How can I place an order?',
-      answer:
-        'Simply navigate to our Design Tool or Shop Now page, customize your product, and proceed to checkout securely.',
-      open: false,
-    },
-    {
-      question: 'Do you offer worldwide shipping?',
-      answer:
-        'Yes! We deliver across multiple countries with trusted courier services to ensure timely delivery.',
-      open: false,
-    },
-    {
-      question: 'Can I customize my order?',
-      answer:
-        'Absolutely! Our design tool allows you to personalize colors, text, and more before placing your order.',
-      open: false,
-    },
-    {
-      question: 'What is your return policy?',
-      answer:
-        'We accept returns within 14 days of delivery for unused and undamaged products. Read our policy for full details.',
-      open: false,
+      name: 'FAQs',
+      path: null,
     },
   ];
+  faqs: any = [];
+
+  constructor(private faqService: FaqService, private spinner: NgxUiLoaderService) {}
+
+  ngOnInit(): void {
+    // fecth faqs from api
+    this.fetchFaqs();
+  }
+
+  /**
+   * fecth faqs
+   */
+  fetchFaqs() {
+    this.spinner.start();
+    this.faqService.getFaqs().subscribe({
+      next: (data) => {
+        this.spinner.stop();
+        this.faqs = data;
+        console.log('this.faqs: ', this.faqs);
+      },
+      error: (err) => {},
+      complete: () => {
+        this.spinner.stop();
+      },
+    });
+  }
 
   /**
    * toggle faq item
@@ -50,5 +52,38 @@ export class Faq {
    */
   toggleFAQ(index: number): void {
     this.faqs[index].open = !this.faqs[index].open;
+  }
+
+  /**
+   * update helpful count
+   * @param faq
+   * @param type
+   */
+  updateHelpfulCount(faq: any, type: 'helpful' | 'not_helpful') {
+    console.log('faq: ', faq);
+
+    const payload = JSON.parse(JSON.stringify(faq));
+
+    if (type === 'helpful') {
+      payload.helpful_count++;
+    } else {
+      payload.not_helpful_count++;
+    }
+
+    // Remove fields that should not be updated
+    delete payload.id;
+    delete payload.slug;
+
+    this.spinner.start();
+
+    this.faqService.updateFaq(faq.id, payload).subscribe({
+      next: () => {
+        this.spinner.stop();
+        this.fetchFaqs();
+      },
+      error: () => {
+        this.spinner.stop();
+      },
+    });
   }
 }

@@ -164,6 +164,7 @@ export class Home {
       next: (data) => {
         this.blogs = data;
         console.log('this.blogs: ', this.blogs);
+        this.spinner.stop();
       },
       error: (err) => {},
       complete: () => {

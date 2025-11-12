@@ -1,0 +1,113 @@
+.products-list-container {
+  padding: 1rem;
+
+  .products-table {
+    width: 100%;
+
+    .products-row {
+      display: grid;
+      grid-template-columns: 100px 2fr 1.5fr 1.5fr 1fr 1fr; /* added actions column */
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--app-border-color);
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background-color: #fff8f0; /* subtle primary hover */
+      }
+
+      .cell {
+        padding: 0.25rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &.thumbnail img {
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+          border-radius: 6px;
+          border: 1px solid var(--app-border-color);
+        }
+
+        &.price {
+          font-weight: bold;
+          color: var(--app-primary);
+        }
+
+        &.actions {
+          display: flex;
+          gap: 1.5rem;
+
+          .action-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--app-primary);
+            transition: color 0.2s;
+            &:hover {
+              opacity: 0.7;
+            }
+          }
+        }
+      }
+
+      &.header {
+        font-weight: bold;
+        color: var(--app-light);
+        cursor: default;
+        background-color: var(--app-primary);
+        .price {
+          color: var(--app-light) !important;
+        }
+      }
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .products-table .products-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--app-border-color);
+      border-radius: 8px;
+      background-color: var(--app-light);
+
+      .cell {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0.4rem;
+
+        &.thumbnail {
+          margin-bottom: 0.6rem;
+          img {
+            width: 100%;
+            max-width: 180px;
+            height: auto;
+          }
+        }
+
+        &.price {
+          color: var(--app-primary);
+          font-weight: bold;
+        }
+
+        &.actions {
+          justify-content: center;
+          gap: 1rem;
+
+          .action-icon {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+
+    .header {
+      display: none !important;
+    }
+  }
+}

@@ -1,61 +1,84 @@
-<!-- <h2 class="page-title">Contacts Us</h2> -->
 <app-content-header pageName="Contacts" [routePath]="breadcrumb"></app-content-header>
-
 
 <section class="contacts">
   <div class="form-section">
-<div class="getin-touch">
-    <h4>Get In Touch</h4>
-    <p>We're here to help! Reach out to us with any questions, feedback, or inquiries, and we'll get back to you as soon as possible.</p>
-
-  </div>
-  <form action="submit">
-    <div class="form-row">
-      <label for="name">
-        Full Name
-      </label>
-      <input type="text" placeholder="Full Name" name="name">
+    <div class="getin-touch">
+      <h4>Get In Touch</h4>
+      <p>
+        We're here to help! Reach out to us with any questions, feedback, or inquiries, and we'll
+        get back to you as soon as possible.
+      </p>
     </div>
 
-    <div class="form-row">
-      <div class="contact-meta">
-        <label for="email">
-        Email
-      </label>
-      <input type="email" placeholder="Email" name="email">
-      
+    <form [formGroup]="contactForm" (ngSubmit)="submitContactForm()">
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Full Name</mat-label>
+          <input matInput placeholder="John Doe" formControlName="name" />
+        </mat-form-field>
       </div>
-      <div >
-        <label for="phone">
-        Phone
-      </label>
-      <input type="text" placeholder="Enter Your Phone Number" name="phone">
+
+      <div class="form-row two-cols">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" placeholder="example@email.com" formControlName="email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Phone Number</mat-label>
+          <input matInput placeholder="+92 300 1234567" formControlName="phone" />
+        </mat-form-field>
       </div>
-    </div>
-    
-    <div class="form-row">
-      <label for="subject">
-        Subject
-      </label>
-      <input type="text" placeholder="Subject" name="subject">
-    </div>
-   
-    <div class="form-row">
-      <label for="message">
-        Write your Message
-      </label>
-      <textarea type="text" placeholder="Write Your Message" name="message"></textarea>
-    </div>
-    <button click="submit">Submit Your Message</button>
-  </form>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Subject</mat-label>
+          <input matInput placeholder="Subject" formControlName="subject" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Message</mat-label>
+          <textarea
+            matInput
+            rows="4"
+            placeholder="Write your message here..."
+            formControlName="message"
+          ></textarea>
+        </mat-form-field>
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="primary-btn"
+        [disabled]="contactForm.invalid"
+      >
+        Submit Your Message
+      </button>
+    </form>
   </div>
+
   <div class="contacts-row">
-    @for(contact of contacts; track $index) {
+    @for (contact of contacts; track $index) {
     <div class="contact-item">
       <i class="{{ contact.icon }}"></i>
       <h3>{{ contact.title }}</h3>
       <p>{{ contact.value }}</p>
     </div>
     }
+  </div>
+  <div class="map-container" style="width: 100%; height: 450px">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3319.173487792361!2d71.4568110750171!3d30.157528981810527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391901b2f546d2b3%3A0x9e2d40a09e5d3a0b!2sMultan%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1699729304923!5m2!1sen!2s"
+      width="100%"
+      height="100%"
+      style="border: 0"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
   </div>
 </section>

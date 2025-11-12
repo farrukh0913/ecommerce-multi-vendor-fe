@@ -18,10 +18,11 @@ const routes: Routes = [
   { path: 'design-tool', component: DesignTool },
   { path: 'products-by-category/:categoryId/:categoryName', component: ProductsByCategory },
   { path: 'product-detail/:id', component: ProductInfo },
-  // { path: 'news-events', component: NewsEvents },
-  // { path: 'faq', component: Faq },
-  // { path: 'contact-us', component: ContactUs },
+  { path: 'news-events', component: NewsEvents },
+  { path: 'faq', component: Faq },
+  { path: 'contact-us', component: ContactUs },
   { path: 'cart', component: Cart },
+  { path: 'cms', loadChildren: () => import('./features/cms/cms-module').then(m => m.CmsModule) },
   { path: '**', redirectTo: '' },
 ];
 

@@ -1,0 +1,19 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ title }}</h3>
+      <button class="close-btn" (click)="cancel.emit()">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p>{{ message }}</p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="cancel.emit()">{{ cancelText }}</button>
+      <button class="btn btn-confirm" (click)="confirm.emit()">{{ confirmText }}</button>
+    </div>
+  </div>
+</div>

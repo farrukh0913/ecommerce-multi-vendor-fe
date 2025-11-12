@@ -94,6 +94,7 @@ mat-form-field {
     font-size: 14px;
   }
 }
+
 @include mat.radio-overrides(
   (
     selected-icon-color: var(--app-primary),
@@ -119,6 +120,12 @@ mat-form-field {
     container-elevation-shadow: -4px -4px 5px 0px rgba(0, 0, 0, 0.5),
   )
 );
+
+.primary-btn:not(.mat-mdc-button-disabled) {
+  background-color: var(--app-primary) !important;
+  color: var(--app-light) !important;
+}
+
 mat-form-field.w-100 {
   width: 100%;
 }

@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { CmsService } from '../../shared/services/cms.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { forkJoin } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-news-events',
@@ -7,38 +11,41 @@ import { Component } from '@angular/core';
   styleUrl: './news-events.scss',
 })
 export class NewsEvents {
-  breadcrumb=[
-      {
-      name:'Home',
-      path:'/'
+  breadcrumb = [
+    {
+      name: 'Home',
+      path: '/',
     },
     {
-      name:'News And Events',
-      path:null
-    },
-  ]
-  newsEvents = [
-    {
-      title: 'Autumn Collection Launch',
-      description:
-        'Join us as we unveil our brand-new autumn collection with live demos and offers.',
-      date: 'October 30, 2025',
-      image:
-        'https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-      title: 'Community Design Meetup',
-      description: 'A gathering of creative minds! Network, learn, and share your design stories.',
-      date: 'November 12, 2025',
-      image:
-        'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-      title: 'Holiday Discount Week',
-      description: 'Celebrate with exclusive deals, giveaways, and festive surprises!',
-      date: 'December 1–7, 2025',
-      image:
-        'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80',
+      name: 'News And Events',
+      path: null,
     },
   ];
+  newsArticles: any = [];
+  events: any = [];
+  r2BaseUrl: string = environment.r2BaseUrl + '/';
+
+  constructor(private cmsService: CmsService, private spinner: NgxUiLoaderService) {}
+
+  ngOnInit(): void {
+    // fecth news and events from api
+    this.fetchNewsAndEvents();
+  }
+
+  fetchNewsAndEvents() {
+    this.spinner.start();
+    forkJoin({
+      events: this.cmsService.getEvents(),
+      news: this.cmsService.getNewsArticles(),
+    }).subscribe({
+      next: (results) => {
+        this.spinner.stop();
+        this.events = results.events;
+        this.newsArticles = results.news;
+      },
+      error: (err) => {
+        this.spinner.stop();
+      },
+    });
+  }
 }

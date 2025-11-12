@@ -862,8 +862,8 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     reader.onload = async () => {
       const imageUrl = reader.result as string;
       this.decalImageUrl = imageUrl;
-      // const url = await this.r2UploadService.uploadBase64(imageUrl, file.name, 'images', file.type,12121);
-      // console.log('File uploaded to:', url);
+      const url = await this.r2UploadService.uploadBase64(imageUrl, file.name, 'images', file.type,12121);
+      console.log('File uploaded to:', url);
       // If user is editing an existing decal — update it directly
       if (this.editDecal && this.editDecal.userData['type'] === 'image') {
         const decal = this.editDecal;

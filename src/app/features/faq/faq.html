@@ -1,19 +1,49 @@
-<!-- <h2 class="page-title">Frequently Asked Questions</h2> -->
 <app-content-header pageName="FAQs" [routePath]="breadcrumb"></app-content-header>
 
 <section class="faq-section">
   <div class="container">
     <div class="faq-grid">
       @for (faq of faqs; track $index) {
-      <article class="faq-card">
+      <article class="faq-card" [class.open]="faq.open">
         <div class="faq-header" (click)="toggleFAQ($index)">
-          <h3 class="faq-question">{{ faq.question }}</h3>
+          <div class="faq-title">
+            <h3 class="faq-question">{{ faq.question }}</h3>
+            <p class="faq-meta">
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{ faq.published_at | date : 'dd MMM yyyy' }}
+            </p>
+          </div>
           <span class="faq-icon">
             <ion-icon [name]="faq.open ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
           </span>
         </div>
+
         <div class="faq-answer" [class.open]="faq.open">
-          <p>{{ faq.answer }}</p>
+          <p class="faq-answer-text">{{ faq.answer }}</p>
+
+          @if (faq.tags?.length) {
+          <div class="faq-tags">
+            @for (tag of faq.tags; track $index) {
+            <div class="tags">
+              <span>{{ tag }}</span>
+            </div>
+            }
+          </div>
+          }
+
+          <div class="faq-footer">
+            <button class="feedback-btn helpful" (click)="updateHelpfulCount(faq, 'helpful')">
+              <ion-icon name="thumbs-up-outline"></ion-icon> Helpful ({{ faq.helpful_count }})
+            </button>
+            <button
+              class="feedback-btn not-helpful"
+              (click)="updateHelpfulCount(faq, 'not_helpful')"
+            >
+              <ion-icon name="thumbs-down-outline"></ion-icon> Not Helpful ({{
+                faq.not_helpful_count
+              }})
+            </button>
+          </div>
         </div>
       </article>
       }

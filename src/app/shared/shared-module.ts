@@ -10,6 +10,7 @@ import { BaseSideMenu } from './components/base-side-menu/base-side-menu';
 import { BaseModal } from './components/base-modal/base-modal';
 import { AccordionFilter } from './components/accordion-filter/accordion-filter';
 import { RouterModule } from '@angular/router';
+import { AlertModal } from './components/alert-modal/alert-modal';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { RouterModule } from '@angular/router';
     BaseSideMenu,
     BaseModal,
     AccordionFilter,
+    AlertModal,
   ],
   imports: [CommonModule, NgxUiLoaderModule, RouterModule],
   exports: [
@@ -33,6 +35,7 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     NgxUiLoaderModule,
     RouterModule,
+    AlertModal
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

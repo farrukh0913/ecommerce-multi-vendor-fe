@@ -1,0 +1,51 @@
+<div class="products-list-container">
+  <div class="products-table">
+    <!-- Table Header (Desktop Only) -->
+    <div class="products-row header">
+      <div class="cell thumbnail">Image</div>
+      <div class="cell name">Name</div>
+      <div class="cell brand">Brand</div>
+      <div class="cell category">Category</div>
+      <div class="cell price">Price</div>
+      <div class="cell actions">Actions</div>
+    </div>
+
+    <!-- Table Rows -->
+    @for (product of productList; track $index) {
+    <div class="products-row">
+      <div class="cell thumbnail">
+        <img [src]="r2BaseUrl + product.thumbnail_url" [alt]="product.name" />
+      </div>
+      <div class="cell name">{{ product.name }}</div>
+      <div class="cell brand">{{ product.attributes.brand }}</div>
+      <div class="cell category">{{ product.category }}</div>
+      <div class="cell price">€ {{ product.price || 10 | number : '1.2-2' }}</div>
+      <div class="cell actions">
+        <ion-icon
+          name="create-outline"
+          class="action-icon"
+          (click)="editProduct(product)"
+        ></ion-icon>
+        <ion-icon
+          name="trash-outline"
+          class="action-icon delete"
+          (click)="selectedProduct = product"
+        ></ion-icon>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+@if (selectedProduct?.name) {
+<app-alert-modal
+  [title]="'Delete Product'"
+  [message]="
+    'Are you sure you want to delete ' +
+    (selectedProduct?.name ? '\'' + selectedProduct.name + '\'' : '[product]') +
+    '?'
+  "
+  (confirm)="deleteProduct()"
+  (cancel)="selectedProduct = null"
+></app-alert-modal>
+}

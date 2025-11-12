@@ -1,18 +1,87 @@
-<app-content-header pageName="News and Events" [routePath]="breadcrumb"></app-content-header>
+<app-content-header pageName="News & Events" [routePath]="breadcrumb"></app-content-header>
 
-<!-- <h2 class="page-title">News and Events</h2> -->
 <section class="news-events-section">
   <div class="container">
-    <div class="events-grid">
-      @for (item of newsEvents; track $index) {
-      <article class="event-card">
-        <div class="event-image" [style.backgroundImage]="'url(' + item.image + ')'"></div>
-        <div class="event-content">
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.description }}</p>
-          <div class="event-meta">
-            <span class="date">{{ item.date }}</span>
+    <!-- 📰 News Section -->
+    <div class="section-header">
+      <h2>Latest News</h2>
+      <p>Stay updated with our recent announcements and updates.</p>
+    </div>
+
+    <div class="news-grid">
+      @for (news of newsArticles; track $index) {
+      <article class="card-item">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>{{ news.title }}</h3>
+            <p class="meta">
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{ news.published_at | date : 'dd MMM yyyy' }}
+            </p>
           </div>
+        </div>
+
+        <div class="card-body">
+          <!-- <div class="card-thumb">
+            <img
+              [src]="r2BaseUrl + news.thumbnail_url || 'assets/images/placeholder-news.jpg'"
+              alt="News Image"
+            />
+          </div> -->
+          <p class="card-excerpt">{{ news.excerpt }}</p>
+
+          @if (news.tags?.length) {
+          <div class="card-tags">
+            @for (tag of news.tags; track $index) {
+            <div class="tag">{{ tag }}</div>
+            }
+          </div>
+          }
+        </div>
+      </article>
+      }
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- 🗓️ Events Section -->
+    <div class="section-header">
+      <h2>Upcoming Events</h2>
+      <p>Join us at these exciting sessions and conferences.</p>
+    </div>
+
+    <div class="event-grid">
+      @for (event of events; track $index) {
+      <article class="card-item">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>{{ event.title }}</h3>
+            <p class="meta">
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{ event.start_date | date : 'dd MMM yyyy, h:mm a' }} -
+              {{ event.end_date | date : 'h:mm a' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <!-- <div class="card-thumb">
+            <img
+              [src]="r2BaseUrl + event.thumbnail_url || 'assets/images/placeholder-event.jpg'"
+              alt="Event Image"
+            />
+          </div> -->
+
+          <p class="card-subtitle">{{ event.subtitle }}</p>
+          <p class="card-description">{{ event.description }}</p>
+
+          @if (event.tags?.length) {
+          <div class="card-tags">
+            @for (tag of event.tags; track $index) {
+            <div class="tag">{{ tag }}</div>
+            }
+          </div>
+          }
         </div>
       </article>
       }
