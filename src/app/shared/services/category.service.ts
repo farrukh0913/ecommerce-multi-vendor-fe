@@ -44,7 +44,7 @@ export class CategoryService {
 
   /** Create a new category */
   create(payload: any): Observable<any> {
-    return this.http.post(this.endpoint, payload);
+    return this.http.post(this.endpoint, payload).pipe(tap(() => this.updateCategoryObservable()));
   }
 
   /** Update category */
@@ -71,5 +71,12 @@ export class CategoryService {
   getProductVariants(): Observable<any> {
     const endpoint = `${BASE_URL}/inventory/product_variants`;
     return this.http.get(`${endpoint}`);
+  }
+
+  updateCategoryObservable() {
+    this.getAll().subscribe({
+      next: (data) => {},
+      error: (err) => {},
+    });
   }
 }

@@ -39,8 +39,10 @@ export class ProductsList {
       next: (data) => {
         const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];
         this.productList = data?.filter(
-          (item: any) => !blogWhoWearWhatId.includes(item.category_id)
+          (item: any) => item.id !== '1e17f442e198' && !blogWhoWearWhatId.includes(item.category_id)
         );
+
+        console.log('this.productList: ', this.productList.length);
         this.spinner.stop();
       },
       error: (err) => {
@@ -57,6 +59,13 @@ export class ProductsList {
   editProduct(product: any) {
     // Navigate to edit page
     this.router.navigate(['/cms/edit-product', product.id]);
+  }
+  
+  /**
+   * got to new product
+   */
+  gotoNewProduct() {
+    this.router.navigate(['/cms/new-products']);
   }
 
   /**

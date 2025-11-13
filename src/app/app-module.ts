@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, SPINNER } from 'ngx-ui-loader';
 import { App } from './app';
 import { Home } from './features/home/home';
@@ -27,6 +27,7 @@ import { DesignTool } from './features/design-tool/design-tool';
 import { SharedModule } from './shared/shared-module';
 import { ModelSelectorComponent } from './features/deign-model-selector/deign-model-selector';
 import { MaterialModule } from './material.module';
+import { AuthInterceptor } from './interceptors/auth-interceptor';
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   pbColor: '#ec8951',
   hasProgressBar: false,
@@ -67,7 +68,11 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     MaterialModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
   ],
-  providers: [provideBrowserGlobalErrorListeners(), provideHttpClient(withInterceptorsFromDi())],
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [App],
 })

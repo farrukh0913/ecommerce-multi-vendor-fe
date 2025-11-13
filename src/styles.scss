@@ -120,11 +120,16 @@ mat-form-field {
     container-elevation-shadow: -4px -4px 5px 0px rgba(0, 0, 0, 0.5),
   )
 );
-
-.primary-btn:not(.mat-mdc-button-disabled) {
-  background-color: var(--app-primary) !important;
-  color: var(--app-light) !important;
-}
+@include mat.button-overrides(
+  (
+    filled-state-layer-color: #ec8a515c,
+    outlined-state-layer-color: #ec8a517e,
+    outlined-ripple-color: #ec8a513b,
+    filled-container-color: var(--app-primary),
+    outlined-outline-color: var(--app-primary),
+    outlined-label-text-color: var(--app-primary),
+  )
+);
 
 mat-form-field.w-100 {
   width: 100%;

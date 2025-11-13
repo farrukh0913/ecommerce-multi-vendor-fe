@@ -8,7 +8,7 @@
     <div class="category-card" (click)="goToCategory(category)">
       <div class="image-holder">
         @if (category.thumbnail_url) {
-        <img [src]="category.thumbnail_url" [alt]="category.name" class="main-img" />
+        <img [src]="r2BaseUrl + category.thumbnail_url" [alt]="category.name" class="main-img" />
         }
         <div class="overlay">
           <button class="view-btn">View Products</button>

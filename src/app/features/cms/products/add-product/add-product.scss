@@ -1,0 +1,223 @@
+.add-product-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0rem;
+
+  form {
+    width: 100%;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .file-upload {
+    .file-input-wrapper {
+      padding-top: 0.5rem;
+    }
+    input[type='file'] {
+    }
+    input[type='file']::file-selector-button {
+      border: none;
+      border: 1px solid var(--app-primary);
+      outline: none;
+      background-color: transparent;
+      padding: 10px;
+      border-radius: 10px;
+      color: var(--app-primary);
+      margin-right: 10px;
+      cursor: pointer;
+      &:hover {
+        background-color: var(--app-primary);
+        color: white;
+      }
+    }
+  }
+
+  /* ------------------------------
+     CARD SECTIONS
+  ------------------------------ */
+  .form-card {
+    width: 48%;
+    min-width: 300px;
+    // flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.8rem 2rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #2a2a2a;
+      margin-bottom: 1rem;
+    }
+
+    mat-divider {
+      margin: 1rem 0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+
+      h2 {
+        margin: 0;
+      }
+
+      button {
+        font-weight: 500;
+      }
+    }
+  }
+
+  /* ------------------------------
+     LAYOUT HELPERS
+  ------------------------------ */
+  .w-100 {
+    width: 100%;
+  }
+
+  .w-50 {
+    width: 48%;
+  }
+
+  .w-33 {
+    width: 32%;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    justify-content: space-between;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+
+    &.end {
+      justify-content: flex-end;
+    }
+  }
+
+  /* ------------------------------
+     CATEGORY / TEMPLATE FORMS
+  ------------------------------ */
+  .fade-in {
+    animation: fadeIn 0.25s ease-in-out;
+  }
+
+  /* ------------------------------
+     MEDIA & VARIANT BLOCKS
+  ------------------------------ */
+  .media-block,
+  .variant-block {
+    background: #fafafa;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #f3f5f8;
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    .row {
+      align-items: center;
+    }
+
+    button {
+      align-self: flex-end;
+      margin-top: 0.5rem;
+    }
+
+    mat-divider {
+      margin-top: 1rem;
+    }
+  }
+
+  /* ------------------------------
+     CHIP INPUT STYLING
+  ------------------------------ */
+  mat-chip-grid {
+    margin-top: 0.4rem;
+  }
+
+  /* ------------------------------
+     CHECKBOXES
+  ------------------------------ */
+  mat-checkbox {
+    margin: 0.5rem 0;
+  }
+
+  /* ------------------------------
+     SUBMIT BUTTON
+  ------------------------------ */
+  button[type='submit'] {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 0.6rem 1.5rem;
+  }
+
+  /* ------------------------------
+     ANIMATIONS
+  ------------------------------ */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ------------------------------
+     RESPONSIVE DESIGN
+  ------------------------------ */
+  @media (max-width: 900px) {
+    form {
+      gap: 1.5rem;
+    }
+
+    .form-card {
+      padding: 1.2rem 1.4rem;
+    }
+
+    .row {
+      flex-direction: column;
+
+      .w-50,
+      .w-33 {
+        width: 100%;
+      }
+    }
+
+    .btn-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    button[type='submit'] {
+      width: 100%;
+    }
+  }
+}

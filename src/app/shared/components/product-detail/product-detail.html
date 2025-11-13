@@ -52,14 +52,14 @@
       <p class="price-tag">
         MRP:
         <span class="price"
-          >{{ product?.priceList[0]?.price_amount - product.priceList?.[0]?.discount_amount }}
-          {{ getCurrencySymbol(product.priceList?.[0]?.currency_code) }}</span
-        >
+          >{{ getCurrencySymbol(product.priceList?.[0]?.currency_code)
+          }} {{ product?.priceList[0]?.price_amount - product.priceList?.[0]?.discount_amount }}
+        </span>
         @if(product.priceList?.[0]?.discount_percentage!==0){
         <span class="old-price"
-          >{{ product.priceList?.[0]?.price_amount }}
-          {{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) }}</span
-        >
+          >{{ getCurrencySymbol(product?.priceList?.[0]?.currency_code)
+          }} {{ product.priceList?.[0]?.price_amount }}
+        </span>
         <span class="discount">{{ product?.priceList?.[0]?.discount_percentage }}%</span>
         }
       </p>
@@ -93,9 +93,10 @@
       <div class="delivery-detail">
         <i class="fa fa-money-bill"></i>
         <p>
-          Shipping Cost: {{ product?.priceList?.[0]?.shipping_cost }}
+          Shipping Cost:
           {{
           getCurrencySymbol(product?.priceList?.[0]?.currency_code) }}
+          {{ product?.priceList?.[0]?.shipping_cost }}
         </p>
       </div>
     </div>

@@ -1,78 +1,101 @@
 import { Injectable } from '@angular/core';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class R2UploadService {
-  private ACCOUNT_ID = '534c5fe802e61d53eb7c56a863d3ce7b';
-  private ACCESS_KEY_ID = '205f8a3fe74fbcbf1e5a600a06538e74';
-  private SECRET_ACCESS_KEY = '5255574538aa6e30b49f510e59ff5cd40a8dc078305f0b67ddeed53b7365408d';
-  private BUCKET = 'myimprint';
-
   private s3: S3Client;
 
   constructor() {
     this.s3 = new S3Client({
       region: 'auto',
-      endpoint: `https://${this.ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      endpoint: `https://${environment.r2AccountId}.r2.cloudflarestorage.com`,
       credentials: {
-        accessKeyId: this.ACCESS_KEY_ID,
-        secretAccessKey: this.SECRET_ACCESS_KEY,
+        accessKeyId: environment.r2AccessKeyId,
+        secretAccessKey: environment.r2SecretAccessKey,
       },
     });
   }
 
   /**
-   * Uploads a base64 string as a file to R2
-   * @param base64Data Base64 string of the file
-   * @param fileName Optional custom file name
-   * @param folder Optional folder path in bucket
-   * @param contentType MIME type of the file
-   * @returns Public URL of uploaded file
+   * upload object to R2
    */
-  async uploadBase64(
+  async uploadBase64Image(
     base64Data: string,
-    fileName = 'file',
-    folder = 'uploads',
-    contentType = 'image/png',
-    uniqueId: number
+    folderName: string,
+    fileName: string
   ): Promise<string> {
+    console.log('fileName: ', fileName);
+    const matches = base64Data.match(/^data:(.+);base64,(.*)$/);
+    if (!matches || matches.length !== 3) throw new Error('Invalid base64 string format');
+
+    const mimeType = matches[1];
+    const base64Content = matches[2];
+    const buffer = this.base64ToArrayBuffer(base64Content);
+    const extension = this.getExtensionFromMime(mimeType);
+    const key = `${folderName}/${fileName}.${extension}`;
+
     try {
-      // Remove base64 prefix if present
-      const base64 = base64Data.split(',')[1] ?? base64Data;
-      const buffer = this.base64ToArrayBuffer(base64);
+      await this.s3.send(
+        new PutObjectCommand({
+          Bucket: environment.Bucket,
+          Key: key,
+          Body: buffer,
+          ContentType: mimeType,
+        })
+      );
 
-      // Generate unique file name
-      const extension = contentType.split('/')[1] || 'png';
-      const key = `${folder}/${uniqueId}_${fileName}.${extension}`;
-
-      const command = new PutObjectCommand({
-        Bucket: this.BUCKET,
-        Key: key,
-        Body: buffer,
-        ContentType: contentType,
-      });
-
-      await this.s3.send(command);
-
-      const publicUrl = `https://${this.ACCOUNT_ID}.r2.cloudflarestorage.com/${this.BUCKET}/${key}`;
-      console.log(`✅ Uploaded successfully: ${publicUrl}`);
-      return publicUrl;
+      const publicUrl = `https://pub-9b4cc8555df8437bacf8d3a7a25c1ab2.r2.dev/${key}`;
+      console.log('✅ Uploaded successfully:', publicUrl);
+      return folderName === 'custom-design-assets' ? publicUrl : key;
     } catch (err) {
       console.error('❌ Upload failed:', err);
       throw err;
     }
   }
 
-  // Helper: Convert base64 string to ArrayBuffer
-  private base64ToArrayBuffer(base64: string): Uint8Array {
-    const binaryString = atob(base64);
+  /**
+   * delete object from R2
+   * @param fileUrl
+   */
+  async deleteFileFromR2(fileUrl: string): Promise<void> {
+    try {
+      // Example fileUrl:
+      // https://pub-9b4cc8555df8437bacf8d3a7a25c1ab2.r2.dev/custom-design-assets/decal_uuid.png
+      const key = fileUrl.split('.r2.dev/')[1];
+      if (!key) throw new Error('Invalid R2 file URL');
+
+      await this.s3.send(
+        new DeleteObjectCommand({
+          Bucket: environment.Bucket,
+          Key: key,
+        })
+      );
+
+      console.log('🗑️ File deleted from R2:', key);
+    } catch (err) {
+      console.error('❌ Failed to delete file from R2:', err);
+      throw err;
+    }
+  }
+
+  private base64ToArrayBuffer(base64: string): ArrayBuffer {
+    const binaryString = window.atob(base64);
     const len = binaryString.length;
     const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes;
+    for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
+    return bytes.buffer;
+  }
+
+  private getExtensionFromMime(mime: string): string {
+    const map: Record<string, string> = {
+      'image/png': 'png',
+      'image/jpeg': 'jpg',
+      'image/jpg': 'jpg',
+      'image/webp': 'webp',
+    };
+    return map[mime] || 'png';
   }
 }

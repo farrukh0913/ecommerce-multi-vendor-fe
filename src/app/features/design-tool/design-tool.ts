@@ -862,8 +862,6 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     reader.onload = async () => {
       const imageUrl = reader.result as string;
       this.decalImageUrl = imageUrl;
-      const url = await this.r2UploadService.uploadBase64(imageUrl, file.name, 'images', file.type,12121);
-      console.log('File uploaded to:', url);
       // If user is editing an existing decal — update it directly
       if (this.editDecal && this.editDecal.userData['type'] === 'image') {
         const decal = this.editDecal;
@@ -930,8 +928,11 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    * @param decal
    * @returns
    */
-  removeSelectedDecal(decal: any) {
+  async removeSelectedDecal(decal: any) {
     if (!decal) return;
+    if (decal.userData['type'] === 'image') {
+      await this.r2UploadService.deleteFileFromR2(decal.userData['image']);
+    }
     this.scene.remove(decal);
     this.decals = this.decals.filter((d) => d !== decal);
   }
@@ -1140,7 +1141,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
    * save all design modal updated design in local storage for now
    * @returns
    */
-  saveDesign(showToast: boolean = true): void {
+  async saveDesign(showToast: boolean = true): Promise<void> {
     if (!this.model) return;
     const storageKey = this.extractModelKey(this.selectedModelPath);
     // Extract material data
@@ -1158,22 +1159,36 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     });
 
     // Save all decal userData directly
-    const decalsData = this.decals.map((decal) => {
-      // clone userData to avoid circular refs or live object mutations
-      const userData = { ...decal.userData };
+    const decalsData = await Promise.all(
+      this.decals.map(async (decal) => {
+        const userData = { ...decal.userData };
 
-      // ensure vectors/eulers are serializable
-      if (userData['position']?.toArray) userData['position'] = userData['position'].toArray();
-      if (userData['orientation']?.toArray)
-        userData['orientation'] = userData['orientation'].toArray();
-      if (userData['originalSize']?.toArray) userData['originalSize'] = [1, 1, 1];
-      if (userData['baseSize']?.toArray) userData['baseSize'] = [1, 1, 1];
-      if (userData['type'] === 'image')
-        userData['image'] =
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPkNnMdPMYL0wJTAweRejy-TK0WslkwCikVg&s';
-      return userData;
-    });
+        if (userData['position']?.toArray) userData['position'] = userData['position'].toArray();
+        if (userData['orientation']?.toArray)
+          userData['orientation'] = userData['orientation'].toArray();
+        if (userData['originalSize']?.toArray) userData['originalSize'] = [1, 1, 1];
+        if (userData['baseSize']?.toArray) userData['baseSize'] = [1, 1, 1];
+
+        if (userData['type'] === 'image' && userData['image'].startsWith('data:')) {
+          console.log('userData', userData['type'] === 'image');
+          const fileName = 'decal' + '_' + decal.uuid;
+          const url = await this.r2UploadService.uploadBase64Image(
+            userData['image'],
+            'custom-design-assets',
+            fileName
+          );
+          console.log('File uploaded to:', url);
+          userData['image'] = url;
+          decal.userData['image'] = url;
+          console.log('this.decals: ', this.decals);
+        }
+
+        return userData;
+      })
+    );
+
     const cleanedDecals = decalsData.map(({ mesh, ...rest }) => rest);
+
     this.saveDesignData = {
       modelPath: this.selectedModelPath,
       materials: modelMaterialData,
@@ -1310,8 +1325,9 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   /**
    * add to cart item with custom design
    */
-  addToCart() {
-    this.saveDesign(false);
+  async addToCart() {
+    this.spinner.start();
+    await this.saveDesign(false);
 
     const payload = {
       components: '{}',
@@ -1334,12 +1350,14 @@ export class DesignTool implements AfterViewInit, OnDestroy {
 
     action$.subscribe({
       next: (res) => {
+        this.spinner.stop();
         console.log(this.isEdit ? '📝 Updated:' : '🛒 Added:', res);
         this.sharedService.showToast(
           this.isEdit ? 'Design updated successfully' : 'Item added to cart successfully'
         );
       },
       error: (err) => {
+        this.spinner.stop();
         console.error('❌ Error:', err);
         this.sharedService.showToast(
           this.isEdit ? 'Error updating cart item' : 'Error adding item to cart',

@@ -43,8 +43,8 @@
                 <!-- to display cuurency code -->
                 @if (innerKey === 'price_adjustment') {
                 <span class="nested-value"
-                  >{{ item[innerKey] }}
-                  {{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) }}</span
+                  >{{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) }} {{ item[innerKey] }}
+                  </span
                 >
                 } @else {
                 <span class="nested-value">

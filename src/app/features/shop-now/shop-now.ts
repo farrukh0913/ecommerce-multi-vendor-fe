@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CategoryService } from '../../shared/services/category.service';
 import { Subject, takeUntil } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-shop-now',
@@ -177,6 +178,7 @@ export class ShopNow {
       image: 'https://myimprint.ca/wp-content/uploads/2024/11/33504_fm.jpg.webp',
     },
   ];
+  r2BaseUrl: string = environment.r2BaseUrl + '/';
   private destroy$ = new Subject<void>();
   constructor(private router: Router, private categoryService: CategoryService) {}
   ngOnInit(): void {

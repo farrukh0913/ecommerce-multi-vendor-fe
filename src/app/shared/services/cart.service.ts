@@ -26,10 +26,6 @@ export interface CartItem {
 })
 export class CartService {
   private baseUrl = `${environment.apiBaseUrl}/shop`;
-  private authToken = {
-    Authorization:
-      'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjI4MDQzZDQ4MGE4OWJiOGM5MTZlNzVhM2FlODRiY2NiZGY3ODJjNDkifQ.eyJhdF9oYXNoIjoiUndXNHRBQjhNUV9nQy0yX3FSejJZZyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYzMDMwNDUwLCJpYXQiOjE3NjI5NDQwNTAsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.e2wWvY0Lrwda1jk8uilkfgoBBe6dxPFERI-Q14bISYs7NWz6327Q_PHAL3wRgXNlD1DxYdrwkik_b_rMqpeoPd4ZTbOHt6rB5ncnZ6SzzEU2O3JtvMyYQ3BL0X7F9QvnslqQSrWISRssxGyjfREFVHWA6VFp8FIaYDE5sgIU2SiMelYPl9FlWRKoF486bRj4tLtYkAlEhpniLnqrevj6qkQxps_fxTCk4YmHCQ5SvSF2JC_cB1QJZl0L6Ivo0qp8wTSdVlYygLge7d7DovjvSywgorSLYB_BMwzkBIudzRQPF6QpApA6hEZ4aN03Bs5vQL0x1I8iFy7jZ3kMJPwf4w',
-  };
   private cartItemsSubject = new BehaviorSubject<any[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
   constructor(private http: HttpClient, private spinner: NgxUiLoaderService) {
@@ -41,14 +37,9 @@ export class CartService {
    * @param params Optional query parameters (limit, offset, user_id, etc.)
    */
   getCartItems(params?: Record<string, any>): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: this.authToken.Authorization,
-    });
-
     const httpParams = new HttpParams({ fromObject: this.cleanParams(params) });
 
     return this.http.get(`${this.baseUrl}/cart_items_view`, {
-      headers,
       params: httpParams,
     });
   }
@@ -76,8 +67,7 @@ export class CartService {
    * @param data Cart item data
    */
   addCartItem(data: CartItem): Observable<any> {
-    const authToken = this.authToken;
-    return this.http.post(`${this.baseUrl}/cart_items`, data, { headers: authToken }).pipe(
+    return this.http.post(`${this.baseUrl}/cart_items`, data).pipe(
       tap(() => {
         this.updateCartObservable();
       })
@@ -90,12 +80,8 @@ export class CartService {
    * @param data Updated cart item data
    */
   updateCartItem(id: string, data: CartItem): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: this.authToken.Authorization,
-    });
-
     return this.http
-      .patch(`${this.baseUrl}/cart_items?id=eq.${id}`, data, { headers })
+      .patch(`${this.baseUrl}/cart_items?id=eq.${id}`, data)
       .pipe(tap(() => this.updateCartObservable()));
   }
 
@@ -104,12 +90,8 @@ export class CartService {
    * @param id Cart item ID
    */
   deleteCartItem(id: string): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: this.authToken.Authorization,
-    });
-
     return this.http
-      .delete(`${this.baseUrl}/cart_items?id=eq.${id}`, { headers })
+      .delete(`${this.baseUrl}/cart_items?id=eq.${id}`)
       .pipe(tap(() => this.updateCartObservable()));
   }
 

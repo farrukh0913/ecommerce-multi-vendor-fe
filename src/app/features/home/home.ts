@@ -93,7 +93,7 @@ export class Home {
    */
   getProductNewArrival(): void {
     this.spinner.start();
-    const filters = { ...this.productService.productFilters, order: 'created_at.desc', limit: 20 };
+    const filters = { };
     this.productService.getFiltered(filters).subscribe({
       next: (data) => {
         const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];

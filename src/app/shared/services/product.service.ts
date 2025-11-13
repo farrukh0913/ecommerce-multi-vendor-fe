@@ -43,12 +43,10 @@ export class ProductService {
     is_variant: false,
     weight: null,
   };
-  private readonly authHeaders = new HttpHeaders({
-    Authorization:
-      'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjI4MDQzZDQ4MGE4OWJiOGM5MTZlNzVhM2FlODRiY2NiZGY3ODJjNDkifQ.eyJhdF9oYXNoIjoiUndXNHRBQjhNUV9nQy0yX3FSejJZZyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYzMDMwNDUwLCJpYXQiOjE3NjI5NDQwNTAsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.e2wWvY0Lrwda1jk8uilkfgoBBe6dxPFERI-Q14bISYs7NWz6327Q_PHAL3wRgXNlD1DxYdrwkik_b_rMqpeoPd4ZTbOHt6rB5ncnZ6SzzEU2O3JtvMyYQ3BL0X7F9QvnslqQSrWISRssxGyjfREFVHWA6VFp8FIaYDE5sgIU2SiMelYPl9FlWRKoF486bRj4tLtYkAlEhpniLnqrevj6qkQxps_fxTCk4YmHCQ5SvSF2JC_cB1QJZl0L6Ivo0qp8wTSdVlYygLge7d7DovjvSywgorSLYB_BMwzkBIudzRQPF6QpApA6hEZ4aN03Bs5vQL0x1I8iFy7jZ3kMJPwf4w',
-  });
-  private readonly endpoint = `${BASE_URL}/shop/products`;
-
+  private readonly endpoint = `${BASE_URL}/inventory/products`;
+  private readonly priceListEndpoint = `${BASE_URL}/shop/pricelist`;
+  private readonly productMediaEndpoint = `${BASE_URL}/inventory/product_media`;
+  private readonly productVariantsEndpoint = `${BASE_URL}/inventory/product_variants`;
   constructor(private http: HttpClient) {}
 
   /**
@@ -85,7 +83,7 @@ export class ProductService {
   /** Delete product by ID */
   delete(id: string): Observable<any> {
     const endpoint = `${BASE_URL}/inventory/products`;
-    return this.http.delete(`${endpoint}?id=eq.${id}`, { headers: this.authHeaders });
+    return this.http.delete(`${endpoint}?id=eq.${id}`);
   }
 
   /** Search products by keyword */
@@ -151,6 +149,46 @@ export class ProductService {
   getProductPriceInfo(productId: string) {
     const priceUrl = `${BASE_URL}/shop/pricelist?product_id=eq.${productId}`;
     return this.http.get(priceUrl);
+  }
+  /**
+   * Create a new product variant
+   * @param payload
+   */
+  createProductVariant(payload: any): Observable<any> {
+    return this.http.post(this.productVariantsEndpoint, payload);
+  }
+
+  /**
+   * Create a new product media record
+   * @param payload
+   */
+  createProductMedia(payload: any): Observable<any> {
+    return this.http.post(this.productMediaEndpoint, payload);
+  }
+
+  /**
+   * Create a new pricelist record
+   * @param payload
+   */
+  createPriceList(payload: any): Observable<any> {
+    return this.http.post(this.priceListEndpoint, payload);
+  }
+
+  /**
+   * fetch all product templates
+   * @returns
+   */
+  getProductTemplates() {
+    const endpoint = `${BASE_URL}/inventory/product_templates`;
+    return this.http.get(`${endpoint}`);
+  }
+  /**
+   * Create a new product template
+   * @param payload
+   */
+  createProductTemplate(payload: any): Observable<any> {
+    const endpoint = `${BASE_URL}/inventory/product_templates`;
+    return this.http.post(endpoint, payload);
   }
 
   /**
