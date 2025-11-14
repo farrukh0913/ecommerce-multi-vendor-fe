@@ -22,7 +22,7 @@ const routes: Routes = [
   { path: 'faq', component: Faq },
   { path: 'contact-us', component: ContactUs },
   { path: 'cart', component: Cart },
-  { path: 'cms', loadChildren: () => import('./features/cms/cms-module').then(m => m.CmsModule) },
+  // { path: 'cms', loadChildren: () => import('./features/cms/cms-module').then(m => m.CmsModule) },
   { path: '**', redirectTo: '' },
 ];
 
