@@ -43,7 +43,7 @@ export class ProductService {
     is_variant: false,
     weight: null,
   };
-  private readonly endpoint = `${BASE_URL}/inventory/products`;
+  private readonly endpoint = `${BASE_URL}/shop/products`;
   private readonly priceListEndpoint = `${BASE_URL}/shop/pricelist`;
   private readonly productMediaEndpoint = `${BASE_URL}/inventory/product_media`;
   private readonly productVariantsEndpoint = `${BASE_URL}/inventory/product_variants`;
@@ -62,7 +62,7 @@ export class ProductService {
       });
     }
 
-    return this.http.get(this.endpoint, { params });
+    return this.http.get(`${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,thumbnail_url,category`, { params });
   }
 
   /** Get product by ID */
@@ -138,7 +138,7 @@ export class ProductService {
       }
     }
 
-    return this.http.get(this.endpoint, { params });
+    return this.http.get(`${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,thumbnail_url,category`, { params });
   }
 
   /**
@@ -207,7 +207,7 @@ export class ProductService {
    * @returns
    */
   getProductDetails(productId: string): Observable<any> {
-    const productUrl = `${BASE_URL}/shop/products?id=eq.${productId}`;
+    const productUrl = `${BASE_URL}/shop/products?select=id,name,price,attributes,created_at,description,tags,thumbnail_url,category&id=eq.${productId}`;
     const variantsUrl = `${BASE_URL}/shop/product_variants?product_id=eq.${productId}`;
     const mediaUrl = `${BASE_URL}/inventory/product_media?product_id=eq.${productId}`;
     const priceUrl = `${BASE_URL}/shop/pricelist?product_id=eq.${productId}`;

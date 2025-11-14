@@ -14,17 +14,22 @@ import { Router } from '@angular/router';
 export class AuthInterceptor implements HttpInterceptor {
   private authToken = {
     Authorization:
-      'eyJhbGciOiJSUzI1NiIsImtpZCI6IjJhYTIyODBjODFkYWZiYmU0M2FmN2YwZmNkODhjODZkNzQwMGMzN2IifQ.eyJhdF9oYXNoIjoiRXhCRWx0S1lSRTdZZEhJNnNGZzVKUSIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYzMTE0MDQwLCJpYXQiOjE3NjMwMjc2NDAsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.kVTbphYtwnGksRkvM7Mg9mRlu34s94ntNdSrKMk8Ie2SVtvVsuLqu0775g7Vi20uA4YjSoT940mE95F-ZM1C8jcT3CL_YvdGC2zIuAlj91uhW33oXUcnMdKFV3ihMEWZeDCm8kLI_g5eIuFgSW41a21ehk5S879HDqtMF1C5RA_Ajp4sOcaBFmuhGDBEk1jtRxI5n7Iw8dbxVGZ4xGR5HFj1ySyP27lvpO4-w0nOoWY6NNza-n2zmHrrpWwzZz5Uk1FfflzEtoybjuhEl-CbkvjTGFptsO46MH8TxDZUkKmz5u0NpW414PN3WAoW_w3KQ6jMiQvVzyxxx02v9_P-sw',
+      'eyJhbGciOiJSUzI1NiIsImtpZCI6IjJmZjdiZDZjZDRiMTg1YjM0ZGU0OWNmZmUyMjQ5ZWNjZTU3ZTg1ZjMifQ.eyJhdF9oYXNoIjoicnZFRzBsUGlhQmxhQ0tTc1Y0Vlg5QSIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYzMjAxMDg3LCJpYXQiOjE3NjMxMTQ2ODcsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.4xOh6IIBxLDAtnjtwlMgqfzDYKKLjgiIv_hMA5JqPV3G491E6Lm4tTvnWTeuZog2FQVN48zRiLF8e9Vv7XnfIS016MJyGMnQaqZsuqECRRA0cg5HVer6aRTJM6C21IevvlqaU4Eou3OV5-Mg_t3xm6QKpcybVDJigtU-e7WnWtnXL6YYA0k53MfGrjdObq_vC7CqQuNvYi4EOIxbywFW39prPfOLchVspKZ0fR8jQK7P95sSCn5NFCqb5KDxUZNb3Y7FFwNH6U2glzbey5jiLIFQ-1UkSSPRQzCMwI31wDcWB6LnN0cieap5kbFbZFYPy156XE0aP2rI9_muF5mP4w',
   };
   constructor(private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Get token from localStorage (or use your AuthService)
-    const token = this.authToken.Authorization;
-
-    // Clone request and add Authorization header if token exists
     let authReq = req;
-    if (token) {
+
+    // Only add token for specific method(s) or URL
+    const token = this.authToken.Authorization;
+    const protectedMethods = ['POST', 'DELETE', 'PATCH']; // only for these methods
+    const protectedUrls = ['https://api-acad3b2f317a.eu-west1.edgeflare.dev/shop/cart_items_view'];
+
+    const isProtectedMethod = protectedMethods.includes(req.method);
+    const isProtectedUrl = protectedUrls.some((url) => req.url.startsWith(url));
+
+    if (token && (isProtectedMethod || isProtectedUrl)) {
       authReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
@@ -32,7 +37,6 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
-    // Pass request and handle errors
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -43,7 +47,6 @@ export class AuthInterceptor implements HttpInterceptor {
         } else if (error.status === 500) {
           console.error('Server error:', error.message);
         }
-
         return throwError(() => error);
       })
     );

@@ -3,7 +3,7 @@
     <!-- CATEGORY SECTION -->
     <mat-card class="form-card">
       <div class="header">
-        <h2>1. Product Category</h2>
+        <h2>1. Category</h2>
         @if (!creatingCategory && !productDetailsAdded) {
         <button mat-stroked-button color="primary" type="button" (click)="createNewCategory()">
           Create New
@@ -39,6 +39,7 @@
               type="file"
               (change)="onFileSelected($event, 'category_thumbnail_url')"
               class="file-input"
+              accept="image/*"
             />
           </div>
         </div>
@@ -64,7 +65,7 @@
     @if (categorySelected) {
     <mat-card class="form-card">
       <div class="header">
-        <h2>2. Product Template</h2>
+        <h2>2. Template</h2>
         @if (!creatingTemplate && !productDetailsAdded) {
         <button mat-stroked-button color="primary" type="button" (click)="createNewTemplate()">
           Create New
@@ -98,8 +99,13 @@
             @for (attribute of attributeSchema.controls; track $index) {
             <mat-chip-row>
               {{ attribute.value }}
-              <button *ngIf="!tagsReadonly" matChipRemove aria-label="remove tag">
-                <ion-icon name="close-circle-outline" (click)="removeAttribute($index)"></ion-icon>
+              <button
+                *ngIf="!tagsReadonly"
+                matChipRemove
+                aria-label="remove tag"
+                (click)="removeAttribute($index)"
+              >
+                <ion-icon name="close-circle-outline"></ion-icon>
               </button>
             </mat-chip-row>
             }
@@ -118,11 +124,13 @@
             @for (attribute of optionalAttributeSchema.controls; track $index) {
             <mat-chip-row>
               {{ attribute.value }}
-              <button *ngIf="!tagsReadonly" matChipRemove aria-label="remove optinal attribute">
-                <ion-icon
-                  name="close-circle-outline"
-                  (click)="removeOptionalAttribute($index)"
-                ></ion-icon>
+              <button
+                *ngIf="!tagsReadonly"
+                matChipRemove
+                aria-label="remove optinal attribute"
+                (click)="removeOptionalAttribute($index)"
+              >
+                <ion-icon name="close-circle-outline"></ion-icon>
               </button>
             </mat-chip-row>
             }
@@ -152,7 +160,7 @@
     <!-- PRODUCT SECTION -->
     @if (templateSelected && categorySelected) {
     <mat-card class="form-card">
-      <h2>3. Product Details</h2>
+      <h2>3. Details</h2>
 
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Product Name</mat-label>
@@ -170,8 +178,13 @@
           @for (tag of tags.controls; track $index) {
           <mat-chip-row>
             {{ tag.value }}
-            <button *ngIf="!tagsReadonly" matChipRemove aria-label="remove tag">
-              <mat-icon>cancel</mat-icon>
+            <button
+              *ngIf="!tagsReadonly"
+              matChipRemove
+              aria-label="remove tag"
+              (click)="removeDetailsTags($index)"
+            >
+              <ion-icon name="close-circle-outline"></ion-icon>
             </button>
           </mat-chip-row>
           }
@@ -193,6 +206,7 @@
               type="file"
               (change)="onFileSelected($event, 'thumbnail_url')"
               class="file-input"
+              accept="image/*"
             />
           </div>
         </div>
@@ -234,51 +248,92 @@
 
     <!-- PRICE LIST -->
     @if(productDetailsAdded){
-
     <mat-card class="form-card">
-      <h2>4. Price List</h2>
+      <h2>4. List</h2>
       <div formGroupName="priceList">
         <div class="row">
+          <!-- Currency Code -->
           <mat-form-field appearance="outline" class="w-50">
             <mat-label>Currency Code</mat-label>
-            <input matInput formControlName="currency_code" />
+            <mat-select formControlName="currency_code">
+              <mat-option *ngFor="let c of currencyCodes" [value]="c">
+                {{ c }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
+          <!-- Product Condition -->
           <mat-form-field appearance="outline" class="w-50">
             <mat-label>Product Condition</mat-label>
-            <input matInput formControlName="product_condition" />
+            <mat-select formControlName="product_condition">
+              <mat-option value="new">New</mat-option>
+              <mat-option value="old">Old</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
 
         <div class="row">
-          <mat-form-field appearance="outline" class="w-33">
+          <mat-form-field appearance="outline" class="w-50">
             <mat-label>Price</mat-label>
             <input matInput type="number" formControlName="price_amount" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-33">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Discount Amount</mat-label>
+            <input matInput type="number" formControlName="discount_amount" />
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="w-50">
             <mat-label>Discount %</mat-label>
             <input matInput type="number" formControlName="discount_percentage" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-33">
+          <mat-form-field appearance="outline" class="w-50">
             <mat-label>Shipping Cost</mat-label>
             <input matInput type="number" formControlName="shipping_cost" />
           </mat-form-field>
         </div>
 
         <div class="row">
-          <mat-form-field appearance="outline" class="w-50">
+          <mat-form-field appearance="outline" class="w-100">
             <mat-label>Stock Quantity</mat-label>
             <input matInput type="number" formControlName="stock_quantity" />
           </mat-form-field>
-
           <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Stock Status</mat-label>
+            <mat-select formControlName="stock_status">
+              <mat-option value="in_stock">In Stock</mat-option>
+              <mat-option value="out_of_stock">Out of Stock</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!-- <mat-form-field appearance="outline" class="w-50">
             <mat-label>Delivery Days (Range)</mat-label>
             <input matInput type="number" formControlName="estimated_delivery_days_range" />
+          </mat-form-field> -->
+        </div>
+        <div class="row" style="margin-bottom: 30px">
+          <span>Estimated Delivery Range:</span>
+        </div>
+        <div class="row" formGroupName="estimated_delivery_days_range">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Delivery Days (Lower)</mat-label>
+            <input matInput type="number" formControlName="Lower" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Delivery Days (Upper)</mat-label>
+            <input matInput type="number" formControlName="Upper" />
           </mat-form-field>
         </div>
       </div>
-      <button mat-stroked-button color="warn" type="button" (click)="addProductPrice()">
+      <button
+        mat-stroked-button
+        color="warn"
+        type="button"
+        [disabled]="productForm.get('priceList')?.invalid"
+        (click)="addProductPrice()"
+      >
         Add Price
       </button>
     </mat-card>
@@ -286,10 +341,9 @@
 
     <!-- PRODUCT MEDIA -->
     @if(productDetailsAdded){
-
     <mat-card class="form-card">
       <div class="header">
-        <h2>5. Product Media</h2>
+        <h2>5. Media</h2>
         <button mat-stroked-button color="primary" type="button" (click)="addMedia()">
           Add Media
         </button>
@@ -297,17 +351,24 @@
       <div formArrayName="productMedia">
         @for (m of productMedia.controls; track $index) {
         <div [formGroupName]="$index" class="fade-in media-block">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Image URL</mat-label>
-            <input matInput formControlName="url" />
-          </mat-form-field>
+          <div class="file-upload">
+            <label>Thumbnail *</label>
+            <div class="file-input-wrapper">
+              <input
+                type="file"
+                (change)="onFileSelected($event, 'category_thumbnail_url', true, $index)"
+                class="file-input"
+                accept="image/*"
+              />
+            </div>
+          </div>
           <mat-form-field appearance="outline" class="w-50">
             <mat-label>Alt Text</mat-label>
             <input matInput formControlName="alt_text" />
           </mat-form-field>
-          <div class="row">
-            <mat-checkbox formControlName="is_primary">Primary</mat-checkbox>
-          </div>
+          <mat-checkbox formControlName="is_primary" style="margin-top: -20px"
+            >Primary</mat-checkbox
+          >
           <button mat-stroked-button color="warn" (click)="removeMedia($index)">Remove</button>
         </div>
         }
@@ -320,10 +381,9 @@
 
     <!-- PRODUCT VARIANTS -->
     @if(productDetailsAdded){
-
     <mat-card class="form-card">
       <div class="header">
-        <h2>6. Product Variants</h2>
+        <h2>6. Variants</h2>
         <button mat-stroked-button color="primary" type="button" (click)="addVariant()">
           Add Variant
         </button>

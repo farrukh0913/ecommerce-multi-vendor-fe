@@ -138,6 +138,21 @@ mat-form-field.w-auto {
   width: auto;
 }
 
+.mat-mdc-select-arrow svg {
+  fill: var(--app-primary) !important;
+}
+.mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
+    .mat-mdc-option-multiple
+  ) {
+  background-color: var(--app-primary) !important;
+  color: var(--app-light) !important;
+  .mdc-list-item__primary-text {
+    color: var(--app-light) !important;
+  }
+}
+.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after {
+  color: var(--app-light) !important;
+}
 :focus,
 :focus-visible {
   outline: none !important;

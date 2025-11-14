@@ -1,23 +1,61 @@
 <div class="products-list-container">
-  <div class="btn-group">
-    <button class="btn-add-product" (click)="gotoNewProduct()">
-      <ion-icon name="add-outline"></ion-icon>
-      New Product
-    </button>
+  <!-- Controls -->
+  <div class="controls">
+    <div class="btn-group">
+      <button class="btn-add-product" (click)="gotoNewProduct()">
+        <ion-icon name="add-outline"></ion-icon>
+        New Product
+      </button>
+    </div>
+    <!-- Search Filters -->
+    <div class="table-filter-container">
+      <div class="filters">
+        <mat-form-field appearance="outline">
+          <mat-label>Search by Product Name</mat-label>
+          <input
+            matInput
+            [(ngModel)]="searchName"
+            (input)="onSearchInput($event)"
+            [disabled]="loading"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Select Category</mat-label>
+          <mat-select [(value)]="searchCategory" (selectionChange)="applyFilters($event)">
+            @for (cat of categories; track cat.id) {
+            <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      @if (searchName || searchCategory) {
+      <button mat-flat-button color="primary" type="button" (click)="resetFilters()">
+        Reset Filters
+      </button>
+      }
+    </div>
   </div>
+
+  <!-- Table -->
   <div class="products-table">
     <!-- Table Header (Desktop Only) -->
     <div class="products-row header">
       <div class="cell thumbnail">Image</div>
-      <div class="cell name">Name</div>
-      <div class="cell brand">Brand</div>
-      <div class="cell category">Category</div>
-      <div class="cell price">Price</div>
+      <div class="cell name" (click)="sortBy('name')">
+        Name <ion-icon [name]="getSortIcon('name')"></ion-icon>
+      </div>
+      <div class="cell brand">Brand <ion-icon></ion-icon></div>
+      <div class="cell category" (click)="sortBy('category')">
+        Category <ion-icon [name]="getSortIcon('category')"></ion-icon>
+      </div>
+      <div class="cell price" (click)="sortBy('price')">
+        Price <ion-icon [name]="getSortIcon('price')"></ion-icon>
+      </div>
       <div class="cell actions">Actions</div>
     </div>
 
     <!-- Table Rows -->
-    @for (product of productList; track $index) {
+    @for (product of paginatedProducts; track $index) {
     <div class="products-row">
       <div class="cell thumbnail">
         <img [src]="r2BaseUrl + product.thumbnail_url" [alt]="product.name" />
@@ -39,19 +77,48 @@
         ></ion-icon>
       </div>
     </div>
+    }@empty {
+    <div class="no-product">
+      <span>No Products to display.</span>
+    </div>
     }
+  </div>
+
+  <!-- Pagination -->
+  @if (totalPages > 1) { }
+  <div class="pagination">
+    <button
+      class="page-btn prev"
+      [disabled]="currentPage === 1"
+      (click)="goToPage(currentPage - 1)"
+    >
+      <ion-icon name="chevron-back-outline"></ion-icon> Prev
+    </button>
+
+    <button
+      *ngFor="let page of pagesArray"
+      [class.active]="page === currentPage"
+      class="page-btn"
+      (click)="goToPage(page)"
+    >
+      {{ page }}
+    </button>
+
+    <button
+      class="page-btn next"
+      [disabled]="currentPage === totalPages"
+      (click)="goToPage(currentPage + 1)"
+    >
+      Next <ion-icon name="chevron-forward-outline"></ion-icon>
+    </button>
   </div>
 </div>
 
-@if (selectedProduct?.name) {
+<!-- Delete Modal -->
 <app-alert-modal
+  *ngIf="selectedProduct?.name"
   [title]="'Delete Product'"
-  [message]="
-    'Are you sure you want to delete ' +
-    (selectedProduct?.name ? '\'' + selectedProduct.name + '\'' : '[product]') +
-    '?'
-  "
+  [message]="'Are you sure you want to delete \'' + selectedProduct.name + '\'?'"
   (confirm)="deleteProduct()"
   (cancel)="selectedProduct = null"
 ></app-alert-modal>
-}

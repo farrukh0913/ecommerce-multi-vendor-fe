@@ -37,6 +37,7 @@
   ------------------------------ */
   .form-card {
     width: 48%;
+    flex: 1;
     min-width: 300px;
     // flex: 1;
     background: #fff;
@@ -44,11 +45,6 @@
     padding: 1.8rem 2rem;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
     transition: box-shadow 0.3s ease, transform 0.2s ease;
-
-    &:hover {
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-    }
-
     h2 {
       font-size: 1.4rem;
       font-weight: 600;

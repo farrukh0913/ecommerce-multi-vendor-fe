@@ -133,7 +133,7 @@ export class ProductDetail {
       variants: {
         selectedColor: this.selectedColor,
         selectedSize: this.selectedSize,
-        thumbnail_url: this.selectedColor.thumbnail_url,
+        thumbnail_url: this.selectedColor?.thumbnail_url || this.product?.thumbnail_url,
       },
     };
     this.cartService.addCartItem(payload).subscribe({

@@ -37,7 +37,7 @@ export class Home {
     private categoryService: CategoryService,
     private productService: ProductService,
     private organizationService: OrganizationService,
-    private blogArticlesService:BlogArticlesService
+    private blogArticlesService: BlogArticlesService
   ) {}
 
   /**
@@ -93,7 +93,7 @@ export class Home {
    */
   getProductNewArrival(): void {
     this.spinner.start();
-    const filters = { };
+    const filters = { ...this.productService.productFilters, order: 'created_at.desc', limit: 20 };
     this.productService.getFiltered(filters).subscribe({
       next: (data) => {
         const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];

@@ -57,7 +57,7 @@ export class SearchProduct {
    */
   getProductsByName(filterValue: string = ''): void {
     this.loading = true;
-    this.productService.productFilters.name = filterValue;
+    this.productService.productFilters.name = `ilike.%${filterValue}%`;
     this.productService.getFiltered(this.productService.productFilters).subscribe({
       next: (data) => {
           const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];

@@ -48,7 +48,7 @@
       <h2 class="product-title">
         {{ product.name }}
       </h2>
-      <p class="category"><strong>Category:</strong> {{ product?.category.toUpperCase() }}</p>
+      <p class="category"><strong>Category:</strong> {{  product?.category && product?.category.toUpperCase() }}</p>
       <p class="price-tag">
         MRP:
         <span class="price"
