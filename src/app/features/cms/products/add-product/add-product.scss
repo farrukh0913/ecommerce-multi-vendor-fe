@@ -36,9 +36,9 @@
      CARD SECTIONS
   ------------------------------ */
   .form-card {
-    width: 48%;
+    width: 100%;
+    min-width: 500px;
     flex: 1;
-    min-width: 300px;
     // flex: 1;
     background: #fff;
     border-radius: 10px;
@@ -196,6 +196,7 @@
 
     .form-card {
       padding: 1.2rem 1.4rem;
+      min-width: 300px;
     }
 
     .row {

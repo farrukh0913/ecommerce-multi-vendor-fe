@@ -1,0 +1,10 @@
+@if(imageUrl){
+<div class="image-box">
+  @if (icon) {
+  <button class="image-close-btn" (click)="onDelete()">
+    <ion-icon name="close-circle-outline" style="font-size: 16px"></ion-icon>
+  </button>
+  }
+  <img [src]="r2BaseUrl + imageUrl" alt="Preview" class="image-content" />
+</div>
+}

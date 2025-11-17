@@ -23,7 +23,7 @@ export class Header {
   mainNavLinks = [
     { label: 'Home', path: '/', icon: 'home-outline' },
     { label: 'Shop Now', path: '/shop-now', icon: 'bag-handle-outline' },
-    { label: 'Design Tool', path: '/design-model', icon: 'pencil-outline' },
+    // { label: 'Design Tool', path: '/design-model', icon: 'pencil-outline' },
   ];
   isMobile = inject(ResponsiveService).isMobile;
   categoryMenuOpen: boolean = false;
@@ -46,6 +46,7 @@ export class Header {
       this.cartItems = items;
       console.log('🛒 Cart updated:', items);
     });
+
   }
   /**
    * toggle side menu

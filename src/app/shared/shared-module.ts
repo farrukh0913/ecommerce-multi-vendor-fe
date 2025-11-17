@@ -11,6 +11,7 @@ import { BaseModal } from './components/base-modal/base-modal';
 import { AccordionFilter } from './components/accordion-filter/accordion-filter';
 import { RouterModule } from '@angular/router';
 import { AlertModal } from './components/alert-modal/alert-modal';
+import { ImageThumbnail } from './components/image-thumbnail/image-thumbnail';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { AlertModal } from './components/alert-modal/alert-modal';
     BaseModal,
     AccordionFilter,
     AlertModal,
+    ImageThumbnail,
   ],
   imports: [CommonModule, NgxUiLoaderModule, RouterModule],
   exports: [
@@ -35,6 +37,7 @@ import { AlertModal } from './components/alert-modal/alert-modal';
     CommonModule,
     NgxUiLoaderModule,
     RouterModule,
+    ImageThumbnail,
     AlertModal
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

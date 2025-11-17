@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { BlogArticlesService } from '../../../../shared/services/blog-articles.service';
 import { CategoryService } from '../../../../shared/services/category.service';
@@ -9,6 +9,7 @@ import { ProductService } from '../../../../shared/services/product.service';
 import { Subject, takeUntil } from 'rxjs';
 import { R2UploadService } from '../../../../shared/services/r2-upload.service';
 import { CurrencySymbol } from '../../../../shared/enums/currency.enum';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-add-product',
@@ -29,9 +30,13 @@ export class AddProduct {
   templateSelected = false;
   productDetailsAdded = false;
   private destroy$ = new Subject<void>();
+  r2BaseUrl: string = environment.r2BaseUrl + '/';
   tagsReadonly = false;
   currencyCodes = Object.keys(CurrencySymbol);
-
+  editConfig: any = {
+    isEdit: false,
+    product: null,
+  };
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -40,8 +45,31 @@ export class AddProduct {
     private productService: ProductService,
     private organizationService: OrganizationService,
     private blogArticlesService: BlogArticlesService,
-    private r2UploadService: R2UploadService
+    private r2UploadService: R2UploadService,
+    private route: ActivatedRoute
   ) {
+    // edit case
+    const productId = this.route.snapshot.paramMap.get('id');
+    console.log('productId:1221112 ', productId);
+    if (productId) {
+      this.spinner.start();
+      this.productService.getProductDetails(productId).subscribe({
+        next: (data) => {
+          this.editConfig = {
+            isEdit: true,
+            product: data,
+          };
+          // this.product = data;
+          this.spinner.stop();
+          this.setFormsForEdit();
+        },
+        error: (err) => {
+          console.log(err);
+          this.spinner.stop();
+        },
+      });
+    }
+
     //#region Form
     // init form
     this.productForm = this.fb.group({
@@ -64,11 +92,10 @@ export class AddProduct {
       barcode: [''],
       description: [''],
       tags: this.fb.array([]),
-      thumbnail_url: [''],
+      thumbnail_url: ['', Validators.required],
       weight: [''],
       is_variant: [false],
     });
-
     // get all categories
     this.categoryService.categories$.pipe(takeUntil(this.destroy$)).subscribe((categories) => {
       if (categories.length) {
@@ -282,67 +309,99 @@ export class AddProduct {
   /**
    * add new product details
    */
-  async addProduct() {
+  async addProduct(fetchProduct = true) {
+    this.spinner.start();
     const formValue = this.productForm.value;
-    const fileName = Date.now() + '_' + this.productForm.value.product_name.trim();
-    const thumbnail_url = await this.r2UploadService.uploadBase64Image(
-      formValue.thumbnail_url,
-      'products',
-      fileName
-    );
+    let thumbnail_url = formValue.thumbnail_url;
+    if (formValue.thumbnail_url && formValue.thumbnail_url.startsWith('data:image/')) {
+      const fileName = Date.now() + '_' + this.productForm.value.product_name.trim();
+      thumbnail_url = await this.r2UploadService.uploadBase64Image(
+        formValue.thumbnail_url,
+        'products',
+        fileName
+      );
+    }
     const payload = {
       name: formValue.product_name,
       barcode: formValue.barcode,
       description: formValue.description,
       tags: formValue.tags,
-      thumbnail_url: thumbnail_url,
+      thumbnail_url: thumbnail_url ?? '',
       weight: Number(formValue.weight),
       is_variant: formValue.is_variant,
       attributes: formValue.attributes,
       category_id: formValue.category_id,
       // manufacturer_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr',
       sku: Date.now() + formValue.product_name,
-      template_id: formValue.template_id,
     };
-    this.spinner.start();
-    this.productService.create(payload).subscribe({
+    const apiCall = this.editConfig?.isEdit
+      ? this.productService.update(this.editConfig.product.id, payload) // update case
+      : this.productService.create(payload);
+    apiCall.subscribe({
       next: (data) => {
-        this.makeFormReadonly();
-        this.productDetailsAdded = true;
-        this.product = data
-        // Initialize the product price list
-        this.productForm.addControl(
-          'priceList',
-          this.fb.group({
-            currency_code: ['', Validators.required],
-            discount_percentage: [0],
-            discount_amount: [0],
-            estimated_delivery_days_range: this.fb.group({
-              Lower: [0, Validators.required],
-              Upper: [0, Validators.required],
-            }),
-            price_amount: ['', Validators.required],
-            product_condition: ['new'],
-            shipping_cost: [0],
-            stock_quantity: [0, Validators.required],
-            stock_status: ['in_stock', Validators.required],
-          })
-        );
-        // Initialize the productMedia FormArray
-        this.productForm.addControl(
-          'productMedia',
-          this.fb.array([
+        if (!this.editConfig.isEdit) {
+          this.makeFormReadonly();
+          this.productDetailsAdded = true;
+          this.product = data;
+          // Initialize the product price list
+          this.productForm.addControl(
+            'priceList',
             this.fb.group({
-              alt_text: ['', Validators.required],
-              height: [''],
-              width: [''],
-              url: ['', Validators.required],
-              is_primary: [false],
-              media_type: [''],
-            }),
-          ])
-        );
-        this.productForm.addControl('productVariants', this.fb.array([]));
+              currency_code: ['', Validators.required],
+              discount_percentage: [0],
+              discount_amount: [0],
+              estimated_delivery_days_range: this.fb.group({
+                Lower: [0, Validators.required],
+                Upper: [0, Validators.required],
+              }),
+              price_amount: ['', Validators.required],
+              product_condition: ['new'],
+              shipping_cost: [0],
+              stock_quantity: [0, Validators.required],
+              stock_status: ['in_stock', Validators.required],
+            })
+          );
+          // Initialize the productMedia FormArray
+          this.productForm.addControl(
+            'productMedia',
+            this.fb.array([
+              this.fb.group({
+                alt_text: ['', Validators.required],
+                height: [''],
+                width: [''],
+                url: ['', Validators.required],
+                is_primary: [false],
+                media_type: [''],
+              }),
+            ])
+          );
+          this.productForm.addControl(
+            'productVariants',
+            this.fb.array([
+              this.fb.group({
+                name: ['', Validators.required],
+                price_adjustment: [0],
+                is_default: [false],
+                variant_type: ['', Validators.required],
+              }),
+            ])
+          );
+        }
+        if (this.editConfig.isEdit && fetchProduct) {
+          this.productService.getById(this.editConfig.product.id).subscribe((data) => {
+            const prevProduct = this.editConfig.product;
+            this.editConfig = {
+              isEdit: true,
+              product: {
+                ...data[0],
+                media: prevProduct.media || [],
+                priceList: prevProduct.priceList || [],
+              },
+            };
+            this.setFormsForEdit();
+          });
+        }
+
         this.spinner.stop();
       },
       error: (err) => {
@@ -400,6 +459,10 @@ export class AddProduct {
     }
   }
 
+  get isSubmitDisabled(): boolean {
+    return !this.productForm.value.product_name || !this.productForm.value.thumbnail_url;
+  }
+
   //#endregion
 
   //#region Price
@@ -422,12 +485,14 @@ export class AddProduct {
       stock_quantity: formValue.stock_quantity,
       estimated_delivery_days_range: `[${formValue.estimated_delivery_days_range.Lower},${formValue.estimated_delivery_days_range.Upper}]`,
       stock_status: formValue.stock_status,
-      seller_id: '9b3a67b75c50',  // maybe with the current user.id for seller
+      seller_id: '9b3a67b75c50', // maybe with the current user.id for seller
       product_id: 'c8439c8d53d7', // need to dynamic with this.product.id
     };
-    this.productService.createPriceList(payload).subscribe({
+    const apiCall = this.editConfig?.isEdit
+      ? this.productService.updatePriceList(this.editConfig.product?.priceList[0]?.id, payload) // update case
+      : this.productService.createPriceList(payload);
+    apiCall.subscribe({
       next: (data) => {
-        this.makeFormReadonly();
         this.productDetailsAdded = true;
         this.spinner.stop();
       },
@@ -446,7 +511,7 @@ export class AddProduct {
    */
   async addProductMedia() {
     if (!this.productMedia.length) return;
-    const product_id = 'c8439c8d53d7';  // need to dynamic with this.product.id
+    const product_id = 'c8439c8d53d7'; // need to dynamic with this.product.id
 
     if (this.productMedia.invalid) {
       this.productMedia.markAllAsTouched();
@@ -498,14 +563,15 @@ export class AddProduct {
   /**
    * add prdict media form controls
    */
-  addMedia() {
+  addMedia(media?: any) {
     const group = this.fb.group({
-      alt_text: ['', Validators.required],
-      height: [''],
-      width: [''],
-      url: ['', Validators.required],
-      is_primary: [false],
-      media_type: [''],
+      alt_text: [media?.alt_text ?? '', Validators.required],
+      height: [media?.height ?? ''],
+      width: [media?.media_type ?? ''],
+      url: [media?.url ?? '', Validators.required],
+      is_primary: [media?.is_primary ?? false],
+      media_type: [media?.media_type ?? ''],
+      id: [media?.id ?? ''],
     });
     this.productMedia.push(group);
   }
@@ -517,6 +583,32 @@ export class AddProduct {
     this.productMedia.removeAt(index);
   }
 
+  async removeMediaApi(id: string, index: number, imgUrl: string) {
+    if (!imgUrl) {
+      this.removeMedia(index);
+      return;
+    }
+    this.spinner.start();
+    const mediaArray = this.productForm.get('productMedia') as FormArray;
+    await this.r2UploadService.deleteFileFromR2(this.r2BaseUrl + imgUrl);
+    this.productService.removeProductMedia(id).subscribe({
+      next: async (data) => {
+        this.spinner.stop();
+        console.log('data: ', data);
+        this.removeMedia(index);
+
+        if (!mediaArray.length) {
+          this.addMedia();
+        }
+      },
+      error: (err) => {
+        this.spinner.stop();
+        console.error('Error removing media:', err);
+        // Optionally show a toast or alert
+      },
+    });
+  }
+
   //#endregion
 
   //#region Variant
@@ -524,18 +616,42 @@ export class AddProduct {
   /**
    * add product variant
    */
-  addProductVariant() {
+  async addProductVariant() {
+    if (!this.productVariants.length) return;
+    const product_id = 'c8439c8d53d7';
+
+    if (this.productVariants.invalid) {
+      this.productVariants.markAllAsTouched();
+      return;
+    }
     this.spinner.start();
-    this.productService.createProductVariant(this.product).subscribe({
-      next: (data) => {
-        this.makeFormReadonly();
-        this.productDetailsAdded = true;
-        this.spinner.stop();
-      },
-      error: (err) => {
-        this.spinner.stop();
-      },
-    });
+    try {
+      for (let index = 0; index < this.productVariants.length; index++) {
+        const mediaGroup = this.productVariants.at(index);
+        const variantValue = mediaGroup.value;
+        // Create payload for single media
+        const payload = {
+          is_default: variantValue.is_default,
+          name: variantValue.name,
+          price_adjustment: variantValue.price_adjustment,
+          product_id: product_id,
+          sort_order: index,
+          variant_type: variantValue.variant_type,
+        };
+
+        // Call API for each media individually
+        this.productService.createProductVariant(payload).subscribe((data) => {
+          this.productForm.reset();
+          this.productDetailsAdded = false;
+          this.categorySelected = false;
+          this.templateSelected = false;
+        });
+      }
+      this.spinner.stop();
+    } catch (error) {
+      console.error(error);
+      this.spinner.stop();
+    }
   }
   /* ========== PRODUCT VARIANT ========== */
   get productVariants(): FormArray {
@@ -546,11 +662,13 @@ export class AddProduct {
    * Adds a new variant to the productVariants FormArray.
    * Each variant includes a name (required), price adjustment (default 0), and is_default flag.
    */
-  addVariant() {
+  addVariant(variant?: any) {
     const group = this.fb.group({
-      name: ['', Validators.required],
-      price_adjustment: [0],
-      is_default: [false],
+      name: [variant?.name ?? '', Validators.required],
+      price_adjustment: [variant?.price_adjustment ?? 0],
+      is_default: [variant?.is_default ?? false],
+      variant_type: [variant?.variant_type ?? '', Validators.required],
+      id: [variant?.id ?? ''],
     });
     this.productVariants.push(group);
   }
@@ -561,6 +679,25 @@ export class AddProduct {
    */
   removeVariant(index: number) {
     this.productVariants.removeAt(index);
+  }
+
+  removeVariantFromDb(id: any, index: number) {
+    this.spinner.start();
+    const variantsArray = this.productForm.get('productVariants') as FormArray;
+    this.productService.removeProductVariant(id).subscribe({
+      next: async (data) => {
+        this.spinner.stop();
+        console.log('data: ', data);
+        this.removeVariant(index);
+        if (!variantsArray.length) {
+          this.addVariant();
+        }
+      },
+      error: (err) => {
+        this.spinner.stop();
+        console.error('Error removing media:', err);
+      },
+    });
   }
 
   //#endregion
@@ -609,6 +746,134 @@ export class AddProduct {
 
     // Set a flag to prevent adding/removing chips in template
     this.tagsReadonly = true;
+  }
+
+  // #region Edit Product
+  setFormsForEdit() {
+    const editedProduct = this.editConfig.product;
+    if (editedProduct) {
+      (this.categorySelected = true),
+        (this.templateSelected = true),
+        (this.productDetailsAdded = true);
+
+      //  init all forms
+
+      // add value for product price list
+      this.productForm.addControl(
+        'priceList',
+        this.fb.group({
+          currency_code: [editedProduct?.priceList[0]?.currency_code ?? '', Validators.required],
+          discount_percentage: [editedProduct?.priceList[0]?.discount_percentage ?? 0],
+          discount_amount: [editedProduct?.priceList[0]?.discount_amount ?? 0],
+          estimated_delivery_days_range: this.fb.group({
+            Lower: [
+              editedProduct?.priceList[0]?.estimated_delivery_days_range?.Lower ?? 0,
+              Validators.required,
+            ],
+            Upper: [
+              editedProduct?.priceList[0]?.estimated_delivery_days_range?.Upper ?? 0,
+              Validators.required,
+            ],
+          }),
+          price_amount: [editedProduct?.priceList[0]?.price_amount ?? '', Validators.required],
+          product_condition: [editedProduct?.priceList[0]?.product_condition ?? 'new'],
+          shipping_cost: [editedProduct?.priceList[0]?.shipping_cost ?? 0],
+          stock_quantity: [editedProduct?.priceList[0]?.stock_quantity ?? 0, Validators.required],
+          stock_status: [
+            editedProduct?.priceList[0]?.stock_status ?? 'in_stock',
+            Validators.required,
+          ],
+        })
+      );
+
+      this.productForm.patchValue({
+        category_id: editedProduct?.category_id,
+        product_name: editedProduct?.name,
+        description: editedProduct?.description,
+        tags: editedProduct?.tags,
+        weight: editedProduct?.weight,
+        is_variant: editedProduct?.is_variant,
+        template_id: 'static-id',
+        thumbnail_url: editedProduct?.thumbnail_url,
+      });
+      console.log('this.productForm: ', this.productForm.value);
+      const tagsArray = this.productForm.get('tags') as FormArray;
+      const requiredAttribute = this.productForm.get('template_attribute_schema') as FormArray;
+      tagsArray.clear();
+      requiredAttribute.clear();
+      editedProduct.tags.forEach((tag: any) => {
+        this.tags.push(this.fb.control(tag));
+      });
+      Object.keys(editedProduct.attributes).forEach((key: string) => {
+        this.attributeSchema.push(this.fb.control(key));
+      });
+      this.requiredAttributes = [...Object.keys(editedProduct.attributes)];
+      const attributeControls: { [key: string]: FormControl } = {};
+      this.requiredAttributes?.forEach((attrKey) => {
+        attributeControls[attrKey] = this.fb.control(
+          editedProduct.attributes[attrKey],
+          Validators.required
+        );
+      });
+      this.productForm.setControl('attributes', this.fb.group(attributeControls));
+      // add value for product detail
+      console.log('editedProduct: ', editedProduct);
+      // Initialize the productMedia FormArray
+      this.productForm.addControl(
+        'productMedia',
+        this.fb.array([
+          this.fb.group({
+            alt_text: ['', Validators.required],
+            height: [''],
+            width: [''],
+            url: ['', Validators.required],
+            is_primary: [false],
+            media_type: [''],
+          }),
+        ])
+      );
+
+      this.productForm.addControl(
+        'productVariants',
+        this.fb.array([
+          this.fb.group({
+            name: ['', Validators.required],
+            price_adjustment: [0],
+            is_default: [false],
+            variant_type: ['', Validators.required],
+          }),
+        ])
+      );
+
+      // insert data for product variants
+      const variantsArray = this.productForm.get('productVariants') as FormArray;
+      const variantsData = editedProduct.variants;
+      if (Object.keys(editedProduct.variants).length) {
+        variantsArray.clear();
+      }
+      Object.keys(variantsData).forEach((variantType: string) => {
+        const variants = variantsData[variantType];
+        variants.forEach((v: any) => {
+          v.variant_type = variantType;
+          this.addVariant(v);
+        });
+      });
+
+      // insert data for product variants
+      const mediaArray = this.productForm.get('productMedia') as FormArray;
+      const mediaData = editedProduct.media;
+      if (mediaData.length) {
+        mediaArray.clear();
+      }
+      mediaData.forEach((media: string) => {
+        this.addMedia(media);
+      });
+    }
+  }
+
+  updateFormValue(key: string) {
+    this.productForm.patchValue({ [key]: '' });
+    this.addProduct(false);
   }
 
   ngOnDestroy(): void {

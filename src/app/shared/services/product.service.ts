@@ -44,6 +44,7 @@ export class ProductService {
     weight: null,
   };
   private readonly endpoint = `${BASE_URL}/shop/products`;
+  private readonly inventoryEndpoint = `${BASE_URL}/inventory/products`;
   private readonly priceListEndpoint = `${BASE_URL}/shop/pricelist`;
   private readonly productMediaEndpoint = `${BASE_URL}/inventory/product_media`;
   private readonly productVariantsEndpoint = `${BASE_URL}/inventory/product_variants`;
@@ -62,12 +63,17 @@ export class ProductService {
       });
     }
 
-    return this.http.get(`${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,thumbnail_url,category`, { params });
+    return this.http.get(
+      `${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,thumbnail_url,category`,
+      { params }
+    );
   }
 
   /** Get product by ID */
   getById(id: string): Observable<any> {
-    return this.http.get(`${this.endpoint}?id=${id}`);
+    return this.http.get(
+      `${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,variants,category_id,template_id,weight,is_variant,thumbnail_url,category&id=eq.${id}`
+    );
   }
 
   /** Create a new product */
@@ -77,7 +83,7 @@ export class ProductService {
 
   /** Update product by ID */
   update(id: string, payload: any): Observable<any> {
-    return this.http.put(`${this.endpoint}/${id}`, payload);
+    return this.http.patch(`${this.inventoryEndpoint}?id=eq.${id}`, payload);
   }
 
   /** Delete product by ID */
@@ -138,7 +144,10 @@ export class ProductService {
       }
     }
 
-    return this.http.get(`${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,thumbnail_url,category`, { params });
+    return this.http.get(
+      `${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,variants,category_id,template_id,weight,is_variant,thumbnail_url,category`,
+      { params }
+    );
   }
 
   /**
@@ -150,12 +159,21 @@ export class ProductService {
     const priceUrl = `${BASE_URL}/shop/pricelist?product_id=eq.${productId}`;
     return this.http.get(priceUrl);
   }
+
   /**
    * Create a new product variant
    * @param payload
    */
   createProductVariant(payload: any): Observable<any> {
     return this.http.post(this.productVariantsEndpoint, payload);
+  }
+
+  /**
+   * remove a product variant
+   * @param payload
+   */
+  removeProductVariant(id: any): Observable<any> {
+    return this.http.delete(`${this.productVariantsEndpoint}?id=eq.${id}`);
   }
 
   /**
@@ -167,11 +185,27 @@ export class ProductService {
   }
 
   /**
+   * remove product media record
+   * @param payload
+   */
+  removeProductMedia(id: any): Observable<any> {
+    return this.http.delete(`${this.productMediaEndpoint}?id=eq.${id}`);
+  }
+
+  /**
    * Create a new pricelist record
    * @param payload
    */
   createPriceList(payload: any): Observable<any> {
     return this.http.post(this.priceListEndpoint, payload);
+  }
+
+  /**
+   * update a pricelist record
+   * @param payload
+   */
+  updatePriceList(id: any, payload: any): Observable<any> {
+    return this.http.patch(`${this.priceListEndpoint}?id=eq.${id}`, payload);
   }
 
   /**
@@ -207,7 +241,7 @@ export class ProductService {
    * @returns
    */
   getProductDetails(productId: string): Observable<any> {
-    const productUrl = `${BASE_URL}/shop/products?select=id,name,price,attributes,created_at,description,tags,thumbnail_url,category&id=eq.${productId}`;
+    const productUrl = `${BASE_URL}/shop/products?select=id,name,price,attributes,created_at,description,tags,variants,category_id,template_id,weight,is_variant,thumbnail_url,category&id=eq.${productId}`;
     const variantsUrl = `${BASE_URL}/shop/product_variants?product_id=eq.${productId}`;
     const mediaUrl = `${BASE_URL}/inventory/product_media?product_id=eq.${productId}`;
     const priceUrl = `${BASE_URL}/shop/pricelist?product_id=eq.${productId}`;
@@ -215,7 +249,6 @@ export class ProductService {
     // Execute all requests in parallel
     return forkJoin({
       product: this.http.get(productUrl),
-      variants: this.http.get(variantsUrl),
       media: this.http.get(mediaUrl),
       priceList: this.http.get(priceUrl),
     }).pipe(
@@ -224,7 +257,6 @@ export class ProductService {
 
         return {
           ...product,
-          variants: response.variants || [],
           media: response.media || [],
           priceList: response.priceList || [],
         };

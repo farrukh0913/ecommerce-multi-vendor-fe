@@ -61,6 +61,7 @@ export class R2UploadService {
    * @param fileUrl
    */
   async deleteFileFromR2(fileUrl: string): Promise<void> {
+    console.log('fileUrl: ', fileUrl);
     try {
       // Example fileUrl:
       // https://pub-9b4cc8555df8437bacf8d3a7a25c1ab2.r2.dev/custom-design-assets/decal_uuid.png

@@ -1,9 +1,10 @@
 <div class="add-product-container">
   <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
     <!-- CATEGORY SECTION -->
+    @if (!editConfig.isEdit) {
     <mat-card class="form-card">
       <div class="header">
-        <h2>1. Category</h2>
+        <h2>Category</h2>
         @if (!creatingCategory && !productDetailsAdded) {
         <button mat-stroked-button color="primary" type="button" (click)="createNewCategory()">
           Create New
@@ -65,7 +66,7 @@
     @if (categorySelected) {
     <mat-card class="form-card">
       <div class="header">
-        <h2>2. Template</h2>
+        <h2>Template</h2>
         @if (!creatingTemplate && !productDetailsAdded) {
         <button mat-stroked-button color="primary" type="button" (click)="createNewTemplate()">
           Create New
@@ -155,12 +156,12 @@
       </div>
       }
     </mat-card>
-    }
+    } }
 
     <!-- PRODUCT SECTION -->
     @if (templateSelected && categorySelected) {
     <mat-card class="form-card">
-      <h2>3. Details</h2>
+      <h2>Details</h2>
 
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Product Name</mat-label>
@@ -198,23 +199,10 @@
         />
       </mat-form-field>
 
-      <div class="row">
-        <div class="file-upload">
-          <label>Thumbnail *</label>
-          <div class="file-input-wrapper">
-            <input
-              type="file"
-              (change)="onFileSelected($event, 'thumbnail_url')"
-              class="file-input"
-              accept="image/*"
-            />
-          </div>
-        </div>
-        <mat-form-field appearance="outline" class="w-50">
-          <mat-label>Weight</mat-label>
-          <input matInput type="number" formControlName="weight" />
-        </mat-form-field>
-      </div>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Weight</mat-label>
+        <input matInput type="number" formControlName="weight" />
+      </mat-form-field>
       <!-- add product attributes required -->
       @for (attr of requiredAttributes; track $index) {
       <mat-form-field appearance="outline" class="w-100">
@@ -230,18 +218,39 @@
         <input matInput [formControl]="getAttributeControl(attr)" />
       </mat-form-field>
       }
-
+      <div class="row">
+        <div class="file-upload">
+          <label>Thumbnail *</label>
+          @if (!productForm.value?.thumbnail_url ||
+          productForm.value?.thumbnail_url?.startsWith('data:image/')) {
+          <div class="file-input-wrapper">
+            <input
+              type="file"
+              (change)="onFileSelected($event, 'thumbnail_url')"
+              class="file-input"
+              accept="image/*"
+            />
+          </div>
+          } @else if (!productForm.value?.thumbnail_url?.startsWith('data:image/')) {
+          <app-image-thumbnail
+            [imageUrl]="productForm.value?.thumbnail_url"
+            (deleted)="updateFormValue('thumbnail_url')"
+          ></app-image-thumbnail>
+          }
+        </div>
+      </div>
       <mat-checkbox formControlName="is_variant">Is Variant</mat-checkbox>
-      @if(!productDetailsAdded){
 
+      @if(!productDetailsAdded || editConfig.isEdit){
       <button
         mat-stroked-button
         color="warn"
         type="button"
         [disabled]="productForm.invalid"
+        [disabled]="editConfig.isEdit ? isSubmitDisabled : productForm.invalid"
         (click)="addProduct()"
       >
-        Add Product
+        {{ !editConfig.isEdit ? 'Add Product' : 'Update Product' }}
       </button>
       }
     </mat-card>
@@ -249,7 +258,7 @@
     <!-- PRICE LIST -->
     @if(productDetailsAdded){
     <mat-card class="form-card">
-      <h2>4. List</h2>
+      <h2>Price List</h2>
       <div formGroupName="priceList">
         <div class="row">
           <!-- Currency Code -->
@@ -334,7 +343,7 @@
         [disabled]="productForm.get('priceList')?.invalid"
         (click)="addProductPrice()"
       >
-        Add Price
+        {{ !editConfig.isEdit ? 'Add Price' : 'Update Price' }}
       </button>
     </mat-card>
     }
@@ -343,7 +352,7 @@
     @if(productDetailsAdded){
     <mat-card class="form-card">
       <div class="header">
-        <h2>5. Media</h2>
+        <h2>Media</h2>
         <button mat-stroked-button color="primary" type="button" (click)="addMedia()">
           Add Media
         </button>
@@ -353,6 +362,7 @@
         <div [formGroupName]="$index" class="fade-in media-block">
           <div class="file-upload">
             <label>Thumbnail *</label>
+            @if(!m.value.url || m.value.url.startsWith('data:image/')){
             <div class="file-input-wrapper">
               <input
                 type="file"
@@ -361,6 +371,9 @@
                 accept="image/*"
               />
             </div>
+            } @else {
+            <app-image-thumbnail [imageUrl]="m.value.url" [icon]="false"></app-image-thumbnail>
+            }
           </div>
           <mat-form-field appearance="outline" class="w-50">
             <mat-label>Alt Text</mat-label>
@@ -369,12 +382,28 @@
           <mat-checkbox formControlName="is_primary" style="margin-top: -20px"
             >Primary</mat-checkbox
           >
-          <button mat-stroked-button color="warn" (click)="removeMedia($index)">Remove</button>
+          <button
+            mat-stroked-button
+            color="warn"
+            (click)="
+              !editConfig.isEdit
+                ? removeMedia($index)
+                : removeMediaApi(m.value.id, $index, m.value.url)
+            "
+          >
+            Remove
+          </button>
         </div>
         }
       </div>
-      <button mat-stroked-button color="warn" type="button" (click)="addProductMedia()">
-        Add Media
+      <button
+        mat-stroked-button
+        color="warn"
+        type="button"
+        [disabled]="productForm.get('productMedia')?.invalid"
+        (click)="addProductMedia()"
+      >
+        {{ !editConfig.isEdit ? 'Add Media' : 'Update Media' }}
       </button>
     </mat-card>
     }
@@ -383,7 +412,7 @@
     @if(productDetailsAdded){
     <mat-card class="form-card">
       <div class="header">
-        <h2>6. Variants</h2>
+        <h2>Variants</h2>
         <button mat-stroked-button color="primary" type="button" (click)="addVariant()">
           Add Variant
         </button>
@@ -391,6 +420,13 @@
       <div formArrayName="productVariants">
         @for (v of productVariants.controls; track $index) {
         <div [formGroupName]="$index" class="fade-in variant-block">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Variant Type</mat-label>
+            <mat-select formControlName="variant_type">
+              <mat-option value="color">Color</mat-option>
+              <mat-option value="size">Size</mat-option>
+            </mat-select>
+          </mat-form-field>
           <mat-form-field appearance="outline" class="w-50">
             <mat-label>Variant Name</mat-label>
             <input matInput formControlName="name" />
@@ -400,12 +436,26 @@
             <input matInput type="number" formControlName="price_adjustment" />
           </mat-form-field>
           <mat-checkbox formControlName="is_default">Default</mat-checkbox>
-          <button mat-stroked-button color="warn" (click)="removeVariant($index)">Remove</button>
+          <button
+            mat-stroked-button
+            color="warn"
+            (click)="
+              editConfig?.isEdit ? removeVariantFromDb(v.value.id, $index) : removeVariant($index)
+            "
+          >
+            Remove
+          </button>
         </div>
         }
       </div>
-      <button mat-stroked-button color="warn" type="button" (click)="addProductVariant()">
-        Add Varient
+      <button
+        mat-stroked-button
+        color="warn"
+        type="button"
+        [disabled]="productForm.get('productVariants')?.invalid"
+        (click)="addProductVariant()"
+      >
+        {{ !editConfig.isEdit ? 'Add Varient' : 'Update Varient' }}
       </button>
     </mat-card>
     } }
