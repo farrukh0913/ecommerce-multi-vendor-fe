@@ -114,7 +114,7 @@
           <app-product-card
             [product]="product"
             [viewMode]="viewMode"
-            (quickViewClicked)="showDetailModal = true"
+            (quickViewClicked)="showDetailModal = true; selectedProductId = product.id"
           ></app-product-card>
         </div>
         }
@@ -134,7 +134,7 @@
   class="product-detail-modal"
   (close)="showDetailModal = false"
 >
-  <app-product-detail></app-product-detail>
+  <app-product-detail [productId]="selectedProductId"></app-product-detail>
 </app-base-modal>
 }
 

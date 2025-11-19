@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  @if (activeTab === 'Specification') {
+  @if (activeTab === 'Specification') { @if (Object.keys(product?.attributes).length) {
   <div class="tab-content">
     <table class="product-table">
       <tbody>
@@ -43,9 +43,9 @@
                 <!-- to display cuurency code -->
                 @if (innerKey === 'price_adjustment') {
                 <span class="nested-value"
-                  >{{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) }} {{ item[innerKey] }}
-                  </span
-                >
+                  >{{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) }}
+                  {{ item[innerKey] }}
+                </span>
                 } @else {
                 <span class="nested-value">
                   @if(innerKey === 'hex'){
@@ -71,8 +71,12 @@
       </tbody>
     </table>
   </div>
-
-  } @if (activeTab === 'review') {
+  }@else {
+  <div class="empty-content">
+    <h1>No Specification Yet</h1>
+    <p>There are currently no specification for this product.</p>
+  </div>
+  } } @if (activeTab === 'review') {
   <div class="review-section">
     @if (productReview?.length > 0) {
     <div class="reviews-list">
@@ -134,8 +138,8 @@
         <tr>
           <td class="attr-key">Price</td>
           <td class="attr-value accent">
-            {{ getCurrencySymbol(product.priceList?.[0]?.currency_code) }}
-            {{ product?.price || 'N/A' }}
+            {{ getCurrencySymbol(product.priceList?.[0]?.currency_code ) }}
+            {{ product?.price || product.priceList?.[0]?.price_amount || 'N/A' }}
           </td>
         </tr>
         <tr>

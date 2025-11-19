@@ -2,10 +2,10 @@
   @if (cartItems?.length) {
   <div class="left-section">
     <div class="free-shipping">
-      @if(totalCost < 300){
+      @if(totalCost && totalCost < 300){
       <p>
         <i class="fa-solid fa-box"></i>
-        Add <strong>{{ 300 - totalCost }}$</strong> to your cart for free shipping!
+        Add <strong> € {{ 300 - totalCost }}</strong> to your cart for free shipping!
       </p>
       } @else{
       <p class="eligible">

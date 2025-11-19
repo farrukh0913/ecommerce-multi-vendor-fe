@@ -37,6 +37,9 @@ export class AddProduct {
     isEdit: false,
     product: null,
   };
+  subCategories: any = [];
+  allCategories: any = [];
+  variants: any = null;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -60,6 +63,10 @@ export class AddProduct {
             product: data,
           };
           // this.product = data;
+          this.variants = [
+            ...(this.editConfig?.product?.variants?.size ?? []),
+            ...(this.editConfig?.product?.variants?.color ?? []),
+          ];
           this.spinner.stop();
           this.setFormsForEdit();
         },
@@ -79,6 +86,7 @@ export class AddProduct {
       category_description: [''],
       category_tags: this.fb.array([]),
       category_thumbnail_url: [''],
+      parent_Category_id: [''],
 
       // Template
       template_id: [null, Validators.required],
@@ -95,11 +103,13 @@ export class AddProduct {
       thumbnail_url: ['', Validators.required],
       weight: [''],
       is_variant: [false],
+      product_subCategory_id: [''],
     });
     // get all categories
     this.categoryService.categories$.pipe(takeUntil(this.destroy$)).subscribe((categories) => {
       if (categories.length) {
-        this.categories = categories;
+        this.allCategories = categories;
+        this.categories = categories.filter((data) => !data.parent_id);
       }
     });
 
@@ -251,9 +261,21 @@ export class AddProduct {
    * @param value
    */
   onCategorySelect(value: any) {
+    this.subCategories = this.allCategories.filter((data: any) => data.parent_id === value.value);
+    if (this.subCategories.length) {
+      this.categorySelected = false;
+      this.creatingCategory = false;
+    } else {
+      this.categorySelected = true;
+      this.creatingCategory = false;
+    }
+    this.productForm.patchValue({ product_subCategory_id: '' });
+  }
+
+  onSubCategorySelect(value: any) {
+    this.productForm.patchValue({ product_subCategory_id: value.value });
     this.categorySelected = true;
     this.creatingCategory = false;
-    this.productForm.patchValue({ category_id: value.value });
   }
 
   /**
@@ -286,6 +308,7 @@ export class AddProduct {
       description: this.productForm.value.category_description,
       sort_order: 0,
       status: 'active',
+      parent_id: this.productForm.value.parent_Category_id ?? null,
     };
     this.categoryService.create(payload).subscribe({
       next: (data) => {
@@ -330,9 +353,10 @@ export class AddProduct {
       weight: Number(formValue.weight),
       is_variant: formValue.is_variant,
       attributes: formValue.attributes,
-      category_id: formValue.category_id,
+      category_id: formValue.product_subCategory_id || formValue.category_id,
       // manufacturer_id: 'Cg0wLTM4NS0yODA4OS0wEgRtb2Nr',
       sku: Date.now() + formValue.product_name,
+      template_id: formValue.template_id,
     };
     const apiCall = this.editConfig?.isEdit
       ? this.productService.update(this.editConfig.product.id, payload) // update case
@@ -369,6 +393,7 @@ export class AddProduct {
                 alt_text: ['', Validators.required],
                 height: [''],
                 width: [''],
+                variant_id: ['', Validators.required],
                 url: ['', Validators.required],
                 is_primary: [false],
                 media_type: [''],
@@ -486,11 +511,12 @@ export class AddProduct {
       estimated_delivery_days_range: `[${formValue.estimated_delivery_days_range.Lower},${formValue.estimated_delivery_days_range.Upper}]`,
       stock_status: formValue.stock_status,
       seller_id: '9b3a67b75c50', // maybe with the current user.id for seller
-      product_id: 'c8439c8d53d7', // need to dynamic with this.product.id
+      product_id: this.editConfig?.isEdit ? this.editConfig.product.id : 'c8439c8d53d7', // need to dynamic with this.product.id
     };
-    const apiCall = this.editConfig?.isEdit
-      ? this.productService.updatePriceList(this.editConfig.product?.priceList[0]?.id, payload) // update case
-      : this.productService.createPriceList(payload);
+    const apiCall =
+      this.editConfig?.isEdit && this.editConfig?.product?.priceList[0]?.id
+        ? this.productService.updatePriceList(this.editConfig.product?.priceList[0]?.id, payload) // update case
+        : this.productService.createPriceList(payload);
     apiCall.subscribe({
       next: (data) => {
         this.productDetailsAdded = true;
@@ -510,6 +536,7 @@ export class AddProduct {
    * add product media
    */
   async addProductMedia() {
+    console.log('this.editConfig.product: ', this.editConfig.product);
     if (!this.productMedia.length) return;
     const product_id = 'c8439c8d53d7'; // need to dynamic with this.product.id
 
@@ -522,7 +549,12 @@ export class AddProduct {
       for (let index = 0; index < this.productMedia.length; index++) {
         const mediaGroup = this.productMedia.at(index);
         const mediaValue = mediaGroup.value;
+
         let uploadedUrl = mediaValue.url;
+        console.log(
+          'mediaValue.id: ',
+          this.editConfig?.product?.media?.some((m: { id: any }) => m.id === mediaValue.id)
+        );
 
         // Upload base64 image if needed
         if (mediaValue.url && mediaValue.url.startsWith('data:image')) {
@@ -539,13 +571,18 @@ export class AddProduct {
           height: mediaValue.height ? Number(mediaValue.height) : null,
           width: mediaValue.width ? Number(mediaValue.width) : null,
           url: uploadedUrl,
+          variant_id: mediaValue.variant_id,
           is_primary: mediaValue.is_primary,
           media_type: mediaValue.media_type || null,
           product_id: product_id,
         };
-
-        // Call API for each media individually
-        await this.productService.createProductMedia(payload).toPromise();
+        console.log('mediaValue.id: ', mediaValue.id);
+        if (!this.editConfig?.product?.media?.some((m: { id: any }) => m.id === mediaValue.id)) {
+          // Call API for each media individually
+          await this.productService.createProductMedia(payload).toPromise();
+        } else {
+          await this.productService.updateProductMedia(mediaValue.id, payload).toPromise();
+        }
       }
       this.makeFormReadonly();
       this.productDetailsAdded = true;
@@ -569,6 +606,7 @@ export class AddProduct {
       height: [media?.height ?? ''],
       width: [media?.media_type ?? ''],
       url: [media?.url ?? '', Validators.required],
+      variant_id: [media?.variant_id ?? '', Validators.required],
       is_primary: [media?.is_primary ?? false],
       media_type: [media?.media_type ?? ''],
       id: [media?.id ?? ''],
@@ -584,6 +622,10 @@ export class AddProduct {
   }
 
   async removeMediaApi(id: string, index: number, imgUrl: string) {
+     if(!id){
+      this.removeMedia(index)
+      return;
+    }
     if (!imgUrl) {
       this.removeMedia(index);
       return;
@@ -634,18 +676,29 @@ export class AddProduct {
           is_default: variantValue.is_default,
           name: variantValue.name,
           price_adjustment: variantValue.price_adjustment,
-          product_id: product_id,
           sort_order: index,
           variant_type: variantValue.variant_type,
         };
-
+        if (
+          !Object.values(this.editConfig?.product?.variants || {}).some((list: any) =>
+            list.some((v: { id: any }) => v.id === variantValue.id)
+          )
+        ) {
+          // Call API for each media individually
+          this.productService
+            .createProductVariant({ ...payload, product_id: product_id })
+            .subscribe((data) => {
+              this.productForm.reset();
+              this.productDetailsAdded = false;
+              this.categorySelected = false;
+              this.templateSelected = false;
+            });
+        } else {
+          this.productService
+            .updateProductVariant(variantValue.id, payload)
+            .subscribe((data) => {});
+        }
         // Call API for each media individually
-        this.productService.createProductVariant(payload).subscribe((data) => {
-          this.productForm.reset();
-          this.productDetailsAdded = false;
-          this.categorySelected = false;
-          this.templateSelected = false;
-        });
       }
       this.spinner.stop();
     } catch (error) {
@@ -682,6 +735,10 @@ export class AddProduct {
   }
 
   removeVariantFromDb(id: any, index: number) {
+    if(!id){
+      this.removeVariant(index)
+      return;
+    }
     this.spinner.start();
     const variantsArray = this.productForm.get('productVariants') as FormArray;
     this.productService.removeProductVariant(id).subscribe({
@@ -826,6 +883,7 @@ export class AddProduct {
             alt_text: ['', Validators.required],
             height: [''],
             width: [''],
+            variant_id: ['', Validators.required],
             url: ['', Validators.required],
             is_primary: [false],
             media_type: [''],

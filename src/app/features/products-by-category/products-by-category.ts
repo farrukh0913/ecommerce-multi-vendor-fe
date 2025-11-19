@@ -15,6 +15,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class ProductsByCategory {
   showDetailModal: boolean = false;
+  selectedProductId: boolean = false;
   viewMode: 'grid' | 'list' = 'grid';
   categoryId: string = '';
   categoryName: string = '';
@@ -47,10 +48,10 @@ export class ProductsByCategory {
     { name: 'Olive', hex: '#808000' },
   ];
   prices = [
-    { name: 'Under $50', min: 0, max: 50 },
-    { name: '$50 - $100', min: 50, max: 100 },
-    { name: '$100 - $200', min: 100, max: 200 },
-    { name: 'Above $200', min: 200, max: 1000 },
+    { name: 'Under $50', max: 50 },
+    { name: 'Under $100', max: 100 },
+    { name: 'Under $200', max: 200 },
+    { name: 'Under $300', max: 300 },
   ];
   ratings = [
     { stars: 5, name: '5 ⭐', selected: false },
@@ -191,14 +192,16 @@ export class ProductsByCategory {
       limit: this.showCount,
       order: this.sortOrder,
       category_id: categoryFilter.join(','),
-      minPrice: priceFilter?.min || 1,
-      maxPrice: priceFilter?.max,
       attributes: {
         colors: selectedColors,
         sizes: selectedSizes,
         brand: selectedBrands,
       },
     };
+
+    if (priceFilter?.max) {
+      productFilters.price = `lt.${priceFilter?.max}`;
+    }
 
     this.spinner.start();
 

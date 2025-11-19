@@ -77,10 +77,10 @@ export class ProductsList {
         console.log('API response:', data);
         const totalProducts = 60;
         const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];
-        // this.productList = data?.filter(
-        //   (item: any) => item.id !== '1e17f442e198' && !blogWhoWearWhatId.includes(item.category_id)
-        // );
-        this.productList = data;
+        this.productList = data?.filter(
+          (item: any) => !blogWhoWearWhatId.includes(item.category_id)
+        );
+        // this.productList = data;
         this.paginatedProducts = this.productList;
         // Pagination
         this.totalPages = Math.ceil(totalProducts / this.pageSize);

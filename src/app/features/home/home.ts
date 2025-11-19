@@ -78,10 +78,10 @@ export class Home {
     this.productService.getByCategory(this.selectedTab.id).subscribe({
       next: (data) => {
         this.products = data.slice(0, 4);
+        this.spinner.stop();
         // console.log('Categories data:', data);
       },
-      error: (err) => {},
-      complete: () => {
+      error: (err) => {
         this.spinner.stop();
       },
     });
@@ -93,7 +93,7 @@ export class Home {
    */
   getProductNewArrival(): void {
     this.spinner.start();
-    const filters = { ...this.productService.productFilters, order: 'created_at.desc', limit: 20 };
+    const filters = { order: 'created_at.desc', limit: 20 };
     this.productService.getFiltered(filters).subscribe({
       next: (data) => {
         const blogWhoWearWhatId = ['1e6a5917bbb3', '79bc0ce5cb48'];
@@ -101,13 +101,12 @@ export class Home {
           (item: any) => !blogWhoWearWhatId.includes(item.category_id)
         );
         console.log('this.newProducts: ', this.newProducts);
+        this.spinner.stop();
         // console.log('Categories data:', data);
       },
       error: (err) => {
-        console.log(err);
-      },
-      complete: () => {
         this.spinner.stop();
+        console.log(err);
       },
     });
   }
@@ -121,11 +120,12 @@ export class Home {
       next: (data) => {
         this.organizations = data;
         console.log('data: organizations ', data);
+        this.spinner.stop();
       },
       error: (err) => {
         console.log(err);
+        this.spinner.stop();
       },
-      complete: () => {},
     });
   }
 
@@ -166,8 +166,7 @@ export class Home {
         console.log('this.blogs: ', this.blogs);
         this.spinner.stop();
       },
-      error: (err) => {},
-      complete: () => {
+      error: (err) => {
         this.spinner.stop();
       },
     });
@@ -182,9 +181,9 @@ export class Home {
     this.productService.getByCategory('79bc0ce5cb48').subscribe({
       next: (data) => {
         this.whoWearWhat = data;
+        this.spinner.stop();
       },
-      error: (err) => {},
-      complete: () => {
+      error: (err) => {
         this.spinner.stop();
       },
     });

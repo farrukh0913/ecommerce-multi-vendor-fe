@@ -21,7 +21,19 @@
           }
         </mat-select>
       </mat-form-field>
-      } @if (creatingCategory) {
+      @if (subCategories.length) {
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Select Sub Category*</mat-label>
+        <mat-select
+          formControlName="product_subCategory_id"
+          (selectionChange)="onSubCategorySelect($event)"
+        >
+          @for (cat of subCategories; track cat.id) {
+          <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      } } @if (creatingCategory) {
       <div class="fade-in">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Category Name *</mat-label>
@@ -32,7 +44,14 @@
           <mat-label>Description</mat-label>
           <textarea matInput formControlName="category_description"></textarea>
         </mat-form-field>
-
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Select Category</mat-label>
+          <mat-select formControlName="parent_Category_id" required>
+            @for (cat of categories; track cat.id) {
+            <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
         <div class="file-upload">
           <label>Thumbnail *</label>
           <div class="file-input-wrapper">
@@ -275,7 +294,8 @@
             <mat-label>Product Condition</mat-label>
             <mat-select formControlName="product_condition">
               <mat-option value="new">New</mat-option>
-              <mat-option value="old">Old</mat-option>
+              <mat-option value="like_new">Like New</mat-option>
+              <mat-option value="used">Old</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -379,6 +399,15 @@
             <mat-label>Alt Text</mat-label>
             <input matInput formControlName="alt_text" />
           </mat-form-field>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Select Variant</mat-label>
+            <mat-select formControlName="variant_id">
+              @for (vat of variants; track vat.id) {
+              <mat-option [value]="vat.id">{{ vat.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
           <mat-checkbox formControlName="is_primary" style="margin-top: -20px"
             >Primary</mat-checkbox
           >

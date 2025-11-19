@@ -35,15 +35,15 @@ export class ProductCard {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['product'] && changes['product'].currentValue) {
       // set default color
-      const defaultColor = this.product?.attributes?.colors?.find(
+      const defaultColor = this.product?.variants?.color?.find(
         (data: any) => data.is_default === true
       );
-      this.selectedColor = defaultColor ? defaultColor : this.product?.attributes?.colors?.[0];
+      this.selectedColor = defaultColor ? defaultColor : this.product?.variants?.color?.[0];
       // set default size
-      const defaultSize = this.product?.attributes?.sizes?.find(
+      const defaultSize = this.product?.variants?.size?.find(
         (data: any) => data.is_default === true
       );
-      this.selectedSize = defaultSize ? defaultSize : this.product?.attributes?.sizes?.[0];
+      this.selectedSize = defaultSize ? defaultSize : this.product?.variants?.size?.[0];
 
       this.productService.getProductPriceInfo(this.product.id).subscribe((data) => {
         this.product.priceList = data;

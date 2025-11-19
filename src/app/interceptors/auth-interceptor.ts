@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 export class AuthInterceptor implements HttpInterceptor {
   private authToken = {
     Authorization:
-      'eyJhbGciOiJSUzI1NiIsImtpZCI6IjA2OTc1MTQ5OTAzNjY3N2ExYzAwZWUzMGRmMTY2YTY3Mjk5YTcxMDcifQ.eyJhdF9oYXNoIjoiU2xfZy1URGRGbjRncFE0OHpKZ3dwUSIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYzNDU4NzIzLCJpYXQiOjE3NjMzNzIzMjMsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.OXx9zM8a_iu94B2qM38sa_WpFaBQ2OFfkD9YJKICvODf0cTZjTpldro_rafoG1ZEC9OjlBT3g5KCVN6OcK1u4Yxonj9uwFGbnbwJt_odXNgjduVGuMpKyvXDr7QXr-GdFjxCkz4RuDokqknCBMB6SiEPVmaJHf0EFzhtRX9pOXvTLuGZkNKplZbgvK4AR5kU4ud3JPlDT7NS0E5EtoExXBrmpII8CvzY5WgQtMg8NEmU3PTEBy8JedHU1lT1tDAcE5G3oKY1eFIQ9wFuexwTyia4WUK7TgH8tvgDWqbVGPdg1iII54YnHI-w4oo--hQBLuVz8fMYHUMYwT9oftXRyQ',
+      'eyJhbGciOiJSUzI1NiIsImtpZCI6ImQwNThmY2U1MWMzMTc3Yzk0ZDZjMWQzZmM3NzI3MWE1YTQ3ZDRmYTgifQ.eyJhdF9oYXNoIjoicVhpQXJuUFNkSjNJZ25NU0hEUmN0dyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYzNjMzMzUwLCJpYXQiOjE3NjM1NDY5NTAsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.eyAq5q-oE0dkxDRU55koMQv2alSUfXmngINDBqZrJE8yUIqTUVAwL7AA7vpFanN4q2S5enpU0gtVomo4X3a_G6-_Vc9BfpfxY3Z9r-YkTl2CZ8Ifo9bpONU__t5c-DtaafnPo-_9MUebSl69M6p0F1JXeaYDFyoXX5S2M1yWE5SbHFyPwmVMBCUjdcwhxi8BBGh-KuOGr9gYRRMM88SIH6dL3dSDKkA32q8BDzs9MzkyOxO7rrdIh2q1YggA3KtUFGeMFaqtFQSZ3Z-Mq8hGfsfzoX-MMxIK8yS7JyvnBwlHfOXcKmsbs1lM1DBaKpPw_MESyHfvACY6_ZcF3_TVvA',
   };
   constructor(private router: Router) {}
 
@@ -33,12 +33,14 @@ export class AuthInterceptor implements HttpInterceptor {
       authReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
+          // Prefer: 'return=representation'
         },
       });
     }
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
+        // window.location.reload ();
         if (error.status === 401) {
           console.warn('Unauthorized! Redirecting to login...');
           this.router.navigate(['/login']);

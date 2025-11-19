@@ -3,12 +3,14 @@
     grid-template-columns: unset;
     .product-loop {
       width: 100%;
-
+      display: flex;
       app-product-card {
         width: 100%;
+        height: 100%;
         .product-box {
           width: unset !important;
           max-width: 100% !important;
+          height: 100%;
         }
         .image-holder {
           min-height: 320px;

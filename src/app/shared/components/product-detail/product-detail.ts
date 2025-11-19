@@ -20,10 +20,7 @@ export class ProductDetail {
   product: any = null;
   imageBaseUrl: string = environment.r2BaseUrl + '/';
   getCurrencySymbol = getCurrencySymbol;
-  productImages = [
-    'https://laravel.pixelstrap.net/multikart/storage/51/fashion_171.jpg',
-    'https://laravel.pixelstrap.net/multikart/storage/52/fashion_172.jpg',
-  ];
+  productImages: any = [];
   selectedImage = '';
   selectedColor: any = null;
   selectedSize: any = null;
@@ -92,18 +89,15 @@ export class ProductDetail {
       complete: () => {
         this.spinner.stop();
         this.productLoaded.emit(this.product);
-        this.selectedImage = this.imageBaseUrl + this.product?.thumbnail_url;
-        // set deafult color
-        const defaultColor = this.product?.attributes?.colors?.find(
-          (data: any) => data.is_default === true
-        );
-        this.selectedColor = defaultColor ? defaultColor : this.product?.attributes?.colors?.[0];
+
         // set default size
-        const defaultSize = this.product?.attributes?.sizes?.find(
+        const defaultSize = this.product?.variants?.size?.find(
           (data: any) => data.is_default === true
         );
-        this.selectedSize = defaultSize ? defaultSize : this.product?.attributes?.sizes?.[0];
-        console.log(this.product?.attributes?.colors?.length);
+        this.selectedSize = defaultSize ? defaultSize : this.product?.variants?.size?.[0];
+        this.resetImage();
+
+        console.log(this.product?.variants?.color?.length);
       },
     });
   }
@@ -116,6 +110,16 @@ export class ProductDetail {
    */
   updateValue(event: MouseEvent, value: any, attr: 'selectedColor' | 'selectedSize') {
     event.stopPropagation();
+
+    const images = this.product.media.filter((image: any) => {
+      return image.variant_id === value.id;
+    });
+    if (images.length) {
+      this.productImages = images;
+      this.selectedImage = images[0].url;
+    } else {
+      this.resetImage();
+    }
     this[attr] = value;
   }
 
@@ -123,6 +127,7 @@ export class ProductDetail {
    * add item to cart with seelct color and sizes
    */
   addProductToCart() {
+    console.log('this.selectedColor: ', this.selectedColor);
     const payload = {
       components: '{}',
       pricelist_id: this.product?.priceList?.[0]?.id,
@@ -133,7 +138,7 @@ export class ProductDetail {
       variants: {
         selectedColor: this.selectedColor,
         selectedSize: this.selectedSize,
-        thumbnail_url: this.selectedColor?.thumbnail_url || this.product?.thumbnail_url,
+        thumbnail_url: this.productImages?.[0]?.url || this.product?.thumbnail_url,
       },
     };
     this.cartService.addCartItem(payload).subscribe({
@@ -146,5 +151,12 @@ export class ProductDetail {
         console.error('Error adding item to cart:', err);
       },
     });
+  }
+  resetImage() {
+    this.productImages = this.product.media.filter((image: any) => {
+      return !image.variant_id;
+    });
+    this.productImages.push({ id: null, url: this.product.thumbnail_url });
+    this.selectedImage = this.product.thumbnail_url;
   }
 }

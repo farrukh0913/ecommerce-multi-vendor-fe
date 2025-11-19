@@ -4,41 +4,19 @@
   <!-- Product Images -->
   <div class="product-images">
     <div class="main-image-wrapper">
-      <img
-        [src]="
-          selectedColor
-            ? imageBaseUrl + selectedColor?.thumbnail_url
-            : imageBaseUrl + product?.thumbnail_url
-        "
-        alt="Product"
-        class="main-image"
-      />
+      <img [src]="imageBaseUrl + selectedImage" alt="Product" class="main-image" />
     </div>
 
     <div class="thumbnail-list">
       <!-- @if(product.thu) -->
-      @if (typeof product.thumbnail_url === 'string' && product.thumbnail_url) {
-
+      @for (img of productImages; track $index) {
       <img
-        [src]="
-          selectedColor
-            ? imageBaseUrl + selectedColor?.thumbnail_url
-            : product?.thumbnail_url
-            ? imageBaseUrl + product?.thumbnail_url
-            : 'https://laravel.pixelstrap.net/multikart/storage/49/fashion_173.jpg'
-        "
+        [src]="imageBaseUrl + img.url"
         alt="Thumbnail"
-        [class.active]="imageBaseUrl + product?.thumbnail_url === selectedImage"
-        (click)="onSelectImage(imageBaseUrl + product?.thumbnail_url)"
+        [class.active]="img.url === selectedImage"
+        (click)="onSelectImage(img.url)"
       />
-      } @else { @for (img of product.thumbnail_url; track $index) {
-      <img
-        [src]="img"
-        alt="Thumbnail"
-        [class.active]="img === selectedImage"
-        (click)="onSelectImage(img)"
-      />
-      } }
+      }
     </div>
   </div>
 
@@ -48,17 +26,21 @@
       <h2 class="product-title">
         {{ product.name }}
       </h2>
-      <p class="category"><strong>Category:</strong> {{  product?.category && product?.category.toUpperCase() }}</p>
+      <p class="category">
+        <strong>Category:</strong> {{ product?.category && product?.category.toUpperCase() }}
+      </p>
       <p class="price-tag">
         MRP:
         <span class="price"
           >{{ getCurrencySymbol(product.priceList?.[0]?.currency_code)
-          }} {{ product?.priceList[0]?.price_amount - product.priceList?.[0]?.discount_amount }}
+          }}
+          {{ product?.priceList[0]?.price_amount - product.priceList?.[0]?.discount_amount +( selectedColor?.price_adjustment ?? 0)+(selectedSize?.price_adjustment ?? 0) }}
         </span>
         @if(product.priceList?.[0]?.discount_percentage!==0){
         <span class="old-price"
           >{{ getCurrencySymbol(product?.priceList?.[0]?.currency_code)
-          }} {{ product.priceList?.[0]?.price_amount }}
+          }}
+          {{ product.priceList?.[0]?.price_amount }}
         </span>
         <span class="discount">{{ product?.priceList?.[0]?.discount_percentage }}%</span>
         }
@@ -111,26 +93,26 @@
     </div> -->
     <div class="attributes">
       <!-- show colors if available in product -->
-      @if(product?.attributes?.colors?.length > 0){
+      @if(product?.variants?.color?.length > 0){
       <!-- loop for color to display all colors -->
       <div class="colors">
-        @for (color of product?.attributes?.colors; track $index) {
+        @for (color of product?.variants?.color; track $index) {
         <div
           style="width: 20px; height: 20px; border-radius: 50%"
           class="color-icon"
-          [style.background]="color.hex"
-          (mouseenter)="updateValue($event, color, 'selectedColor')"
-          [ngClass]="{ 'selected-attribute': selectedColor.hex == color.hex }"
+          [style.background]="color.name"
+          (click)="updateValue($event, color, 'selectedColor')"
+          [ngClass]="{ 'selected-attribute': selectedColor?.name == color.name }"
         ></div>
         }
       </div>
       }
 
       <!-- show sizes if available in product -->
-      @if(product?.attributes?.sizes?.length > 0){
+      @if(product?.variants?.size?.length > 0){
       <!-- loop for sizes to display all sizes -->
       <div class="sizes">
-        @for (size of product?.attributes?.sizes; track $index) {
+        @for (size of product?.variants?.size; track $index) {
         <div
           class="size-icon"
           [ngClass]="{ 'selected-attribute': selectedSize.name === size.name }"
