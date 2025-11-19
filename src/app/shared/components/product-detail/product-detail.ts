@@ -110,15 +110,16 @@ export class ProductDetail {
    */
   updateValue(event: MouseEvent, value: any, attr: 'selectedColor' | 'selectedSize') {
     event.stopPropagation();
-
-    const images = this.product.media.filter((image: any) => {
-      return image.variant_id === value.id;
-    });
-    if (images.length) {
-      this.productImages = images;
-      this.selectedImage = images[0].url;
-    } else {
-      this.resetImage();
+    if (attr === 'selectedColor') {
+      const images = this.product.media.filter((image: any) => {
+        return image.variant_id === value.id;
+      });
+      if (images.length) {
+        this.productImages = images;
+        this.selectedImage = images[0].url;
+      } else {
+        this.resetImage();
+      }
     }
     this[attr] = value;
   }
