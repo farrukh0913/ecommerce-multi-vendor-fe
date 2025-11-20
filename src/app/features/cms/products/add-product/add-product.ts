@@ -6,7 +6,7 @@ import { BlogArticlesService } from '../../../../shared/services/blog-articles.s
 import { CategoryService } from '../../../../shared/services/category.service';
 import { OrganizationService } from '../../../../shared/services/organization.service';
 import { ProductService } from '../../../../shared/services/product.service';
-import { Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { R2UploadService } from '../../../../shared/services/r2-upload.service';
 import { CurrencySymbol } from '../../../../shared/enums/currency.enum';
 import { environment } from '../../../../../environments/environment';
@@ -366,7 +366,7 @@ export class AddProduct {
         if (!this.editConfig.isEdit) {
           this.makeFormReadonly();
           this.productDetailsAdded = true;
-          this.product = data;
+          this.product = data[0];
           // Initialize the product price list
           this.productForm.addControl(
             'priceList',
@@ -511,7 +511,7 @@ export class AddProduct {
       estimated_delivery_days_range: `[${formValue.estimated_delivery_days_range.Lower},${formValue.estimated_delivery_days_range.Upper}]`,
       stock_status: formValue.stock_status,
       seller_id: '9b3a67b75c50', // maybe with the current user.id for seller
-      product_id: this.editConfig?.isEdit ? this.editConfig.product.id : 'c8439c8d53d7', // need to dynamic with this.product.id
+      product_id: this.editConfig?.isEdit ? this.editConfig.product.id : this.product.id, 
     };
     const apiCall =
       this.editConfig?.isEdit && this.editConfig?.product?.priceList[0]?.id
@@ -538,7 +538,7 @@ export class AddProduct {
   async addProductMedia() {
     console.log('this.editConfig.product: ', this.editConfig.product);
     if (!this.productMedia.length) return;
-    const product_id = 'c8439c8d53d7'; // need to dynamic with this.product.id
+    const product_id = this.editConfig.isEdit ? this.editConfig.product.id : this.product.id;
 
     if (this.productMedia.invalid) {
       this.productMedia.markAllAsTouched();
@@ -546,18 +546,21 @@ export class AddProduct {
     }
     this.spinner.start();
     try {
+      const targetMediaList = this.editConfig?.isEdit
+        ? this.editConfig.product.media
+        : this.product.media;
+
+      // Prepare an array to hold processed media
+      const updatedMediaList: any[] = [];
+
       for (let index = 0; index < this.productMedia.length; index++) {
         const mediaGroup = this.productMedia.at(index);
         const mediaValue = mediaGroup.value;
 
         let uploadedUrl = mediaValue.url;
-        console.log(
-          'mediaValue.id: ',
-          this.editConfig?.product?.media?.some((m: { id: any }) => m.id === mediaValue.id)
-        );
 
         // Upload base64 image if needed
-        if (mediaValue.url && mediaValue.url.startsWith('data:image')) {
+        if (uploadedUrl && uploadedUrl.startsWith('data:image')) {
           const fileName = Date.now() + `_product_media_${mediaValue.alt_text}`;
           uploadedUrl = await this.r2UploadService.uploadBase64Image(
             mediaValue.url,
@@ -565,7 +568,7 @@ export class AddProduct {
             fileName
           );
         }
-        // Create payload for single media
+
         const payload = {
           alt_text: mediaValue.alt_text,
           height: mediaValue.height ? Number(mediaValue.height) : null,
@@ -576,15 +579,31 @@ export class AddProduct {
           media_type: mediaValue.media_type || null,
           product_id: product_id,
         };
-        console.log('mediaValue.id: ', mediaValue.id);
-        if (!this.editConfig?.product?.media?.some((m: { id: any }) => m.id === mediaValue.id)) {
-          // Call API for each media individually
-          await this.productService.createProductMedia(payload).toPromise();
-        } else {
-          await this.productService.updateProductMedia(mediaValue.id, payload).toPromise();
+let existsIndex=-1
+        // Check if this media already exists
+        if(this.editConfig.isEdit){
+
+           existsIndex= targetMediaList.findIndex((m: { id: any; }) => m.id === mediaValue.id);
         }
+
+        let response: any;
+        if (existsIndex !== -1) {
+          const data: any = await this.productService.updateProductMedia(mediaValue.id, payload).toPromise();
+          response = data[0];
+          targetMediaList[existsIndex] = response; 
+        } else {
+          const data: any = await this.productService.createProductMedia(payload).toPromise();
+          response = data[0];
+          targetMediaList.push(response); 
+        }
+
+        updatedMediaList.push(response);
       }
-      this.makeFormReadonly();
+
+      const mediaArray = this.productForm.get('productMedia') as FormArray;
+      mediaArray.clear();
+      updatedMediaList.forEach(mediaItem => this.addMedia(mediaItem));
+
       this.productDetailsAdded = true;
       this.spinner.stop();
     } catch (error) {
@@ -622,7 +641,7 @@ export class AddProduct {
   }
 
   async removeMediaApi(id: string, index: number, imgUrl: string) {
-     if(!id){
+    if (!id) {
       this.removeMedia(index)
       return;
     }
@@ -660,51 +679,53 @@ export class AddProduct {
    */
   async addProductVariant() {
     if (!this.productVariants.length) return;
-    const product_id = 'c8439c8d53d7';
+    const product_id = this.editConfig.isEdit ? this.editConfig.product.id : this.product.id;
 
     if (this.productVariants.invalid) {
       this.productVariants.markAllAsTouched();
       return;
     }
     this.spinner.start();
-    try {
-      for (let index = 0; index < this.productVariants.length; index++) {
-        const mediaGroup = this.productVariants.at(index);
-        const variantValue = mediaGroup.value;
-        // Create payload for single media
-        const payload = {
-          is_default: variantValue.is_default,
-          name: variantValue.name,
-          price_adjustment: variantValue.price_adjustment,
-          sort_order: index,
-          variant_type: variantValue.variant_type,
-        };
-        if (
-          !Object.values(this.editConfig?.product?.variants || {}).some((list: any) =>
-            list.some((v: { id: any }) => v.id === variantValue.id)
-          )
-        ) {
-          // Call API for each media individually
-          this.productService
-            .createProductVariant({ ...payload, product_id: product_id })
-            .subscribe((data) => {
-              this.productForm.reset();
-              this.productDetailsAdded = false;
-              this.categorySelected = false;
-              this.templateSelected = false;
-            });
-        } else {
-          this.productService
-            .updateProductVariant(variantValue.id, payload)
-            .subscribe((data) => {});
-        }
-        // Call API for each media individually
-      }
-      this.spinner.stop();
-    } catch (error) {
-      console.error(error);
-      this.spinner.stop();
-    }
+    
+let requests: any[] = [];
+
+for (let index = 0; index < this.productVariants.length; index++) {
+  const mediaGroup = this.productVariants.at(index);
+  const variantValue = mediaGroup.value;
+
+  const payload = {
+    is_default: variantValue.is_default,
+    name: variantValue.name,
+    price_adjustment: variantValue.price_adjustment,
+    sort_order: index,
+    variant_type: variantValue.variant_type,
+    product_id: product_id,
+  };
+
+  const isExisting = Object.values(this.editConfig?.product?.variants || {}).some(
+    (list: any) => list.some((v: { id: any }) => v.id === variantValue.id)
+  );
+
+  const request$ = isExisting
+    ? this.productService.updateProductVariant(variantValue.id, payload)
+    : this.productService.createProductVariant(payload);
+
+  requests.push(request$);
+}
+
+// Wait for all requests to finish
+forkJoin(requests).subscribe({
+  next: (results: any) => {
+    // Flatten results: each API returns an array, take first element
+    this.variants = results.map((res: any) => res[0]);
+    this.spinner.stop();
+  },
+  error: (err) => {
+    console.error('Error updating/creating variants:', err);
+    this.spinner.stop();
+  },
+});
+    
   }
   /* ========== PRODUCT VARIANT ========== */
   get productVariants(): FormArray {
@@ -731,11 +752,13 @@ export class AddProduct {
    * @param index - The index of the variant to remove.
    */
   removeVariant(index: number) {
+    console.log('index: ', index);
     this.productVariants.removeAt(index);
+    this.variants.splice(index, 1);
   }
 
   removeVariantFromDb(id: any, index: number) {
-    if(!id){
+    if (!id) {
       this.removeVariant(index)
       return;
     }
@@ -850,7 +873,7 @@ export class AddProduct {
         tags: editedProduct?.tags,
         weight: editedProduct?.weight,
         is_variant: editedProduct?.is_variant,
-        template_id: 'static-id',
+        template_id: editedProduct?.template_id,
         thumbnail_url: editedProduct?.thumbnail_url,
       });
       console.log('this.productForm: ', this.productForm.value);
@@ -906,7 +929,7 @@ export class AddProduct {
       // insert data for product variants
       const variantsArray = this.productForm.get('productVariants') as FormArray;
       const variantsData = editedProduct.variants;
-      if (Object.keys(editedProduct.variants).length) {
+      if (Object.keys(editedProduct?.variants).length) {
         variantsArray.clear();
       }
       Object.keys(variantsData).forEach((variantType: string) => {
@@ -917,7 +940,7 @@ export class AddProduct {
         });
       });
 
-      // insert data for product variants
+      // insert data for product media
       const mediaArray = this.productForm.get('productMedia') as FormArray;
       const mediaData = editedProduct.media;
       if (mediaData.length) {

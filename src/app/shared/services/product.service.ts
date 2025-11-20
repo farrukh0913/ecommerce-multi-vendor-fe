@@ -27,9 +27,9 @@ export class ProductService {
     status: '',
     condition: '',
     manufacturer_id: '',
-    attributes: {
-      colors: [],
-      sizes: [],
+    variants: {
+      color: [],
+      size: [],
       brand: [],
     },
     metadata: '',
@@ -45,7 +45,7 @@ export class ProductService {
   };
   private readonly endpoint = `${BASE_URL}/shop/products`;
   private readonly inventoryEndpoint = `${BASE_URL}/inventory/products`;
-  private readonly priceListEndpoint = `${BASE_URL}/inventory/pricelist`;
+  private readonly priceListEndpoint = `${BASE_URL}/shop/pricelist`;
   private readonly productMediaEndpoint = `${BASE_URL}/inventory/product_media`;
   private readonly productVariantsEndpoint = `${BASE_URL}/inventory/product_variants`;
   constructor(private http: HttpClient) {}
@@ -88,9 +88,9 @@ export class ProductService {
 
   /** Delete product by ID */
   delete(id: string): Observable<any> {
-    const payload = { deleted_at: new Date().toISOString() };
+    // const payload = { deleted_at: new Date().toISOString() };
     const endpoint = `${BASE_URL}/inventory/products`;
-    return this.http.patch(`${endpoint}?id=eq.${id}`, payload);
+    return this.http.delete(`${endpoint}?id=eq.${id}`);
   }
 
   /** Search products by keyword */
@@ -113,40 +113,41 @@ export class ProductService {
     // Loop through normal filters (exclude attributes)
     Object.keys(options).forEach((key) => {
       const value = options[key];
-      if (value !== undefined && value !== null && value !== '' && key !== 'attributes') {
+      if (value !== undefined && value !== null && value !== '' && key !== 'variants') {
         params = params.append(key, value as any);
       }
     });
 
+    console.log('options.variants: ', options);
     // Handle attributes
-    if (options.attributes && Object.keys(options.attributes).length) {
+    if (options.variants && Object.keys(options.variants).length) {
       const filteredAttributes: any = {};
 
-      if (options.attributes.colors?.length) {
-        filteredAttributes.colors = options.attributes.colors.map((c: any) =>
+      if (options.variants.color?.length) {
+        filteredAttributes.color = options.variants.color.map((c: any) =>
           typeof c === 'string' ? { name: c.toLowerCase() } : c
         );
       }
 
-      if (options.attributes.sizes?.length) {
-        filteredAttributes.sizes = options.attributes.sizes.map((s: any) =>
+      if (options.variants.size?.length) {
+        filteredAttributes.size = options.variants.size.map((s: any) =>
           typeof s === 'string' ? { name: s } : s
         );
       }
 
-      if (options.attributes.brand?.length) {
-        filteredAttributes.brand = options.attributes.brand.join(', ');
-      }
+      // if (options.attributes.brand?.length) {
+      //   filteredAttributes.brand = options.attributes.brand.join(', ');
+      // }
 
       if (Object.keys(filteredAttributes).length) {
         const attrString = JSON.stringify(filteredAttributes);
 
-        params = params.append('attributes', `cs.${attrString}`);
+        // params = params.append('variants', `cs.${attrString}`);
       }
     }
 
     return this.http.get(
-      `${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,category_id,template_id,weight,is_variant,thumbnail_url,category`,
+      `${this.endpoint}?select=id,name,price,attributes,created_at,description,tags,category_id,template_id,weight,is_variant,thumbnail_url,category,variants`,
       { params }
     );
   }

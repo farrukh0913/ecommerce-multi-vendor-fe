@@ -13,8 +13,7 @@
     .file-input-wrapper {
       padding-top: 0.5rem;
     }
-    input[type='file'] {
-    }
+    
     input[type='file']::file-selector-button {
       border: none;
       border: 1px solid var(--app-primary);
@@ -37,7 +36,7 @@
   ------------------------------ */
   .form-card {
     width: 100%;
-    min-width: 500px;
+    min-width: 48%;
     flex: 1;
     // flex: 1;
     background: #fff;
@@ -148,6 +147,25 @@
       margin-top: 1rem;
     }
   }
+
+  .bottom-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e5e5;
+  .primary-action {
+  font-weight: 600;
+  padding: 0 26px;
+}
+
+.secondary-action {
+  padding: 0 22px;
+}
+
+}
+
 
   /* ------------------------------
      CHIP INPUT STYLING

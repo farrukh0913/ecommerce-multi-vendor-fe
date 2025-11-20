@@ -44,7 +44,7 @@
                   </div>
                 </div>
               </td>
-              <td>€ {{ item?.final_price || 10 }}</td>
+              <td>€ {{ item?.final_price+item.variants?.selectedColor?.price_adjustment+item.variants?.selectedSize?.price_adjustment || 10 }}</td>
               <td>
                 <div class="quantity">
                   <button (click)="decreaseQty(item)">−</button>
@@ -53,7 +53,7 @@
                 </div>
               </td>
 
-              <td>€ {{ item?.final_price * item.quantity || 10 }}</td>
+              <td>€ {{ (item?.final_price+item.variants?.selectedColor?.price_adjustment+item.variants?.selectedSize?.price_adjustment) * item.quantity || 10 }}</td>
 
               <td class="icon-td">
                 <i class="fa fa-close delete-icon" (click)="removeFromCart(item)"></i>

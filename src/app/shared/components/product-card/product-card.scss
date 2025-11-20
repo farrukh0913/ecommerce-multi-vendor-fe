@@ -135,7 +135,9 @@
     width: 100%;
     gap: 6px;
     flex: 1;
-    justify-content: end;
+   position: relative;
+   
+    min-height: 223px;
 
     .category {
       font-size: 14px;
@@ -202,6 +204,7 @@
 .limited-offer {
   width: 100%;
   display: flex;
+  margin-top: auto;
   align-items: center;
   gap: 12px;
   padding-top: 12px;

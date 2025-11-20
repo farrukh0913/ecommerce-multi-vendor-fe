@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 export class AuthInterceptor implements HttpInterceptor {
   private authToken = {
     Authorization:
-      'eyJhbGciOiJSUzI1NiIsImtpZCI6ImQwNThmY2U1MWMzMTc3Yzk0ZDZjMWQzZmM3NzI3MWE1YTQ3ZDRmYTgifQ.eyJhdF9oYXNoIjoicVhpQXJuUFNkSjNJZ25NU0hEUmN0dyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYzNjMzMzUwLCJpYXQiOjE3NjM1NDY5NTAsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.eyAq5q-oE0dkxDRU55koMQv2alSUfXmngINDBqZrJE8yUIqTUVAwL7AA7vpFanN4q2S5enpU0gtVomo4X3a_G6-_Vc9BfpfxY3Z9r-YkTl2CZ8Ifo9bpONU__t5c-DtaafnPo-_9MUebSl69M6p0F1JXeaYDFyoXX5S2M1yWE5SbHFyPwmVMBCUjdcwhxi8BBGh-KuOGr9gYRRMM88SIH6dL3dSDKkA32q8BDzs9MzkyOxO7rrdIh2q1YggA3KtUFGeMFaqtFQSZ3Z-Mq8hGfsfzoX-MMxIK8yS7JyvnBwlHfOXcKmsbs1lM1DBaKpPw_MESyHfvACY6_ZcF3_TVvA',
+      'eyJhbGciOiJSUzI1NiIsImtpZCI6ImMwZTgzNWVmNmQxZWVhN2M2ZDIzZjY2NTZkYjNkMzc5YWZkYTFlYTkifQ.eyJhdF9oYXNoIjoidy1jb3ktdVZjT29lbXhMa2N1b1lQdyIsImF1ZCI6WyJvYXV0aDItcHJveHkiLCJwdWJsaWMtd2VidWkiXSwiYXpwIjoicHVibGljLXdlYnVpIiwiZW1haWwiOiJraWxnb3JlQGtpbGdvcmUudHJvdXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoxNzYzNzE1ODU0LCJpYXQiOjE3NjM2Mjk0NTQsImlzcyI6Imh0dHBzOi8vaWFtLWFjYWQzYjJmMzE3YS5ldS13ZXN0MS5lZGdlZmxhcmUuZGV2L2RleCIsIm5hbWUiOiJLaWxnb3JlIFRyb3V0IiwicG9saWN5Ijp7InBncm9sZSI6ImF1dGhuIn0sInN1YiI6IkNnMHdMVE00TlMweU9EQTRPUzB3RWdSdGIyTnIifQ.vmTLGlOir-H-7JqgPYkqguQxE2xffn2IAP8N83VdfsGRmXJHnj1aE4ACftsZ_Z0iUt45vyLVp0LceLqulWDhmGVnpH3_LA0VvHua1-n-ytaurhYImgxjFV4CuvjN37HzN9hSeiVGgZfR2Hi0iV98xhW3FbcZ85KcoisM9d1s0t2FzEvvviV60LrV5cunpvfu6Iva_-H35Ppl8h9hwkkvn5H3Pw4GvIyuvSl2gAZjI4U9eTWC5k7Bu6pxaSL9piOF5Nozo3O5lrKxa34OFo2Pgram4dXbBskWYZbLH3qcJ3Yn3vt-kR3UoxjhR2Z4p0U29tUI1EZlTt7RrTOybCxomw',
   };
   constructor(private router: Router) {}
 
@@ -33,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
       authReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
-          // Prefer: 'return=representation'
+          Prefer: 'return=representation'
         },
       });
     }

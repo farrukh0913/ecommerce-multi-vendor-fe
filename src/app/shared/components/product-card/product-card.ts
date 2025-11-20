@@ -21,6 +21,7 @@ export class ProductCard {
   getCurrencySymbol = getCurrencySymbol;
   selectedColor: any = null;
   selectedSize: any = null;
+  productImages: any = [];
 
   constructor(
     private router: Router,
@@ -35,21 +36,23 @@ export class ProductCard {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['product'] && changes['product'].currentValue) {
       // set default color
-      const defaultColor = this.product?.variants?.color?.find(
-        (data: any) => data.is_default === true
-      );
-      this.selectedColor = defaultColor ? defaultColor : this.product?.variants?.color?.[0];
+      // const defaultColor = this.product?.variants?.color?.find(
+      //   (data: any) => data.is_default === true
+      // );
+      // this.selectedColor = defaultColor ? defaultColor : this.product?.variants?.color?.[0];
       // set default size
       const defaultSize = this.product?.variants?.size?.find(
         (data: any) => data.is_default === true
       );
       this.selectedSize = defaultSize ? defaultSize : this.product?.variants?.size?.[0];
 
-      this.productService.getProductPriceInfo(this.product.id).subscribe((data) => {
-        this.product.priceList = data;
+    this.productService.getProductDetails(this.product.id).subscribe((data) => {
+        this.product = data;
+        this.resetImage()
       });
     }
   }
+  
 
   /**
    * quick view clicked
@@ -75,7 +78,6 @@ export class ProductCard {
    * @param item
    */
   addToCart(event: MouseEvent, item: any) {
-    console.log('item: ', item);
     event.stopPropagation();
     const payload = {
       components: '{}',
@@ -87,7 +89,7 @@ export class ProductCard {
       variants: {
         selectedColor: this.selectedColor,
         selectedSize: this.selectedSize,
-        thumbnail_url: this.selectedColor?.thumbnail_url || item?.thumbnail_url,
+        thumbnail_url: this.productImages?.[0].url || item?.thumbnail_url,
       },
     };
     this.cartService.addCartItem(payload).subscribe({
@@ -110,7 +112,26 @@ export class ProductCard {
    */
   updateValue(event: MouseEvent, value: any, attr: 'selectedColor' | 'selectedSize') {
     event.stopPropagation();
+    if (attr === 'selectedColor') {
+      const images = this.product.media.filter((image: any) => {
+        return image.variant_id === value.id;
+      });
+      if (images.length) {
+        this.productImages = images;
+      } else {
+        this.resetImage();
+      }
+    }
     this[attr] = value;
+  }
+  /**
+   * reset the product image 
+   */
+  resetImage() {
+    this.productImages = this.product?.media.filter((image: any) => {
+      return !image.variant_id;
+    });
+    this.productImages.push({ id: null, url: this.product.thumbnail_url });
   }
 
   handleMouseEvent(event: MouseEvent) {

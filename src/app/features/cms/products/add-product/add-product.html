@@ -368,20 +368,86 @@
     </mat-card>
     }
 
+    <!-- PRODUCT VARIANTS -->
+    @if(productDetailsAdded){
+    <mat-card class="form-card">
+      <div class="header">
+        <h2>Variants</h2>
+        
+      </div>
+      <div formArrayName="productVariants">
+        @for (v of productVariants.controls; track $index) {
+        <div [formGroupName]="$index" class="fade-in variant-block">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Variant Type</mat-label>
+            <mat-select formControlName="variant_type">
+              <mat-option value="color">Color</mat-option>
+              <mat-option value="size">Size</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Variant Name</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Price Adjustment</mat-label>
+            <input matInput type="number" formControlName="price_adjustment" />
+          </mat-form-field>
+          <mat-checkbox formControlName="is_default">Default</mat-checkbox>
+          <button
+            mat-stroked-button
+            color="warn"
+            (click)="
+              editConfig?.isEdit ? removeVariantFromDb(v.value.id, $index) : removeVariant($index)
+            "
+          >
+            Remove
+          </button>
+        </div>
+        }
+      </div>
+             <!-- ===== Improved Bottom Action Bar ===== -->
+  <div class="bottom-actions">
+
+  <!-- Add ONE new media item -->
+  <button
+    mat-stroked-button
+    color="primary"
+    class="secondary-action"
+    type="button"
+    (click)="addVariant()"
+  >
+    + Add Variant
+  </button>
+
+  <!-- Save ALL changes -->
+  <button
+    mat-flat-button
+    color="primary"
+    class="primary-action"
+    type="button"
+    [disabled]="productForm.get('productVariants')?.invalid"
+        (click)="addProductVariant()"
+  >
+   {{ !editConfig.isEdit ? 'Add Varient' : 'Update Varient' }}
+  </button>
+
+</div>
+     
+    </mat-card>
+    }
+
     <!-- PRODUCT MEDIA -->
     @if(productDetailsAdded){
     <mat-card class="form-card">
       <div class="header">
         <h2>Media</h2>
-        <button mat-stroked-button color="primary" type="button" (click)="addMedia()">
-          Add Media
-        </button>
       </div>
       <div formArrayName="productMedia">
         @for (m of productMedia.controls; track $index) {
         <div [formGroupName]="$index" class="fade-in media-block">
           <div class="file-upload">
-            <label>Thumbnail *</label>
+            <label>Image *</label>
             @if(!m.value.url || m.value.url.startsWith('data:image/')){
             <div class="file-input-wrapper">
               <input
@@ -425,68 +491,38 @@
         </div>
         }
       </div>
-      <button
-        mat-stroked-button
-        color="warn"
-        type="button"
-        [disabled]="productForm.get('productMedia')?.invalid"
-        (click)="addProductMedia()"
-      >
-        {{ !editConfig.isEdit ? 'Add Media' : 'Update Media' }}
-      </button>
+       <!-- ===== Improved Bottom Action Bar ===== -->
+  <div class="bottom-actions">
+
+  <!-- Add ONE new media item -->
+  <button
+    mat-stroked-button
+    color="primary"
+    class="secondary-action"
+    type="button"
+    (click)="addMedia()"
+  >
+    + Add Image
+  </button>
+
+  <!-- Save ALL changes -->
+  <button
+    mat-flat-button
+    color="primary"
+    class="primary-action"
+    type="button"
+    [disabled]="productForm.get('productMedia')?.invalid"
+    (click)="addProductMedia()"
+  >
+    {{ !editConfig.isEdit ? 'Add Media' : 'Update Media' }}
+  </button>
+
+</div>
+
+      
     </mat-card>
     }
 
-    <!-- PRODUCT VARIANTS -->
-    @if(productDetailsAdded){
-    <mat-card class="form-card">
-      <div class="header">
-        <h2>Variants</h2>
-        <button mat-stroked-button color="primary" type="button" (click)="addVariant()">
-          Add Variant
-        </button>
-      </div>
-      <div formArrayName="productVariants">
-        @for (v of productVariants.controls; track $index) {
-        <div [formGroupName]="$index" class="fade-in variant-block">
-          <mat-form-field appearance="outline" class="w-50">
-            <mat-label>Variant Type</mat-label>
-            <mat-select formControlName="variant_type">
-              <mat-option value="color">Color</mat-option>
-              <mat-option value="size">Size</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-50">
-            <mat-label>Variant Name</mat-label>
-            <input matInput formControlName="name" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-50">
-            <mat-label>Price Adjustment</mat-label>
-            <input matInput type="number" formControlName="price_adjustment" />
-          </mat-form-field>
-          <mat-checkbox formControlName="is_default">Default</mat-checkbox>
-          <button
-            mat-stroked-button
-            color="warn"
-            (click)="
-              editConfig?.isEdit ? removeVariantFromDb(v.value.id, $index) : removeVariant($index)
-            "
-          >
-            Remove
-          </button>
-        </div>
-        }
-      </div>
-      <button
-        mat-stroked-button
-        color="warn"
-        type="button"
-        [disabled]="productForm.get('productVariants')?.invalid"
-        (click)="addProductVariant()"
-      >
-        {{ !editConfig.isEdit ? 'Add Varient' : 'Update Varient' }}
-      </button>
-    </mat-card>
-    } }
+     }
   </form>
 </div>

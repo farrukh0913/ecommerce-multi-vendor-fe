@@ -178,10 +178,10 @@ export class ProductsByCategory {
       this.filters
         .find((f) => f.type === 'size')
         ?.selectedItems.map((s: { name: any }) => s.name) || [];
-    const selectedBrands =
-      this.filters
-        .find((f) => f.type === 'brand')
-        ?.selectedItems.map((b: { name: any }) => b.name) || [];
+    // const selectedBrands =
+    //   this.filters
+    //     .find((f) => f.type === 'brand')
+    //     ?.selectedItems.map((b: { name: any }) => b.name) || [];
 
     const categoryFilter = this.filters
       .find((f) => f.type === 'category')
@@ -192,10 +192,10 @@ export class ProductsByCategory {
       limit: this.showCount,
       order: this.sortOrder,
       category_id: categoryFilter.join(','),
-      attributes: {
-        colors: selectedColors,
-        sizes: selectedSizes,
-        brand: selectedBrands,
+      variants: {
+        color: selectedColors,
+        size: selectedSizes,
+        // brand: selectedBrands,
       },
     };
 

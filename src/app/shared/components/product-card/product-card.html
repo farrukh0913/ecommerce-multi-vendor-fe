@@ -1,16 +1,12 @@
 <div class="product-box" [ngClass]="viewMode" (click)="goToDetail(product?.id || '232323')">
   <div class="image-holder">
-    <img
-      class="main-img"
-      [src]="
-        selectedColor?.thumbnail_url
-          ? imageBaseUrl + '/' + selectedColor?.thumbnail_url
-          : imageBaseUrl + '/' + product?.thumbnail_url
-          ? imageBaseUrl + '/' + product?.thumbnail_url
-          : imageBaseUrl + 'public/amd-ryzen-5-7600.jpg'
-      "
-      alt="Product Image"
-    />
+    @if(productImages.length>0){
+
+    <img class="main-img" [src]="
+             imageBaseUrl + '/' + productImages?.[0].url
+           
+        " alt="Product Image" />
+    }
 
     <div class="new-tag">
       <span>{{ product?.condition || 'new' }}</span>
@@ -39,16 +35,14 @@
     <span class="price">
       {{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) || '€' }}
       {{
-        product?.price
-          ? product?.price + selectedColor?.price_adjustment + selectedSize?.price_adjustment
-          : '10'
+      product?.price
+      ? product?.price + selectedColor?.price_adjustment + selectedSize?.price_adjustment
+      : '10'
       }}
       @if(product.priceList?.[0]?.discount_percentage !== 0 ) {
-      <span class="old-price"
-        >{{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) || '€'
+      <span class="old-price">{{ getCurrencySymbol(product?.priceList?.[0]?.currency_code) || '€'
         }}
-        {{ product?.priceList?.[0]?.price_amount ?? 20 }}</span
-      >
+        {{ product?.priceList?.[0]?.price_amount ?? 20 }}</span>
       <span class="discout">{{ product?.priceList?.[0]?.discount_percentage ?? 10}}%</span>
       }
     </span>
@@ -59,12 +53,9 @@
       <!-- loop for color to display all colors -->
       <div class="colors">
         @for (color of product?.variants?.color; track $index) {
-        <div
-          class="color-icon"
-          [style.background-color]="color.name"
+        <div class="color-icon" [style.background-color]="color.name"
           (click)="updateValue($event, color, 'selectedColor')"
-          [ngClass]="{ 'selected-attribute': selectedColor.name == color.name }"
-        ></div>
+          [ngClass]="{ 'selected-attribute': selectedColor?.name == color.name }"></div>
         }
       </div>
       }
@@ -74,11 +65,8 @@
       <!-- loop for sizes to display all sizes -->
       <div class="sizes">
         @for (size of product?.variants?.size; track $index) {
-        <div
-          class="size-icon"
-          [ngClass]="{ 'selected-attribute': selectedSize.name === size.name }"
-          (click)="updateValue($event, size, 'selectedSize')"
-        >
+        <div class="size-icon" [ngClass]="{ 'selected-attribute': selectedSize?.name === size.name }"
+          (click)="updateValue($event, size, 'selectedSize')">
           {{ size.name }}
         </div>
         }

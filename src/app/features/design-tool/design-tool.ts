@@ -9,6 +9,7 @@ import { SharedService } from '../../shared/services/sahared.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { CartService } from '../../shared/services/cart.service';
 import { R2UploadService } from '../../shared/services/r2-upload.service';
+import { ProductService } from '../../shared/services/product.service';
 @Component({
   selector: 'app-design-tool',
   standalone: false,
@@ -64,6 +65,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
   modelPath: string = '';
   isEdit: boolean = false;
   productId: string = '';
+  pricelist_id:string ='';
   cartItemId: string = '';
   userSavedDesign = null;
   constructor(
@@ -71,6 +73,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     private sharedService: SharedService,
     private spinner: NgxUiLoaderService,
     private cartService: CartService,
+    private productService: ProductService,
     private r2UploadService: R2UploadService
   ) {
     this.route.queryParams.subscribe((params) => {
@@ -97,6 +100,10 @@ export class DesignTool implements AfterViewInit, OnDestroy {
       }
       if (productId) {
         this.productId = productId || '93ac57689e3e';
+        this.productService.getProductPriceInfo(this.productId).subscribe((data:any)=>{
+          console.log('data: ', data);
+          this.pricelist_id=data[0].id
+        })
       }
     });
   }
@@ -116,9 +123,47 @@ export class DesignTool implements AfterViewInit, OnDestroy {
     this.isSavedDesign();
     this.animate();
     window.addEventListener('resize', () => this.onWindowResize());
+    // for desktop
     this.renderer.domElement.addEventListener('mousedown', (e) => this.onMouseDown(e));
     this.renderer.domElement.addEventListener('mousemove', (e) => this.onMouseMove(e));
     this.renderer.domElement.addEventListener('mouseup', (e) => this.onMouseUp(e));
+    // for mobile
+    this.renderer.domElement.addEventListener('touchstart', (e) => this.onTouchStart(e));
+    this.renderer.domElement.addEventListener('touchmove', (e) => this.onTouchMove(e));
+    this.renderer.domElement.addEventListener('touchend', (e) => this.onTouchEnd(e));
+  }
+
+  private onTouchStart(event: TouchEvent) {
+    event.preventDefault();
+    const touch = event.touches[0];
+
+    const mouseEvent = {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    } as MouseEvent;
+
+    this.onMouseDown(mouseEvent);
+  }
+  private onTouchMove(event: TouchEvent) {
+    event.preventDefault();
+    const touch = event.touches[0];
+
+    const mouseEvent = {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    } as MouseEvent;
+
+    this.onMouseMove(mouseEvent);
+  }
+  private onTouchEnd(event: TouchEvent) {
+    event.preventDefault();
+
+    const mouseEvent = {
+      clientX: 0,
+      clientY: 0,
+    } as MouseEvent;
+
+    this.onMouseUp(mouseEvent);
   }
 
   /**
@@ -1331,7 +1376,7 @@ export class DesignTool implements AfterViewInit, OnDestroy {
 
     const payload = {
       components: '{}',
-      pricelist_id: '69eef3650d31',
+      pricelist_id: this.pricelist_id,
       product_id: this.productId,
       quantity: 1,
       saved_for_later: true,

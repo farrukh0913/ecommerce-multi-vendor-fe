@@ -56,12 +56,21 @@ export class ShoppingCart {
    * Calculates the total cost of all items in the cart
    * by summing up (price × quantity) for each item.
    */
-  get totalCost(): number {
-    return this.cartItems.reduce(
-      (acc: any, item: any) => acc + item.final_price * item.quantity,
-      0
-    );
-  }
+ get totalCost(): number {
+  return this.cartItems.reduce((acc: number, item: any) => {
+    
+    const basePrice = item.final_price ?? 0;
+
+    const colorAdj = item.variants?.selectedColor?.price_adjustment ?? 0;
+    const sizeAdj  = item.variants?.selectedSize?.price_adjustment ?? 0;
+
+    const finalPrice = basePrice + colorAdj + sizeAdj;
+
+    return acc + finalPrice * (item.quantity ?? 1);
+
+  }, 0);
+}
+
 
   /**
    * Calculates 5% GST on the total cost.
